@@ -42,121 +42,121 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Kettlebell vor der Brust halten. Füße etwa schulterbreit. Gesäß nach hinten unten führen.',
       muskeln: 'Oberschenkel, Gesäß, Core',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/20/400/600'),
+      bildUrl: 'assets/assets/gobletsquat.png'),
   Uebung(
       name: 'Single-Leg Deadlift',
       beschreibung: 'Auf einem Bein stehen, das andere nach hinten anheben. Hüfte nach hinten schieben.',
       muskeln: 'Gesäß, hintere Oberschenkel, Rücken',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/21/400/600'),
+      bildUrl: 'https://picsum.photos/id/21/400/600'), // Platzhalter
   Uebung(
       name: 'Bulgarian Split Squat',
       beschreibung: 'Hinteren Fuß auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
       muskeln: 'Beine, Gesäß, Gleichgewicht',
       kategorie: 'Unterkörper',
-      bildUrl: 'assets/bulgariansplitsquad.png'),
+      bildUrl: 'assets/assets/bulgariansplitsquad.png'),
   Uebung(
       name: 'Reverse Lunge',
       beschreibung: 'Kettlebell vor der Brust halten. Großen Schritt nach hinten machen.',
       muskeln: 'Beine, Gesäß, Core',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/23/400/600'),
+      bildUrl: 'https://picsum.photos/id/23/400/600'), // Platzhalter
   Uebung(
       name: 'Sumo Squat (3s Stop)',
       beschreibung: 'Breiter Stand, Fußspitzen nach außen. Tief absenken, 3 Sekunden halten.',
       muskeln: 'Innenschenkel, Gesäß, Beine',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/24/400/600'),
+      bildUrl: 'https://picsum.photos/id/24/400/600'), // Platzhalter
   Uebung(
       name: 'Einarmiges Rudern',
       beschreibung: 'Hand auf Knie abstützen. Kettlebell zur Hüfte ziehen.',
       muskeln: 'Oberer Rücken, Latissimus, Bizeps',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/25/400/600'),
+      bildUrl: 'assets/assets/einarmigesrudern.png'),
   Uebung(
       name: 'Staggered Row',
       beschreibung: 'Ausfallschritt, auf Oberschenkel abstützen und einarmig zur Hüfte rudern.',
       muskeln: 'Rücken, Core',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/26/400/600'),
+      bildUrl: 'https://picsum.photos/id/26/400/600'), // Platzhalter
   Uebung(
       name: 'High Pull',
       beschreibung: 'Aus der Hüfte Schwung holen. Ellbogen führt nach oben/außen.',
       muskeln: 'Rücken, Schultern, Hüfte',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/27/400/600'),
+      bildUrl: 'assets/assets/highpull.png'),
   Uebung(
       name: 'Suitcase Carry',
       beschreibung: 'Kettlebell einseitig wie einen Koffer tragen. Aufrecht gehen.',
       muskeln: 'Rücken, Griffkraft, seitlicher Core',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/28/400/600'),
+      bildUrl: 'https://picsum.photos/id/28/400/600'), // Platzhalter
   Uebung(
       name: 'Overhead Press',
       beschreibung: 'Aus der Rack-Position über den Kopf drücken.',
       muskeln: 'Schultern, Trizeps, Core',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/29/400/600'),
+      bildUrl: 'assets/assets/overheadpress.png'),
   Uebung(
       name: 'Push Press',
-      beschreibung: 'Kleine Kniebeuge, mit Beinschwung über Kopf drücken.',
+      beschreibung: 'Kettlebell einarmig in Rack-Position halten, durch leichten Beinschwung explosiv über den Kopf drücken.',
       muskeln: 'Schultern, Trizeps, Beine, Core',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/30/400/600'),
+      bildUrl: 'https://picsum.photos/id/30/400/600'), // Platzhalter
   Uebung(
       name: 'Floor Press',
       beschreibung: 'Auf dem Rücken liegen. Von der Brust nach oben drücken.',
       muskeln: 'Brust, Trizeps, Schultern',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/31/400/600'),
+      bildUrl: 'assets/assets/floorpress.png'),
   Uebung(
       name: 'Quarter Get-Up',
       beschreibung: 'Rückenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
       muskeln: 'Schulterstabilität, Core',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/32/400/600'),
+      bildUrl: 'https://picsum.photos/id/32/400/600'), // Platzhalter
   Uebung(
       name: 'Russian Twist',
       beschreibung: 'Sitzen, leicht zurücklehnen. Kettlebell von Seite zu Seite bewegen.',
       muskeln: 'Schräge Bauchmuskeln',
       kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/33/400/600'),
+      bildUrl: 'https://picsum.photos/id/33/400/600'), // Platzhalter
   Uebung(
       name: 'Kettlebell Sit-Up',
       beschreibung: 'Rückenlage. Kettlebell vor der Brust halten. Aufrichten.',
       muskeln: 'Gerade Bauchmuskulatur',
       kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/34/400/600'),
+      bildUrl: 'assets/assets/kettlebellsitup.png'),
   Uebung(
       name: 'Plank Pull-Through',
       beschreibung: 'Unterarmstütz. Kettlebell unter dem Körper auf die andere Seite ziehen.',
       muskeln: 'Gesamte Bauchmuskulatur, Schulterstabilität',
       kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/35/400/600'),
+      bildUrl: 'assets/assets/plankpullthrough.png'),
   Uebung(
       name: 'Dead Bug',
       beschreibung: 'Rückenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
       muskeln: 'Tiefe Bauchmuskulatur',
       kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/36/400/600'),
+      bildUrl: 'assets/assets/deadbug.png'),
   Uebung(
       name: 'Kettlebell Swing',
       beschreibung: 'Aus der Hüfte schwingen. Kugel fliegt bis auf Brusthöhe.',
       muskeln: 'Gesäß, Rücken, Core, Kondition',
       kategorie: 'Ganzkörper',
-      bildUrl: 'https://picsum.photos/id/37/400/600'),
+      bildUrl: 'assets/assets/kettlebellswing.png'),
   Uebung(
       name: 'Clean',
       beschreibung: 'Aus dem Schwung eng am Körper in die Rack-Position führen.',
       muskeln: 'Ganzkörper, Koordination',
       kategorie: 'Ganzkörper',
-      bildUrl: 'https://picsum.photos/id/38/400/600'),
+      bildUrl: 'assets/assets/clean.png'),
   Uebung(
       name: 'Turkish Get-Up',
       beschreibung: 'Vom Liegen mit ausgestrecktem Arm schrittweise zum Stand aufstehen.',
       muskeln: 'Gesamter Körper, Stabilität, Mobilität',
       kategorie: 'Ganzkörper',
-      bildUrl: 'https://picsum.photos/id/39/400/600'),
+      bildUrl: 'https://picsum.photos/id/39/400/600'), // Platzhalter
 ];
 
 int statistikGesamtMinuten = 0;
@@ -211,7 +211,6 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
   void _spinSlotMachine() {
     final random = Random();
     setState(() {
-      // 1. Aus jeder Kategorie genau eine zufällige Übung ziehen
       List<Uebung> gezogeneUebungen = [
         alleUebungen[random.nextInt(5)],       // Unterkörper
         alleUebungen[5 + random.nextInt(4)],   // Rücken
@@ -220,10 +219,7 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
         alleUebungen[17 + random.nextInt(3)],  // Ganzkörper
       ];
 
-      // 2. Die Liste komplett durchmischen, damit die Reihenfolge zufällig ist
       gezogeneUebungen.shuffle(random);
-
-      // 3. Dem Workout zuweisen
       _aktuellesWorkout = gezogeneUebungen;
     });
   }
@@ -533,119 +529,4 @@ class _MediathekPageState extends State<MediathekPage> {
             ),
           ),
           Expanded(
-            child: gefilterteListe.isEmpty
-                ? Center(child: Text('Keine Übungen für diesen Filter gefunden.', style: TextStyle(color: Colors.grey)))
-                : ListView.builder(
-                    itemCount: gefilterteListe.length,
-                    itemBuilder: (context, index) {
-                      Uebung uebung = gefilterteListe[index];
-                      return Card(
-                        color: Colors.grey[900],
-                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                        child: ListTile(
-                          leading: Icon(Icons.fitness_center, color: Colors.orange),
-                          title: Text(uebung.name, style: TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Text('${uebung.kategorie} • ${uebung.muskeln}',
-                              maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12, color: Colors.grey)),
-                          trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              backgroundColor: Colors.grey[950],
-                              builder: (context) => Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(uebung.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.orange)),
-                                      SizedBox(height: 5),
-                                      Text('Kategorie: ${uebung.kategorie}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)),
-                                      Text('Fokus: ${uebung.muskeln}', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
-                                      Divider(color: Colors.grey),
-                                      Text('Ausführung:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                      SizedBox(height: 5),
-                                      Text(uebung.beschreibung, style: TextStyle(fontSize: 15, height: 1.4)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class StatistikPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('📊 Deine Erfolge'), backgroundColor: Colors.black),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Card(
-                    color: Colors.grey[900],
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Text('$statistikGesamtMinuten', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.orange)),
-                          Text('Minuten trainiert', style: TextStyle(color: Colors.grey), textAlign: TextAlign.center),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Card(
-                    color: Colors.grey[900],
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Text('$statistikAnzahlWorkouts', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.green)),
-                          Text('Workouts beendet', style: TextStyle(color: Colors.grey), textAlign: TextAlign.center),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 25),
-            Text('Häufigkeit der Übungen:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
-            Expanded(
-              child: uebungsZaehler.isEmpty
-                  ? Center(child: Text('Noch keine Daten vorhanden.\nStarte ein Workout!', style: TextStyle(color: Colors.grey), textAlign: TextAlign.center))
-                  : ListView(
-                      children: uebungsZaehler.entries.map((entry) {
-                        return ListTile(
-                          title: Text(entry.key),
-                          trailing: Chip(
-                            backgroundColor: Colors.orange,
-                            label: Text('${entry.value}x', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+            child: gefilterte
