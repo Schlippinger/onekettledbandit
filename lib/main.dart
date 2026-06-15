@@ -39,36 +39,31 @@ class Uebung {
 final List<Uebung> alleUebungen = [
   Uebung(
       name: 'Goblet Squat',
-      beschreibung:
-          'Kettlebell vor der Brust halten. Füße etwa schulterbreit. Gesäß nach hinten unten führen.',
+      beschreibung: 'Kettlebell vor der Brust halten. Füße etwa schulterbreit. Gesäß nach hinten unten führen.',
       muskeln: 'Oberschenkel, Gesäß, Core',
       kategorie: 'Unterkörper',
       bildUrl: 'https://picsum.photos/id/20/400/600'),
   Uebung(
       name: 'Single-Leg Deadlift',
-      beschreibung:
-          'Auf einem Bein stehen, das andere nach hinten anheben. Hüfte nach hinten schieben.',
+      beschreibung: 'Auf einem Bein stehen, das andere nach hinten anheben. Hüfte nach hinten schieben.',
       muskeln: 'Gesäß, hintere Oberschenkel, Rücken',
       kategorie: 'Unterkörper',
       bildUrl: 'https://picsum.photos/id/21/400/600'),
   Uebung(
       name: 'Bulgarian Split Squat',
-      beschreibung:
-          'Hinteren Fuß auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
+      beschreibung: 'Hinteren Fuß auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
       muskeln: 'Beine, Gesäß, Gleichgewicht',
       kategorie: 'Unterkörper',
       bildUrl: 'assets/bulgariansplitsquad.png'),
   Uebung(
       name: 'Reverse Lunge',
-      beschreibung:
-          'Kettlebell vor der Brust halten. Großen Schritt nach hinten machen.',
+      beschreibung: 'Kettlebell vor der Brust halten. Großen Schritt nach hinten machen.',
       muskeln: 'Beine, Gesäß, Core',
       kategorie: 'Unterkörper',
       bildUrl: 'https://picsum.photos/id/23/400/600'),
   Uebung(
       name: 'Sumo Squat (3s Stop)',
-      beschreibung:
-          'Breiter Stand, Fußspitzen nach außen. Tief absenken, 3 Sekunden halten.',
+      beschreibung: 'Breiter Stand, Fußspitzen nach außen. Tief absenken, 3 Sekunden halten.',
       muskeln: 'Innenschenkel, Gesäß, Beine',
       kategorie: 'Unterkörper',
       bildUrl: 'https://picsum.photos/id/24/400/600'),
@@ -80,22 +75,19 @@ final List<Uebung> alleUebungen = [
       bildUrl: 'https://picsum.photos/id/25/400/600'),
   Uebung(
       name: 'Staggered Row',
-      beschreibung:
-          'Ausfallschritt, auf Oberschenkel abstützen und einarmig zur Hüfte rudern.',
+      beschreibung: 'Ausfallschritt, auf Oberschenkel abstützen und einarmig zur Hüfte rudern.',
       muskeln: 'Rücken, Core',
       kategorie: 'Rücken',
       bildUrl: 'https://picsum.photos/id/26/400/600'),
   Uebung(
       name: 'High Pull',
-      beschreibung:
-          'Aus der Hüfte Schwung holen. Ellbogen führt nach oben/außen.',
+      beschreibung: 'Aus der Hüfte Schwung holen. Ellbogen führt nach oben/außen.',
       muskeln: 'Rücken, Schultern, Hüfte',
       kategorie: 'Rücken',
       bildUrl: 'https://picsum.photos/id/27/400/600'),
   Uebung(
       name: 'Suitcase Carry',
-      beschreibung:
-          'Kettlebell einseitig wie einen Koffer tragen. Aufrecht gehen.',
+      beschreibung: 'Kettlebell einseitig wie einen Koffer tragen. Aufrecht gehen.',
       muskeln: 'Rücken, Griffkraft, seitlicher Core',
       kategorie: 'Rücken',
       bildUrl: 'https://picsum.photos/id/28/400/600'),
@@ -119,15 +111,13 @@ final List<Uebung> alleUebungen = [
       bildUrl: 'https://picsum.photos/id/31/400/600'),
   Uebung(
       name: 'Quarter Get-Up',
-      beschreibung:
-          'Rückenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
+      beschreibung: 'Rückenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
       muskeln: 'Schulterstabilität, Core',
       kategorie: 'Oberkörper',
       bildUrl: 'https://picsum.photos/id/32/400/600'),
   Uebung(
       name: 'Russian Twist',
-      beschreibung:
-          'Sitzen, leicht zurücklehnen. Kettlebell von Seite zu Seite bewegen.',
+      beschreibung: 'Sitzen, leicht zurücklehnen. Kettlebell von Seite zu Seite bewegen.',
       muskeln: 'Schräge Bauchmuskeln',
       kategorie: 'Core',
       bildUrl: 'https://picsum.photos/id/33/400/600'),
@@ -139,15 +129,13 @@ final List<Uebung> alleUebungen = [
       bildUrl: 'https://picsum.photos/id/34/400/600'),
   Uebung(
       name: 'Plank Pull-Through',
-      beschreibung:
-          'Unterarmstütz. Kettlebell unter dem Körper auf die andere Seite ziehen.',
+      beschreibung: 'Unterarmstütz. Kettlebell unter dem Körper auf die andere Seite ziehen.',
       muskeln: 'Gesamte Bauchmuskulatur, Schulterstabilität',
       kategorie: 'Core',
       bildUrl: 'https://picsum.photos/id/35/400/600'),
   Uebung(
       name: 'Dead Bug',
-      beschreibung:
-          'Rückenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
+      beschreibung: 'Rückenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
       muskeln: 'Tiefe Bauchmuskulatur',
       kategorie: 'Core',
       bildUrl: 'https://picsum.photos/id/36/400/600'),
@@ -159,15 +147,13 @@ final List<Uebung> alleUebungen = [
       bildUrl: 'https://picsum.photos/id/37/400/600'),
   Uebung(
       name: 'Clean',
-      beschreibung:
-          'Aus dem Schwung eng am Körper in die Rack-Position führen.',
+      beschreibung: 'Aus dem Schwung eng am Körper in die Rack-Position führen.',
       muskeln: 'Ganzkörper, Koordination',
       kategorie: 'Ganzkörper',
       bildUrl: 'https://picsum.photos/id/38/400/600'),
   Uebung(
       name: 'Turkish Get-Up',
-      beschreibung:
-          'Vom Liegen mit ausgestrecktem Arm schrittweise zum Stand aufstehen.',
+      beschreibung: 'Vom Liegen mit ausgestrecktem Arm schrittweise zum Stand aufstehen.',
       muskeln: 'Gesamter Körper, Stabilität, Mobilität',
       kategorie: 'Ganzkörper',
       bildUrl: 'https://picsum.photos/id/39/400/600'),
@@ -205,12 +191,9 @@ class _HauptNavigationsPageState extends State<HauptNavigationsPage> {
           });
         },
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.casino), label: 'Slot Machine'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.fitness_center), label: 'Mediathek'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.analytics), label: 'Statistik'),
+          BottomNavigationBarItem(icon: Icon(Icons.casino), label: 'Slot Machine'),
+          BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Mediathek'),
+          BottomNavigationBarItem(icon: Icon(Icons.analytics), label: 'Statistik'),
         ],
       ),
     );
@@ -263,14 +246,12 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('🎰 One-kettled bandit'), backgroundColor: Colors.black),
+      appBar: AppBar(title: Text('🎰 One-kettled bandit'), backgroundColor: Colors.black),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text('Dein heutiger Trainingsplan:',
-                style: TextStyle(fontSize: 18, color: Colors.grey)),
+            Text('Dein heutiger Trainingsplan:', style: TextStyle(fontSize: 18, color: Colors.grey)),
             SizedBox(height: 15),
             Card(
               color: Colors.grey[900],
@@ -282,12 +263,8 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
                       leading: CircleAvatar(
                           backgroundColor: Colors.orange,
                           child: Text('${entry.key + 1}',
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold))),
-                      title: Text(entry.value?.name ?? '?',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
+                      title: Text(entry.value?.name ?? '?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       subtitle: entry.value != null 
                           ? Text(entry.value!.kategorie, style: TextStyle(color: Colors.grey, fontSize: 13))
                           : null,
@@ -300,27 +277,16 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
             ElevatedButton(
               onPressed: _spinSlotMachine,
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12)),
-              child: Text('SPIN! 🎰',
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold)),
+                  backgroundColor: Colors.orange, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12)),
+              child: Text('SPIN! 🎰', style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold)),
             ),
             SizedBox(height: 12),
             if (!_aktuellesWorkout.contains(null))
               ElevatedButton(
                 onPressed: _startWorkout,
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 40, vertical: 12)),
-                child: Text('WORKOUT STARTEN ▶️',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold)),
+                    backgroundColor: Colors.green, padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12)),
+                child: Text('WORKOUT STARTEN ▶️', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
               ),
           ],
         ),
@@ -335,8 +301,7 @@ class AktiverWorkoutBildschirm extends StatefulWidget {
   AktiverWorkoutBildschirm({required this.aktuellesWorkout});
 
   @override
-  _AktiverWorkoutBildschirmState createState() =>
-      _AktiverWorkoutBildschirmState();
+  _AktiverWorkoutBildschirmState createState() => _AktiverWorkoutBildschirmState();
 }
 
 class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
@@ -361,8 +326,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
           _abgelaufeneGesamtMinuten++;
           statistikGesamtMinuten++;
 
-          String uebungsName =
-              widget.aktuellesWorkout[_aktuelleUebungIndex].name;
+          String uebungsName = widget.aktuellesWorkout[_aktuelleUebungIndex].name;
           uebungsZaehler[uebungsName] = (uebungsZaehler[uebungsName] ?? 0) + 1;
 
           if (_abgelaufeneGesamtMinuten >= 30) {
@@ -420,16 +384,14 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
                     fit: BoxFit.cover,
                     errorBuilder: (c, e, s) => Container(
                         color: Colors.grey[900],
-                        child: Icon(Icons.fitness_center,
-                            size: 80, color: Colors.orange)),
+                        child: Icon(Icons.fitness_center, size: 80, color: Colors.orange)),
                   )
                 : Image.asset(
                     uebung.bildUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (c, e, s) => Container(
                         color: Colors.grey[900],
-                        child: Icon(Icons.fitness_center,
-                            size: 80, color: Colors.orange)),
+                        child: Icon(Icons.fitness_center, size: 80, color: Colors.orange)),
                   ),
           ),
           Container(
@@ -437,11 +399,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [
-                  Colors.black.withOpacity(0.7),
-                  Colors.transparent,
-                  Colors.black
-                ],
+                colors: [Colors.black.withOpacity(0.7), Colors.transparent, Colors.black],
                 stops: [0.0, 0.4, 0.85],
               ),
             ),
@@ -456,11 +414,8 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('ÜBUNG ${_aktuelleUebungIndex + 1} VON 5',
-                          style: TextStyle(
-                              color: Colors.orange,
-                              fontWeight: FontWeight.bold)),
-                      Text('Gesamt: $_abgelaufeneGesamtMinuten/30 Min',
-                          style: TextStyle(color: Colors.white)),
+                          style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+                      Text('Gesamt: $_abgelaufeneGesamtMinuten/30 Min', style: TextStyle(color: Colors.white)),
                     ],
                   ),
                 ),
@@ -469,28 +424,20 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
-                      Text(uebung.name,
-                          style: TextStyle(
-                              fontSize: 28, fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center),
-                      SOfWeek(height: 5),
+                      Text(uebung.name, style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                      SizedBox(height: 5),
                       Text('${uebung.kategorie} • Fokus: ${uebung.muskeln}',
                           style: TextStyle(fontSize: 14, color: Colors.orange, fontWeight: FontWeight.w500),
                           textAlign: TextAlign.center),
                       SizedBox(height: 8),
-                      Text(uebung.beschreibung,
-                          style:
-                              TextStyle(fontSize: 14, color: Colors.grey[300]),
-                          textAlign: TextAlign.center),
+                      Text(uebung.beschreibung, style: TextStyle(fontSize: 14, color: Colors.grey[300]), textAlign: TextAlign.center),
                       SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           TextButton(
                               onPressed: () => Navigator.pop(context),
-                              child: Text('Abbrechen 🛑',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 16))),
+                              child: Text('Abbrechen 🛑', style: TextStyle(color: Colors.red, fontSize: 16))),
                           Stack(
                             alignment: Alignment.center,
                             children: [
@@ -500,13 +447,9 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
                                   child: CircularProgressIndicator(
                                       value: _verbleibendeSekunden / 60,
                                       strokeWidth: 6,
-                                      valueColor: AlwaysStoppedAnimation(
-                                          Colors.orange))),
-                              Text(
-                                  '0:${_verbleibendeSekunden.toString().padLeft(2, '0')}',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
+                                      valueColor: AlwaysStoppedAnimation(Colors.orange))),
+                              Text('0:${_verbleibendeSekunden.toString().padLeft(2, '0')}',
+                                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                             ],
                           ),
                         ],
@@ -532,18 +475,8 @@ class _MediathekPageState extends State<MediathekPage> {
   String _ausgewaehlterFilter = 'Alle';
   String _ausgewaehlteSortierung = 'Alphabetisch (A-Z)';
 
-  final List<String> _kategorien = [
-    'Alle',
-    'Unterkörper',
-    'Rücken',
-    'Oberkörper',
-    'Core',
-    'Ganzkörper'
-  ];
-  final List<String> _sortierOptionen = [
-    'Alphabetisch (A-Z)',
-    'Nach Muskelgruppe'
-  ];
+  final List<String> _kategorien = ['Alle', 'Unterkörper', 'Rücken', 'Oberkörper', 'Core', 'Ganzkörper'];
+  final List<String> _sortierOptionen = ['Alphabetisch (A-Z)', 'Nach Muskelgruppe'];
 
   @override
   Widget build(BuildContext context) {
@@ -559,26 +492,20 @@ class _MediathekPageState extends State<MediathekPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-          title: Text('📚 Übungs-Mediathek'), backgroundColor: Colors.black),
+      appBar: AppBar(title: Text('📚 Übungs-Mediathek'), backgroundColor: Colors.black),
       body: Column(
         children: [
           Container(
-            color: Colors.grey[955],
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            color: Colors.grey[950],
+            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Row(
               children: [
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: _ausgewaehlterFilter,
-                    decoration: InputDecoration(
-                        labelText: 'Filter',
-                        labelStyle: TextStyle(color: Colors.orange)),
+                    decoration: InputDecoration(labelText: 'Filter', labelStyle: TextStyle(color: Colors.orange)),
                     items: _kategorien
-                        .map((kat) => DropdownMenuItem(
-                            value: kat,
-                            child: Text(kat, style: TextStyle(fontSize: 14))))
+                        .map((kat) => DropdownMenuItem(value: kat, child: Text(kat, style: TextStyle(fontSize: 14))))
                         .toList(),
                     onChanged: (wert) {
                       setState(() {
@@ -591,13 +518,9 @@ class _MediathekPageState extends State<MediathekPage> {
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: _ausgewaehlteSortierung,
-                    decoration: InputDecoration(
-                        labelText: 'Sortieren',
-                        labelStyle: TextStyle(color: Colors.orange)),
+                    decoration: InputDecoration(labelText: 'Sortieren', labelStyle: TextStyle(color: Colors.orange)),
                     items: _sortierOptionen
-                        .map((opt) => DropdownMenuItem(
-                            value: opt,
-                            child: Text(opt, style: TextStyle(fontSize: 14))))
+                        .map((opt) => DropdownMenuItem(value: opt, child: Text(opt, style: TextStyle(fontSize: 14))))
                         .toList(),
                     onChanged: (wert) {
                       setState(() {
@@ -611,30 +534,20 @@ class _MediathekPageState extends State<MediathekPage> {
           ),
           Expanded(
             child: gefilterteListe.isEmpty
-                ? Center(
-                    child: Text('Keine Übungen für diesen Filter gefunden.',
-                        style: TextStyle(color: Colors.grey)))
+                ? Center(child: Text('Keine Übungen für diesen Filter gefunden.', style: TextStyle(color: Colors.grey)))
                 : ListView.builder(
                     itemCount: gefilterteListe.length,
                     itemBuilder: (context, index) {
                       Uebung uebung = gefilterteListe[index];
                       return Card(
                         color: Colors.grey[900],
-                        margin:
-                            EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
                         child: ListTile(
-                          leading:
-                              Icon(Icons.fitness_center, color: Colors.orange),
-                          title: Text(uebung.name,
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                          subtitle: Text(
-                              '${uebung.kategorie} • ${uebung.muskeln}',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.grey)),
-                          trailing: Icon(Icons.arrow_forward_ios,
-                              size: 14, color: Colors.grey),
+                          leading: Icon(Icons.fitness_center, color: Colors.orange),
+                          title: Text(uebung.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text('${uebung.kategorie} • ${uebung.muskeln}',
+                              maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
                           onTap: () {
                             showModalBottomSheet(
                               context: context,
@@ -643,32 +556,16 @@ class _MediathekPageState extends State<MediathekPage> {
                                 padding: const EdgeInsets.all(16.0),
                                 child: SingleChildScrollView(
                                   child: Column(
-                                    cross triage:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text(uebung.name,
-                                          style: TextStyle(
-                                              fontSize: 24,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.orange)),
+                                      Text(uebung.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.orange)),
                                       SizedBox(height: 5),
-                                      Text('Kategorie: ${uebung.kategorie}',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white70)),
-                                      Text('Fokus: ${uebung.muskeln}',
-                                          style: TextStyle(
-                                              fontStyle: FontStyle.italic,
-                                              color: Colors.grey)),
+                                      Text('Kategorie: ${uebung.kategorie}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)),
+                                      Text('Fokus: ${uebung.muskeln}', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
                                       Divider(color: Colors.grey),
-                                      Text('Ausführung:',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold)),
+                                      Text('Ausführung:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                                       SizedBox(height: 5),
-                                      Text(uebung.beschreibung,
-                                          style: TextStyle(
-                                              fontSize: 15, height: 1.4)),
+                                      Text(uebung.beschreibung, style: TextStyle(fontSize: 15, height: 1.4)),
                                     ],
                                   ),
                                 ),
@@ -690,8 +587,7 @@ class StatistikPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          title: Text('📊 Deine Erfolge'), backgroundColor: Colors.black),
+      appBar: AppBar(title: Text('📊 Deine Erfolge'), backgroundColor: Colors.black),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -706,14 +602,8 @@ class StatistikPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          Text('$statistikGesamtMinuten',
-                              style: TextStyle(
-                                  fontSize: 36,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.orange)),
-                          Text('Minuten trainiert',
-                              style: TextStyle(color: Colors.grey),
-                              textAlign: TextAlign.center),
+                          Text('$statistikGesamtMinuten', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.orange)),
+                          Text('Minuten trainiert', style: TextStyle(color: Colors.grey), textAlign: TextAlign.center),
                         ],
                       ),
                     ),
@@ -726,14 +616,8 @@ class StatistikPage extends StatelessWidget {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         children: [
-                          Text('$statistikAnzahlWorkouts',
-                              style: TextStyle(
-                                  fontSize: 36,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green)),
-                          Text('Workouts beendet',
-                              style: TextStyle(color: Colors.grey),
-                              textAlign: TextAlign.center),
+                          Text('$statistikAnzahlWorkouts', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.green)),
+                          Text('Workouts beendet', style: TextStyle(color: Colors.grey), textAlign: TextAlign.center),
                         ],
                       ),
                     ),
@@ -742,26 +626,18 @@ class StatistikPage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 25),
-            Text('Häufigkeit der Übungen:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Häufigkeit der Übungen:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
             Expanded(
               child: uebungsZaehler.isEmpty
-                  ? Center(
-                      child: Text(
-                          'Noch keine Daten vorhanden.\nStarte ein Workout!',
-                          style: TextStyle(color: Colors.grey),
-                          textAlign: TextAlign.center))
+                  ? Center(child: Text('Noch keine Daten vorhanden.\nStarte ein Workout!', style: TextStyle(color: Colors.grey), textAlign: TextAlign.center))
                   : ListView(
                       children: uebungsZaehler.entries.map((entry) {
                         return ListTile(
                           title: Text(entry.key),
                           trailing: Chip(
                             backgroundColor: Colors.orange,
-                            label: Text('${entry.value}x',
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold)),
+                            label: Text('${entry.value}x', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
                           ),
                         );
                       }).toList(),
