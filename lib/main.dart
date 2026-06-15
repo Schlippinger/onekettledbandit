@@ -48,7 +48,7 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Auf einem Bein stehen, das andere nach hinten anheben. Hüfte nach hinten schieben.',
       muskeln: 'Gesäß, hintere Oberschenkel, Rücken',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/21/400/600'), // Platzhalter
+      bildUrl: 'https://picsum.photos/id/21/400/600'),
   Uebung(
       name: 'Bulgarian Split Squat',
       beschreibung: 'Hinteren Fuß auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
@@ -60,13 +60,13 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Kettlebell vor der Brust halten. Großen Schritt nach hinten machen.',
       muskeln: 'Beine, Gesäß, Core',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/23/400/600'), // Platzhalter
+      bildUrl: 'https://picsum.photos/id/23/400/600'),
   Uebung(
       name: 'Sumo Squat (3s Stop)',
       beschreibung: 'Breiter Stand, Fußspitzen nach außen. Tief absenken, 3 Sekunden halten.',
       muskeln: 'Innenschenkel, Gesäß, Beine',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/24/400/600'), // Platzhalter
+      bildUrl: 'https://picsum.photos/id/24/400/600'),
   Uebung(
       name: 'Einarmiges Rudern',
       beschreibung: 'Hand auf Knie abstützen. Kettlebell zur Hüfte ziehen.',
@@ -78,7 +78,7 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Ausfallschritt, auf Oberschenkel abstützen und einarmig zur Hüfte rudern.',
       muskeln: 'Rücken, Core',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/26/400/600'), // Platzhalter
+      bildUrl: 'https://picsum.photos/id/26/400/600'),
   Uebung(
       name: 'High Pull',
       beschreibung: 'Aus der Hüfte Schwung holen. Ellbogen führt nach oben/außen.',
@@ -90,7 +90,7 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Kettlebell einseitig wie einen Koffer tragen. Aufrecht gehen.',
       muskeln: 'Rücken, Griffkraft, seitlicher Core',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/28/400/600'), // Platzhalter
+      bildUrl: 'https://picsum.photos/id/28/400/600'),
   Uebung(
       name: 'Overhead Press',
       beschreibung: 'Aus der Rack-Position über den Kopf drücken.',
@@ -102,7 +102,7 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Kettlebell einarmig in Rack-Position halten, durch leichten Beinschwung explosiv über den Kopf drücken.',
       muskeln: 'Schultern, Trizeps, Beine, Core',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/30/400/600'), // Platzhalter
+      bildUrl: 'https://picsum.photos/id/30/400/600'),
   Uebung(
       name: 'Floor Press',
       beschreibung: 'Auf dem Rücken liegen. Von der Brust nach oben drücken.',
@@ -114,13 +114,13 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Rückenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
       muskeln: 'Schulterstabilität, Core',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/32/400/600'), // Platzhalter
+      bildUrl: 'https://picsum.photos/id/32/400/600'),
   Uebung(
       name: 'Russian Twist',
       beschreibung: 'Sitzen, leicht zurücklehnen. Kettlebell von Seite zu Seite bewegen.',
       muskeln: 'Schräge Bauchmuskeln',
       kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/33/400/600'), // Platzhalter
+      bildUrl: 'https://picsum.photos/id/33/400/600'),
   Uebung(
       name: 'Kettlebell Sit-Up',
       beschreibung: 'Rückenlage. Kettlebell vor der Brust halten. Aufrichten.',
@@ -156,7 +156,7 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Vom Liegen mit ausgestrecktem Arm schrittweise zum Stand aufstehen.',
       muskeln: 'Gesamter Körper, Stabilität, Mobilität',
       kategorie: 'Ganzkörper',
-      bildUrl: 'https://picsum.photos/id/39/400/600'), // Platzhalter
+      bildUrl: 'https://picsum.photos/id/39/400/600'),
 ];
 
 int statistikGesamtMinuten = 0;
@@ -385,9 +385,18 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
                 : Image.asset(
                     uebung.bildUrl,
                     fit: BoxFit.cover,
-                    errorBuilder: (c, e, s) => Container(
-                        color: Colors.grey[900],
-                        child: Icon(Icons.fitness_center, size: 80, color: Colors.orange)),
+                    errorBuilder: (c, e, s) {
+                      // Falls der doppelte Pfad fehlschlägt, versuchen wir den einfachen Pfad
+                      final alternativerPfad = uebung.bildUrl.replaceFirst('assets/assets/', 'assets/');
+                      return Image.asset(
+                        alternativerPfad,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.grey[900],
+                          child: Icon(Icons.fitness_center, size: 80, color: Colors.orange),
+                        ),
+                      );
+                    },
                   ),
           ),
           Container(
@@ -529,4 +538,141 @@ class _MediathekPageState extends State<MediathekPage> {
             ),
           ),
           Expanded(
-            child: gefilterte
+            child: gefilterteListe.isEmpty
+                ? Center(child: Text('Keine Übungen für diesen Filter gefunden.', style: TextStyle(color: Colors.grey)))
+                : ListView.builder(
+                    itemCount: gefilterteListe.length,
+                    itemBuilder: (context, index) {
+                      Uebung uebung = gefilterteListe[index];
+                      return Card(
+                        color: Colors.grey[900],
+                        margin: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        child: ListTile(
+                          leading: Icon(Icons.fitness_center, color: Colors.orange),
+                          title: Text(uebung.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text('${uebung.kategorie} • ${uebung.muskeln}',
+                              maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          trailing: Icon(Icons.arrow_forward_ios, size: 14, color: Colors.grey),
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.grey[950],
+                              builder: (context) => Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(uebung.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.orange)),
+                                      SizedBox(height: 5),
+                                      Text('Kategorie: ${uebung.kategorie}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)),
+                                      Text('Fokus: ${uebung.muskeln}', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
+                                      Divider(color: Colors.grey),
+                                      if (!uebung.bildUrl.startsWith('http')) ...[
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(8),
+                                          child: Image.asset(
+                                            uebung.bildUrl,
+                                            height: 200,
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (c, e, s) {
+                                              final altPfad = uebung.bildUrl.replaceFirst('assets/assets/', 'assets/');
+                                              return Image.asset(
+                                                altPfad,
+                                                height: 200,
+                                                width: double.infinity,
+                                                fit: BoxFit.cover,
+                                                errorBuilder: (context, error, stackTrace) => Container(),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        SizedBox(height: 15),
+                                      ],
+                                      Text('Ausführung:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                      SizedBox(height: 5),
+                                      Text(uebung.beschreibung, style: TextStyle(fontSize: 15, height: 1.4)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class StatistikPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('📊 Deine Erfolge'), backgroundColor: Colors.black),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Card(
+                    color: Colors.grey[900],
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Text('$statistikGesamtMinuten', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.orange)),
+                          Text('Minuten trainiert', style: TextStyle(color: Colors.grey), textAlign: TextAlign.center),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Card(
+                    color: Colors.grey[900],
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Text('$statistikAnzahlWorkouts', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.green)),
+                          Text('Workouts beendet', style: TextStyle(color: Colors.grey), textAlign: TextAlign.center),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 25),
+            Text('Häufigkeit der Übungen:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            Expanded(
+              child: uebungsZaehler.isEmpty
+                  ? Center(child: Text('Noch keine Daten vorhanden.\nStarte ein Workout!', style: TextStyle(color: Colors.grey), textAlign: TextAlign.center))
+                  : ListView(
+                      children: uebungsZaehler.entries.map((entry) {
+                        return ListTile(
+                          title: Text(entry.key),
+                          trailing: Chip(
+                            backgroundColor: Colors.orange,
+                            label: Text('${entry.value}x', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
