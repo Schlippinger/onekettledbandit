@@ -43,7 +43,7 @@ final List<Uebung> alleUebungen = [
           'Kettlebell vor der Brust halten. Füße etwa schulterbreit. Gesäß nach hinten unten führen.',
       muskeln: 'Oberschenkel, Gesäß, Core',
       kategorie: 'Unterkörper',
-      bildUrl: 'assets/gobletsquat.png'),
+      bildUrl: 'https://picsum.photos/id/20/400/600'),
   Uebung(
       name: 'Single-Leg Deadlift',
       beschreibung:
@@ -77,7 +77,7 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Hand auf Knie abstützen. Kettlebell zur Hüfte ziehen.',
       muskeln: 'Oberer Rücken, Latissimus, Bizeps',
       kategorie: 'Rücken',
-      bildUrl: 'assets/einarmigesrudern.png'),
+      bildUrl: 'https://picsum.photos/id/25/400/600'),
   Uebung(
       name: 'Staggered Row',
       beschreibung:
@@ -91,7 +91,7 @@ final List<Uebung> alleUebungen = [
           'Aus der Hüfte Schwung holen. Ellbogen führt nach oben/außen.',
       muskeln: 'Rücken, Schultern, Hüfte',
       kategorie: 'Rücken',
-      bildUrl: 'assets/highpull.png'),
+      bildUrl: 'https://picsum.photos/id/27/400/600'),
   Uebung(
       name: 'Suitcase Carry',
       beschreibung:
@@ -104,7 +104,7 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Aus der Rack-Position über den Kopf drücken.',
       muskeln: 'Schultern, Trizeps, Core',
       kategorie: 'Oberkörper',
-      bildUrl: 'assets/overheadpress.png'),
+      bildUrl: 'https://picsum.photos/id/29/400/600'),
   Uebung(
       name: 'Push Press',
       beschreibung: 'Kleine Kniebeuge, mit Beinschwung über Kopf drücken.',
@@ -116,7 +116,7 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Auf dem Rücken liegen. Von der Brust nach oben drücken.',
       muskeln: 'Brust, Trizeps, Schultern',
       kategorie: 'Oberkörper',
-      bildUrl: 'assets/floorpress.png'),
+      bildUrl: 'https://picsum.photos/id/31/400/600'),
   Uebung(
       name: 'Quarter Get-Up',
       beschreibung:
@@ -136,34 +136,34 @@ final List<Uebung> alleUebungen = [
       beschreibung: 'Rückenlage. Kettlebell vor der Brust halten. Aufrichten.',
       muskeln: 'Gerade Bauchmuskulatur',
       kategorie: 'Core',
-      bildUrl: 'assets/kettlebellsitup.png'),
+      bildUrl: 'https://picsum.photos/id/34/400/600'),
   Uebung(
       name: 'Plank Pull-Through',
       beschreibung:
           'Unterarmstütz. Kettlebell unter dem Körper auf die andere Seite ziehen.',
       muskeln: 'Gesamte Bauchmuskulatur, Schulterstabilität',
       kategorie: 'Core',
-      bildUrl: 'assets/plankpullthrough.png'),
+      bildUrl: 'https://picsum.photos/id/35/400/600'),
   Uebung(
       name: 'Dead Bug',
       beschreibung:
           'Rückenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
       muskeln: 'Tiefe Bauchmuskulatur',
       kategorie: 'Core',
-      bildUrl: 'assets/deadbug.png'),
+      bildUrl: 'https://picsum.photos/id/36/400/600'),
   Uebung(
       name: 'Kettlebell Swing',
       beschreibung: 'Aus der Hüfte schwingen. Kugel fliegt bis auf Brusthöhe.',
       muskeln: 'Gesäß, Rücken, Core, Kondition',
       kategorie: 'Ganzkörper',
-      bildUrl: 'assets/kettlebellswing.png'),
+      bildUrl: 'https://picsum.photos/id/37/400/600'),
   Uebung(
       name: 'Clean',
       beschreibung:
           'Aus dem Schwung eng am Körper in die Rack-Position führen.',
       muskeln: 'Ganzkörper, Koordination',
       kategorie: 'Ganzkörper',
-      bildUrl: 'assets/clean.png'),
+      bildUrl: 'https://picsum.photos/id/38/400/600'),
   Uebung(
       name: 'Turkish Get-Up',
       beschreibung:
@@ -228,13 +228,20 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
   void _spinSlotMachine() {
     final random = Random();
     setState(() {
-      _aktuellesWorkout = [
-        alleUebungen[random.nextInt(5)],
-        alleUebungen[5 + random.nextInt(4)],
-        alleUebungen[9 + random.nextInt(4)],
-        alleUebungen[13 + random.nextInt(4)],
-        alleUebungen[17 + random.nextInt(3)],
+      // 1. Aus jeder Kategorie genau eine zufällige Übung ziehen
+      List<Uebung> gezogeneUebungen = [
+        alleUebungen[random.nextInt(5)],       // Unterkörper
+        alleUebungen[5 + random.nextInt(4)],   // Rücken
+        alleUebungen[9 + random.nextInt(4)],   // Oberkörper
+        alleUebungen[13 + random.nextInt(4)],  // Core
+        alleUebungen[17 + random.nextInt(3)],  // Ganzkörper
       ];
+
+      // 2. Die Liste komplett durchmischen, damit die Reihenfolge zufällig ist
+      gezogeneUebungen.shuffle(random);
+
+      // 3. Dem Workout zuweisen
+      _aktuellesWorkout = gezogeneUebungen;
     });
   }
 
@@ -281,6 +288,9 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
                       title: Text(entry.value?.name ?? '?',
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.bold)),
+                      subtitle: entry.value != null 
+                          ? Text(entry.value!.kategorie, style: TextStyle(color: Colors.grey, fontSize: 13))
+                          : null,
                     );
                   }).toList(),
                 ),
@@ -399,7 +409,6 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
     return Scaffold(
       body: Stack(
         children: [
-          // Flexibles Bild (erkennt automatisch Internet-Links oder lokale Assets)
           Positioned(
             top: 0,
             left: 0,
@@ -464,7 +473,11 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
                           style: TextStyle(
                               fontSize: 28, fontWeight: FontWeight.bold),
                           textAlign: TextAlign.center),
-                      SizedBox(height: 5),
+                      SOfWeek(height: 5),
+                      Text('${uebung.kategorie} • Fokus: ${uebung.muskeln}',
+                          style: TextStyle(fontSize: 14, color: Colors.orange, fontWeight: FontWeight.w500),
+                          textAlign: TextAlign.center),
+                      SizedBox(height: 8),
                       Text(uebung.beschreibung,
                           style:
                               TextStyle(fontSize: 14, color: Colors.grey[300]),
@@ -551,7 +564,7 @@ class _MediathekPageState extends State<MediathekPage> {
       body: Column(
         children: [
           Container(
-            color: Colors.grey[950],
+            color: Colors.grey[955],
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
             child: Row(
@@ -630,7 +643,7 @@ class _MediathekPageState extends State<MediathekPage> {
                                 padding: const EdgeInsets.all(16.0),
                                 child: SingleChildScrollView(
                                   child: Column(
-                                    crossAxisAlignment:
+                                    cross triage:
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(uebung.name,
