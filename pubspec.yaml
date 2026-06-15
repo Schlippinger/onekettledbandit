@@ -19,6 +19,8 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - assets/
+    - assets/assets/
     - assets/bulgariansplitsquad.png
     - assets/clean.png
     - assets/deadbug.png
