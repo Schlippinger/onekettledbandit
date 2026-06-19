@@ -413,7 +413,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
           ),
           SafeArea(
             child: Column(
-              cross CrossAxisAlignment.stretch,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -558,12 +558,12 @@ class _MediathekPageState extends State<MediathekPage> {
                           onTap: () {
                             showModalBottomSheet(
                               context: context,
-                              isScrollControlled: true, // NEU: Ermöglicht Fullscreen-Höhe
-                              backgroundColor: Colors.transparent, // Macht Ecken-Abrundung sauberer
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent,
                               builder: (context) => DraggableScrollableSheet(
-                                initialChildSize: 0.95, // Startet fast auf Vollbild
-                                minChildSize: 0.5,     // Kann bis zur Hälfte runtergezogen werden, bevor es schließt
-                                maxChildSize: 1.0,     // Kann komplett auf Vollbild gezogen werden
+                                initialChildSize: 0.95,
+                                minChildSize: 0.5,
+                                maxChildSize: 1.0,
                                 expand: false,
                                 builder: (context, scrollController) => Container(
                                   decoration: BoxDecoration(
@@ -572,14 +572,12 @@ class _MediathekPageState extends State<MediathekPage> {
                                   ),
                                   child: Stack(
                                     children: [
-                                      // Der scrollbare Inhalt der Übung
                                       SingleChildScrollView(
                                         controller: scrollController,
                                         padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            // Kleine visuelle "Drag-Handle" Leiste ganz oben
                                             Center(
                                               child: Container(
                                                 width: 40,
@@ -591,8 +589,6 @@ class _MediathekPageState extends State<MediathekPage> {
                                               ),
                                             ),
                                             SizedBox(height: 20),
-                                            
-                                            // Übungsname (Rechts Platz lassen fürs X)
                                             Padding(
                                               padding: const EdgeInsets.right(40.0),
                                               child: Text(
@@ -604,8 +600,6 @@ class _MediathekPageState extends State<MediathekPage> {
                                             Text('Kategorie: ${uebung.kategorie}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)),
                                             Text('Fokus: ${uebung.muskeln}', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
                                             Divider(color: Colors.grey, height: 25),
-                                            
-                                            // Das Übungsbild (wird jetzt groß und bildschirmfüllend skaliert)
                                             ClipRRect(
                                               borderRadius: BorderRadius.circular(12),
                                               child: uebung.bildUrl.startsWith('http')
@@ -634,12 +628,10 @@ class _MediathekPageState extends State<MediathekPage> {
                                             Text('Ausführung:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
                                             SizedBox(height: 8),
                                             Text(uebung.beschreibung, style: TextStyle(fontSize: 16, height: 1.5, color: Colors.grey[200])),
-                                            SizedBox(height: 40), // Puffer nach unten
+                                            SizedBox(height: 40),
                                           ],
                                         ),
                                       ),
-                                      
-                                      // NEU: Fest verankertes Schließen-X oben rechts
                                       Positioned(
                                         top: 15,
                                         right: 15,
