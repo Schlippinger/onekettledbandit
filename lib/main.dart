@@ -116,8 +116,8 @@ class SlotMachinePage extends StatefulWidget {
 
 class _SlotMachinePageState extends State<SlotMachinePage> {
   List<Uebung?> _aktuellesWorkout = [null, null, null, null, null];
-  String _workoutModus = 'EMOM'; // Standardmodus
-  int _amrapMinuten = 15;        // Standardzeit für AMRAP
+  String _workoutModus = 'EMOM';
+  int _amrapMinuten = 15;
   Map<String, int> _geladeneReps = {};
 
   @override
@@ -344,17 +344,6 @@ class AktiverAMRAPBildschirm extends StatefulWidget {
   _AktiverAMRAPBildschirmState createState() => _AktiverAMRAPBildschirmState();
 }
 
-class AktiverAMRAPBildschirm extends StatefulWidget {
-  final List<Uebung> aktuellesWorkout;
-  final int gesamtMinuten;
-  final Map<String, int> repsMap;
-
-  const AktiverAMRAPBildschirm({super.key, required this.aktuellesWorkout, required this.gesamtMinuten, required this.repsMap});
-
-  @override
-  _AktiverAMRAPBildschirmState createState() => _AktiverAMRAPBildschirmState();
-}
-
 class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
   int _gesamtSekunden = 0;
   int _rundenZaehler = 0;
@@ -394,7 +383,6 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
     );
   }
 
-  // NEU: Kleines Info-Fenster für die Übungs-Erklärung mitten im Workout
   void _zeigeUebungsInfo(Uebung u) {
     showDialog(
       context: context,
@@ -478,11 +466,9 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
                     color: Colors.grey[900],
                     margin: const EdgeInsets.symmetric(vertical: 5),
                     child: ListTile(
-                      // Durch onTap kann die Karte nun angeklickt werden
                       onTap: () => _zeigeUebungsInfo(u),
                       leading: CircleAvatar(backgroundColor: Colors.orange[800], child: Text('${idx + 1}', style: const TextStyle(color: Colors.white))),
                       title: Text(u.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      // Kleiner visueller Hinweis, dass man für Infos draufdrücken kann
                       subtitle: const Row(
                         children: [
                           Icon(Icons.info_outline, size: 14, color: Colors.grey),
@@ -623,7 +609,6 @@ class _MediathekPageState extends State<MediathekPage> {
                         Text(u.kategorie, style: const TextStyle(color: Colors.grey)),
                         const SizedBox(height: 20),
                         
-                        // INTERAKTIVER REPS-EDITIERER
                         Container(
                           padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
@@ -637,7 +622,7 @@ class _MediathekPageState extends State<MediathekPage> {
                                     icon: const Icon(Icons.remove_circle_outline, color: Colors.orange),
                                     onPressed: () async {
                                       await _updateReps(u.name, aktuelleReps - 1);
-                                      modalState(() {}); // BottomSheet UI neu zeichnen
+                                      modalState(() {});
                                     },
                                   ),
                                   Text('$aktuelleReps', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
@@ -645,7 +630,7 @@ class _MediathekPageState extends State<MediathekPage> {
                                     icon: const Icon(Icons.add_circle_outline, color: Colors.orange),
                                     onPressed: () async {
                                       await _updateReps(u.name, aktuelleReps + 1);
-                                      modalState(() {}); // BottomSheet UI neu zeichnen
+                                      modalState(() {});
                                     },
                                   ),
                                 ],
@@ -673,7 +658,7 @@ class _MediathekPageState extends State<MediathekPage> {
                       child: CircleAvatar(
                         backgroundColor: Colors.black54,
                         child: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () {
-                          this.setState(() {}); // Hauptseite aktualisieren beim Schließen
+                          this.setState(() {});
                           Navigator.pop(context);
                         }),
                       ),
@@ -685,7 +670,7 @@ class _MediathekPageState extends State<MediathekPage> {
           }
         );
       },
-    ).then((_) => setState(() {})); // Stellt sicher, dass die Mediathek-Liste neu lädt
+    ).then((_) => setState(() {}));
   }
 }
 
