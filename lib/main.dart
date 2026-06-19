@@ -47,25 +47,26 @@ class Uebung {
     Uebung(name: 'Bulgarian Split Squat', beschreibung: 'Hinterer Fuss erhöht ablegen. Kettlebell vor der Brust. Tief absenken.', muskeln: 'Beine, Balance', kategorie: 'Unterkoerper', bildUrl: 'assets/bulgariansplitsquad.png'),
     Uebung(name: 'Reverse Lunge', beschreibung: 'Aufrechter Stand. Weiten Schritt nach hinten machen. Knie fast zum Boden.', muskeln: 'Beine, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/23/400/600'),
     Uebung(name: 'Sumo Squat', beschreibung: 'Breiter Stand, Zehen nach aussen. 3 Sek. am tiefsten Punkt halten.', muskeln: 'Adduktoren, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/24/400/600'),
-    
+     
     // 5-8: Rücken (4 Übungen)
     Uebung(name: 'Einarmiges Rudern', beschreibung: 'Vorgebeugt, einarmig die Kugel zur Huefte ziehen. Ellbogen eng am Körper.', muskeln: 'Ruecken, Bizeps', kategorie: 'Ruecken', bildUrl: 'assets/einarmigesrudern.png'),
     Uebung(name: 'Staggered Row', beschreibung: 'Versetzter Stand. Gewicht auf vorderem Bein. Einarmig rudern.', muskeln: 'Ruecken, Latissimus', kategorie: 'Ruecken', bildUrl: 'https://picsum.photos/id/26/400/600'),
     Uebung(name: 'High Pull', beschreibung: 'Explosiv aus der Huefte nach oben ziehen. Ellbogen fuehrt die Bewegung.', muskeln: 'Oberer Ruecken, Schultern', kategorie: 'Ruecken', bildUrl: 'assets/highpull.png'),
     Uebung(name: 'Suitcase Carry', beschreibung: 'Kettlebell einseitig halten. Aufrecht gehen, ohne zur Seite zu kippen.', muskeln: 'Ruecken, Griffkraft, Core', kategorie: 'Ruecken', bildUrl: 'https://picsum.photos/id/28/400/600'),
-    
+     
     // 9-12: Oberkörper (4 Übungen)
     Uebung(name: 'Overhead Press', beschreibung: 'Aus der Rack-Position gerade nach oben druecken. Core fest halten.', muskeln: 'Schultern, Trizeps', kategorie: 'Oberkoerper', bildUrl: 'assets/overheadpress.png'),
     Uebung(name: 'Push Press', beschreibung: 'Leichter Schwung aus den Beinen nutzen, um die Kugel nach oben zu druecken.', muskeln: 'Schultern, Beine', kategorie: 'Oberkoerper', bildUrl: 'https://picsum.photos/id/30/400/600'),
     Uebung(name: 'Floor Press', beschreibung: 'Auf dem Boden liegend die Kugel nach oben druecken. Ellbogen beruehrt kurz Boden.', muskeln: 'Brust, Trizeps', kategorie: 'Oberkoerper', bildUrl: 'assets/floorpress.png'),
     Uebung(name: 'Quarter Get-Up', beschreibung: 'Auf dem Ruecken, Arm gestreckt. Auf den Ellbogen aufrollen, Kugel fixieren.', muskeln: 'Schultern, Core', kategorie: 'Oberkoerper', bildUrl: 'https://picsum.photos/id/32/400/600'),
-    
+     
     // 13-16: Core (4 Übungen)
     Uebung(name: 'Russian Twist', beschreibung: 'Sitzend, Beine leicht angehoben. Kugel von links nach rechts bewegen.', muskeln: 'Schraege Bauchmuskeln', kategorie: 'Core', bildUrl: 'https://picsum.photos/id/33/400/600'),
     Uebung(name: 'Kettlebell Sit-Up', beschreibung: 'Rueckenlage, Kugel vor der Brust. Kontrolliert aufsetzen.', muskeln: 'Bauchmuskeln', kategorie: 'Core', bildUrl: 'assets/kettlebellsitup.png'),
-    Uebung(name: 'Plank Pull-Through', describe: 'In Liegestuetzposition die Kugel unter dem Körper durchziehen.', muskeln: 'Core-Stabilitaet', kategorie: 'Core', bildUrl: 'assets/plankpullthrough.png'),
+    // HIER KORRIGIERT: "describe" zu "beschreibung" geändert
+    Uebung(name: 'Plank Pull-Through', beschreibung: 'In Liegestuetzposition die Kugel unter dem Körper durchziehen.', muskeln: 'Core-Stabilitaet', kategorie: 'Core', bildUrl: 'assets/plankpullthrough.png'),
     Uebung(name: 'Dead Bug', beschreibung: 'Rueckenlage, Kugel halten. Beine abwechselnd gestreckt absenken.', muskeln: 'Tiefer Core', kategorie: 'Core', bildUrl: 'assets/deadbug.png'),
-    
+     
     // 17-19: Ganzkörper (3 Übungen)
     Uebung(name: 'Kettlebell Swing', beschreibung: 'Hüft-Scharnier Bewegung. Kugel durch den Beinschwung auf Brusthöhe bringen.', muskeln: 'Gesaess, Ruecken, Ausdauer', kategorie: 'Ganzkoerper', bildUrl: 'assets/kettlebellswing.png'),
     Uebung(name: 'Clean', beschreibung: 'Kugel explosiv vom Boden in die Rack-Position (Schulter) bringen.', muskeln: 'Ganzkoerper, Koordination', kategorie: 'Ganzkoerper', bildUrl: 'assets/clean.png'),
