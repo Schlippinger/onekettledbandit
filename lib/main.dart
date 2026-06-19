@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
+import 'package:wakelock_plus/wakelock_plus.dart'; // NEU: Paket für das Aktivhalten des Bildschirms
 
 void main() => runApp(KettlebellApp());
 
@@ -309,6 +310,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
   @override
   void initState() {
     super.initState();
+    WakelockPlus.enable(); // NEU: Aktiviert den Wakelock, wenn das Workout startet
     _starteTimer();
   }
 
@@ -358,6 +360,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
 
   @override
   void dispose() {
+    WakelockPlus.disable(); // NEU: Deaktiviert den Wakelock wieder, damit das Smartphone danach normal ausgehen kann
     _uebungsTimer?.cancel();
     super.dispose();
   }
@@ -386,7 +389,6 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
                     uebung.bildUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (c, e, s) {
-                      // Falls der doppelte Pfad fehlschlägt, versuchen wir den einfachen Pfad
                       final alternativerPfad = uebung.bildUrl.replaceFirst('assets/assets/', 'assets/');
                       return Image.asset(
                         alternativerPfad,
