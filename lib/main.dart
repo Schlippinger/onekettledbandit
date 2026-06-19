@@ -40,123 +40,123 @@ class Uebung {
 final List<Uebung> alleUebungen = [
   Uebung(
       name: 'Goblet Squat',
-      beschreibung: 'Kettlebell vor der Brust halten. Füße etwa schulterbreit. Gesäß nach hinten unten führen.',
-      muskeln: 'Oberschenkel, Gesäß, Core',
-      kategorie: 'Unterkörper',
+      beschreibung: 'Kettlebell vor der Brust halten. Fuesse etwa schulterbreit. Gesaess nach hinten unten fuehren.',
+      muskeln: 'Oberschenkel, Gesaess, Core',
+      kategorie: 'Unterkoerper',
       bildUrl: 'assets/gobletsquat.png'),
   Uebung(
       name: 'Single-Leg Deadlift',
-      beschreibung: 'Auf einem Bein stehen, das andere nach hinten anheben. Hüfte nach hinten schieben.',
-      muskeln: 'Gesäß, hintere Oberschenkel, Rücken',
-      kategorie: 'Unterkörper',
+      beschreibung: 'Auf einem Bein stehen, das andere nach hinten anheben. Huefte nach hinten schieben.',
+      muskeln: 'Gesaess, hintere Oberschenkel, Ruecken',
+      kategorie: 'Unterkoerper',
       bildUrl: 'https://picsum.photos/id/21/400/600'),
   Uebung(
       name: 'Bulgarian Split Squat',
-      beschreibung: 'Hinteren Fuß auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
-      muskeln: 'Beine, Gesäß, Gleichgewicht',
-      kategorie: 'Unterkörper',
+      beschreibung: 'Hinteren Fuss auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
+      muskeln: 'Beine, Gesaess, Gleichgewicht',
+      kategorie: 'Unterkoerper',
       bildUrl: 'assets/bulgariansplitsquad.png'),
   Uebung(
       name: 'Reverse Lunge',
-      beschreibung: 'Kettlebell vor der Brust halten. Großen Schritt nach hinten machen.',
-      muskeln: 'Beine, Gesäß, Core',
-      kategorie: 'Unterkörper',
+      beschreibung: 'Kettlebell vor der Brust halten. Grossen Schritt nach hinten machen.',
+      muskeln: 'Beine, Gesaess, Core',
+      kategorie: 'Unterkoerper',
       bildUrl: 'https://picsum.photos/id/23/400/600'),
   Uebung(
-      name: 'Sumo Squat (3s Stop)',
-      beschreibung: 'Breiter Stand, Fußspitzen nach außen. Tief absenken, 3 Sekunden halten.',
-      muskeln: 'Innenschenkel, Gesäß, Beine',
-      kategorie: 'Unterkörper',
+      name: 'Sumo Squat',
+      beschreibung: 'Breiter Stand, Fussspitzen nach aussen. Tief absenken und drei Sekunden halten.',
+      muskeln: 'Innenschenkel, Gesaess, Beine',
+      kategorie: 'Unterkoerper',
       bildUrl: 'https://picsum.photos/id/24/400/600'),
   Uebung(
       name: 'Einarmiges Rudern',
-      beschreibung: 'Hand auf Knie abstützen. Kettlebell zur Hüfte ziehen.',
-      muskeln: 'Oberer Rücken, Latissimus, Bizeps',
-      kategorie: 'Rücken',
+      beschreibung: 'Hand auf Knie abstuetzen. Kettlebell zur Huefte ziehen.',
+      muskeln: 'Oberer Ruecken, Latissimus, Bizeps',
+      kategorie: 'Ruecken',
       bildUrl: 'assets/einarmigesrudern.png'),
   Uebung(
       name: 'Staggered Row',
-      beschreibung: 'Ausfallschritt, auf Oberschenkel abstützen und einarmig zur Hüfte rudern.',
-      muskeln: 'Rücken, Core',
-      kategorie: 'Rücken',
+      beschreibung: 'Ausfallschritt, auf Oberschenkel abstuetzen und einarmig zur Huefte rudern.',
+      muskeln: 'Ruecken, Core',
+      kategorie: 'Ruecken',
       bildUrl: 'https://picsum.photos/id/26/400/600'),
   Uebung(
       name: 'High Pull',
-      beschreibung: 'Aus der Hüfte Schwung holen. Ellbogen führt nach oben/außen.',
-      muskeln: 'Rücken, Schultern, Hüfte',
-      kategorie: 'Rücken',
+      beschreibung: 'Aus der Huefte Schwung holen. Ellbogen fuehrt nach oben oder aussen.',
+      muskeln: 'Ruecken, Schultern, Huefte',
+      kategorie: 'Ruecken',
       bildUrl: 'assets/highpull.png'),
   Uebung(
       name: 'Suitcase Carry',
       beschreibung: 'Kettlebell einseitig wie einen Koffer tragen. Aufrecht gehen.',
-      muskeln: 'Rücken, Griffkraft, seitlicher Core',
-      kategorie: 'Rücken',
+      muskeln: 'Ruecken, Griffkraft, seitlicher Core',
+      kategorie: 'Ruecken',
       bildUrl: 'https://picsum.photos/id/28/400/600'),
   Uebung(
       name: 'Overhead Press',
-      beschreibung: 'Aus der Rack-Position über den Kopf drücken.',
+      beschreibung: 'Aus der Rack-Position ueber den Kopf druecken.',
       muskeln: 'Schultern, Trizeps, Core',
-      kategorie: 'Oberkörper',
+      kategorie: 'Oberkoerper',
       bildUrl: 'assets/overheadpress.png'),
   Uebung(
       name: 'Push Press',
-      beschreibung: 'Kettlebell einarmig in Rack-Position halten, durch leichten Beinschwung explosiv über den Kopf drücken.',
+      beschreibung: 'Kettlebell einarmig in Rack-Position halten, durch leichten Beinschwung explosiv ueber den Kopf druecken.',
       muskeln: 'Schultern, Trizeps, Beine, Core',
-      kategorie: 'Oberkörper',
+      kategorie: 'Oberkoerper',
       bildUrl: 'https://picsum.photos/id/30/400/600'),
   Uebung(
       name: 'Floor Press',
-      beschreibung: 'Auf dem Rücken liegen. Von der Brust nach oben drücken.',
+      beschreibung: 'Auf dem Ruecken liegen. Von der Brust nach oben druecken.',
       muskeln: 'Brust, Trizeps, Schultern',
-      kategorie: 'Oberkörper',
+      kategorie: 'Oberkoerper',
       bildUrl: 'assets/floorpress.png'),
   Uebung(
       name: 'Quarter Get-Up',
-      beschreibung: 'Rückenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
-      muskeln: 'Schulterstabilität, Core',
-      kategorie: 'Oberkörper',
+      beschreibung: 'Rueckenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
+      muskeln: 'Schulterstabilitaet, Core',
+      kategorie: 'Oberkoerper',
       bildUrl: 'https://picsum.photos/id/32/400/600'),
   Uebung(
       name: 'Russian Twist',
-      beschreibung: 'Sitzen, leicht zurücklehnen. Kettlebell von Seite zu Seite bewegen.',
-      muskeln: 'Schräge Bauchmuskeln',
+      beschreibung: 'Sitzen, leicht zuruecklehnen. Kettlebell von Seite zu Seite bewegen.',
+      muskeln: 'Schraeg Bauchmuskeln',
       kategorie: 'Core',
       bildUrl: 'https://picsum.photos/id/33/400/600'),
   Uebung(
       name: 'Kettlebell Sit-Up',
-      beschreibung: 'Rückenlage. Kettlebell vor der Brust halten. Aufrichten.',
+      beschreibung: 'Rueckenlage. Kettlebell vor der Brust halten. Aufrichten.',
       muskeln: 'Gerade Bauchmuskulatur',
       kategorie: 'Core',
       bildUrl: 'assets/kettlebellsitup.png'),
   Uebung(
       name: 'Plank Pull-Through',
-      beschreibung: 'Unterarmstütz. Kettlebell unter dem Körper auf die andere Seite ziehen.',
-      muskeln: 'Gesamte Bauchmuskulatur, Schulterstabilität',
+      beschreibung: 'Unterarmstuetz. Kettlebell unter dem Koerper auf die andere Seite ziehen.',
+      muskeln: 'Gesamte Bauchmuskulatur, Schulterstabilitaet',
       kategorie: 'Core',
       bildUrl: 'assets/plankpullthrough.png'),
   Uebung(
       name: 'Dead Bug',
-      beschreibung: 'Rückenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
+      beschreibung: 'Rueckenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
       muskeln: 'Tiefe Bauchmuskulatur',
       kategorie: 'Core',
       bildUrl: 'assets/deadbug.png'),
   Uebung(
       name: 'Kettlebell Swing',
-      beschreibung: 'Aus der Hüfte schwingen. Kugel fliegt bis auf Brusthöhe.',
-      muskeln: 'Gesäß, Rücken, Core, Kondition',
-      kategorie: 'Ganzkörper',
+      beschreibung: 'Aus der Huefte schwingen. Kugel fliegt bis auf Brusthoehe.',
+      muskeln: 'Gesaess, Ruecken, Core, Kondition',
+      kategorie: 'Ganzkoerper',
       bildUrl: 'assets/kettlebellswing.png'),
   Uebung(
       name: 'Clean',
-      beschreibung: 'Aus dem Schwung eng am Körper in die Rack-Position führen.',
-      muskeln: 'Ganzkörper, Koordination',
-      kategorie: 'Ganzkörper',
+      beschreibung: 'Aus dem Schwung eng am Koerper in die Rack-Position fuehren.',
+      muskeln: 'Ganzkoerper, Koordination',
+      kategorie: 'Ganzkoerper',
       bildUrl: 'assets/clean.png'),
   Uebung(
       name: 'Turkish Get-Up',
       beschreibung: 'Vom Liegen mit ausgestrecktem Arm schrittweise zum Stand aufstehen.',
-      muskeln: 'Gesamter Körper, Stabilität, Mobilität',
-      kategorie: 'Ganzkörper',
+      muskeln: 'Gesamter Koerper, Stabilitaet, Mobilitaet',
+      kategorie: 'Ganzkoerper',
       bildUrl: 'https://picsum.photos/id/39/400/600'),
 ];
 
@@ -212,13 +212,12 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
   void _spinSlotMachine() {
     final random = Random();
     setState(() {
-      // Sicheres Slicen der Kategorien aus der globalen Liste
       _aktuellesWorkout = [
-        alleUebungen[random.nextInt(5)],       // Unterkörper (0-4)
-        alleUebungen[5 + random.nextInt(4)],   // Rücken (5-8)
-        alleUebungen[9 + random.nextInt(4)],   // Oberkörper (9-12)
-        alleUebungen[13 + random.nextInt(4)],  // Core (13-16)
-        alleUebungen[17 + random.nextInt(3)],  // Ganzkörper (17-19)
+        alleUebungen[random.nextInt(5)],       
+        alleUebungen[5 + random.nextInt(4)],   
+        alleUebungen[9 + random.nextInt(4)],   
+        alleUebungen[13 + random.nextInt(4)],  
+        alleUebungen[17 + random.nextInt(3)],  
       ];
       _aktuellesWorkout.shuffle(random);
     });
@@ -344,7 +343,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
       barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Text('🎉 Gratulation!'),
-        content: Text('Du hast das 30-minütige Kettlebell-Workout beendet!'),
+        content: Text('Du hast das 30-minuetige Kettlebell-Workout beendet!'),
         actions: [
           TextButton(
               onPressed: () {
@@ -388,7 +387,6 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
                     uebung.bildUrl,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      // Fallback falls der Pfad doch unerwartet modifiziert wurde
                       final altPfad = uebung.bildUrl.startsWith('assets/') ? uebung.bildUrl : 'assets/${uebung.bildUrl}';
                       return Image.asset(
                         altPfad,
@@ -420,7 +418,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('ÜBUNG ${_aktuelleUebungIndex + 1} VON 5',
+                      Text('UEBUNG ${_aktuelleUebungIndex + 1} VON 5',
                           style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
                       Text('Gesamt: $_abgelaufeneGesamtMinuten/30 Min', style: TextStyle(color: Colors.white)),
                     ],
@@ -482,7 +480,7 @@ class _MediathekPageState extends State<MediathekPage> {
   String _ausgewaehlterFilter = 'Alle';
   String _ausgewaehlteSortierung = 'Alphabetisch (A-Z)';
 
-  final List<String> _kategorien = ['Alle', 'Unterkörper', 'Rücken', 'Oberkörper', 'Core', 'Ganzkörper'];
+  final List<String> _kategorien = ['Alle', 'Unterkoerper', 'Ruecken', 'Oberkoerper', 'Core', 'Ganzkoerper'];
   final List<String> _sortierOptionen = ['Alphabetisch (A-Z)', 'Nach Muskelgruppe'];
 
   @override
@@ -499,7 +497,7 @@ class _MediathekPageState extends State<MediathekPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text('📚 Übungs-Mediathek'), backgroundColor: Colors.black),
+      appBar: AppBar(title: Text('📚 Uebungs-Mediathek'), backgroundColor: Colors.black),
       body: Column(
         children: [
           Container(
@@ -541,7 +539,7 @@ class _MediathekPageState extends State<MediathekPage> {
           ),
           Expanded(
             child: gefilterteListe.isEmpty
-                ? Center(child: Text('Keine Übungen für diesen Filter gefunden.', style: TextStyle(color: Colors.grey)))
+                ? Center(child: Text('Keine Uebungen fuer diesen Filter gefunden.', style: TextStyle(color: Colors.grey)))
                 : ListView.builder(
                     itemCount: gefilterteListe.length,
                     itemBuilder: (context, index) {
@@ -625,7 +623,7 @@ class _MediathekPageState extends State<MediathekPage> {
                                                     ),
                                             ),
                                             SizedBox(height: 25),
-                                            Text('Ausführung:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
+                                            Text('Ausfuehrung:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
                                             SizedBox(height: 8),
                                             Text(uebung.beschreibung, style: TextStyle(fontSize: 16, height: 1.5, color: Colors.grey[200])),
                                             SizedBox(height: 40),
@@ -703,7 +701,7 @@ class StatistikPage extends StatelessWidget {
               ],
             ),
             SizedBox(height: 25),
-            Text('Häufigkeit der Übungen:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Haeufigkeit der Uebungen:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 10),
             Expanded(
               child: uebungsZaehler.isEmpty
