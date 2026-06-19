@@ -344,6 +344,17 @@ class AktiverAMRAPBildschirm extends StatefulWidget {
   _AktiverAMRAPBildschirmState createState() => _AktiverAMRAPBildschirmState();
 }
 
+class AktiverAMRAPBildschirm extends StatefulWidget {
+  final List<Uebung> aktuellesWorkout;
+  final int gesamtMinuten;
+  final Map<String, int> repsMap;
+
+  const AktiverAMRAPBildschirm({super.key, required this.aktuellesWorkout, required this.gesamtMinuten, required this.repsMap});
+
+  @override
+  _AktiverAMRAPBildschirmState createState() => _AktiverAMRAPBildschirmState();
+}
+
 class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
   int _gesamtSekunden = 0;
   int _rundenZaehler = 0;
@@ -362,7 +373,6 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
         setState(() {
           statistikGesamtMinuten += widget.gesamtMinuten;
           statistikAnzahlWorkouts++;
-          // Jede Übung im Set kriegt statistisch die Runden gutgeschrieben
           for (var u in widget.aktuellesWorkout) {
             uebungsZaehler[u.name] = (uebungsZaehler[u.name] ?? 0) + _rundenZaehler;
           }
@@ -381,6 +391,43 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
         content: Text('Hervorragend! Du hast in ${widget.gesamtMinuten} Minuten stolze $_rundenZaehler Runden geschafft!'), 
         actions: [TextButton(onPressed: () { Navigator.pop(context); Navigator.pop(context); }, child: const Text('Wahnsinn!'))]
       )
+    );
+  }
+
+  // NEU: Kleines Info-Fenster für die Übungs-Erklärung mitten im Workout
+  void _zeigeUebungsInfo(Uebung u) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: Colors.grey[950],
+        title: Text(u.name, style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                u.bildUrl, 
+                height: 180, 
+                fit: BoxFit.contain, 
+                errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 80, color: Colors.orange)
+              ),
+            ),
+            const SizedBox(height: 15),
+            Text(
+              u.beschreibung, 
+              textAlign: TextAlign.center, 
+              style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4)
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Zurück zum Workout ↩️', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+          )
+        ],
+      ),
     );
   }
 
@@ -431,8 +478,18 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
                     color: Colors.grey[900],
                     margin: const EdgeInsets.symmetric(vertical: 5),
                     child: ListTile(
+                      // Durch onTap kann die Karte nun angeklickt werden
+                      onTap: () => _zeigeUebungsInfo(u),
                       leading: CircleAvatar(backgroundColor: Colors.orange[800], child: Text('${idx + 1}', style: const TextStyle(color: Colors.white))),
                       title: Text(u.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      // Kleiner visueller Hinweis, dass man für Infos draufdrücken kann
+                      subtitle: const Row(
+                        children: [
+                          Icon(Icons.info_outline, size: 14, color: Colors.grey),
+                          SizedBox(width: 4),
+                          Text('Anleitung zeigen', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                        ],
+                      ),
                       trailing: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                         decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(10)),
@@ -462,7 +519,7 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
                         setState(() => _rundenZaehler++);
                       },
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.green[700], padding: const EdgeInsets.symmetric(vertical: 20)),
-                      child: Text('RUNDEN-ZÄHLER (+1) 🏁', style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
+                      child: const Text('RUNDEN-ZÄHLER (+1) 🏁', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
