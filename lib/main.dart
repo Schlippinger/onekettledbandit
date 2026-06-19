@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:async';
-import 'package:wakelock_plus/wakelock_plus.dart'; // NEU: Paket für das Aktivhalten des Bildschirms
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 void main() => runApp(KettlebellApp());
 
@@ -310,7 +310,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
   @override
   void initState() {
     super.initState();
-    WakelockPlus.enable(); // NEU: Aktiviert den Wakelock, wenn das Workout startet
+    WakelockPlus.enable();
     _starteTimer();
   }
 
@@ -360,7 +360,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
 
   @override
   void dispose() {
-    WakelockPlus.disable(); // NEU: Deaktiviert den Wakelock wieder, damit das Smartphone danach normal ausgehen kann
+    WakelockPlus.disable();
     _uebungsTimer?.cancel();
     super.dispose();
   }
@@ -413,7 +413,7 @@ class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
           ),
           SafeArea(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              cross CrossAxisAlignment.stretch,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -558,43 +558,99 @@ class _MediathekPageState extends State<MediathekPage> {
                           onTap: () {
                             showModalBottomSheet(
                               context: context,
-                              backgroundColor: Colors.grey[950],
-                              builder: (context) => Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: SingleChildScrollView(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                              isScrollControlled: true, // NEU: Ermöglicht Fullscreen-Höhe
+                              backgroundColor: Colors.transparent, // Macht Ecken-Abrundung sauberer
+                              builder: (context) => DraggableScrollableSheet(
+                                initialChildSize: 0.95, // Startet fast auf Vollbild
+                                minChildSize: 0.5,     // Kann bis zur Hälfte runtergezogen werden, bevor es schließt
+                                maxChildSize: 1.0,     // Kann komplett auf Vollbild gezogen werden
+                                expand: false,
+                                builder: (context, scrollController) => Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey[950],
+                                    borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                                  ),
+                                  child: Stack(
                                     children: [
-                                      Text(uebung.name, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.orange)),
-                                      SizedBox(height: 5),
-                                      Text('Kategorie: ${uebung.kategorie}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)),
-                                      Text('Fokus: ${uebung.muskeln}', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
-                                      Divider(color: Colors.grey),
-                                      if (!uebung.bildUrl.startsWith('http')) ...[
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(8),
-                                          child: Image.asset(
-                                            uebung.bildUrl,
-                                            height: 200,
-                                            width: double.infinity,
-                                            fit: BoxFit.cover,
-                                            errorBuilder: (c, e, s) {
-                                              final altPfad = uebung.bildUrl.replaceFirst('assets/assets/', 'assets/');
-                                              return Image.asset(
-                                                altPfad,
-                                                height: 200,
-                                                width: double.infinity,
-                                                fit: BoxFit.cover,
-                                                errorBuilder: (context, error, stackTrace) => Container(),
-                                              );
-                                            },
+                                      // Der scrollbare Inhalt der Übung
+                                      SingleChildScrollView(
+                                        controller: scrollController,
+                                        padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            // Kleine visuelle "Drag-Handle" Leiste ganz oben
+                                            Center(
+                                              child: Container(
+                                                width: 40,
+                                                height: 5,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.grey[700],
+                                                  borderRadius: BorderRadius.circular(10),
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(height: 20),
+                                            
+                                            // Übungsname (Rechts Platz lassen fürs X)
+                                            Padding(
+                                              padding: const EdgeInsets.right(40.0),
+                                              child: Text(
+                                                uebung.name, 
+                                                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.orange)
+                                              ),
+                                            ),
+                                            SizedBox(height: 5),
+                                            Text('Kategorie: ${uebung.kategorie}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white70)),
+                                            Text('Fokus: ${uebung.muskeln}', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey)),
+                                            Divider(color: Colors.grey, height: 25),
+                                            
+                                            // Das Übungsbild (wird jetzt groß und bildschirmfüllend skaliert)
+                                            ClipRRect(
+                                              borderRadius: BorderRadius.circular(12),
+                                              child: uebung.bildUrl.startsWith('http')
+                                                  ? Image.network(
+                                                      uebung.bildUrl,
+                                                      width: double.infinity,
+                                                      fit: BoxFit.contain,
+                                                      errorBuilder: (c, e, s) => Container(),
+                                                    )
+                                                  : Image.asset(
+                                                      uebung.bildUrl,
+                                                      width: double.infinity,
+                                                      fit: BoxFit.contain,
+                                                      errorBuilder: (c, e, s) {
+                                                        final altPfad = uebung.bildUrl.replaceFirst('assets/assets/', 'assets/');
+                                                        return Image.asset(
+                                                          altPfad,
+                                                          width: double.infinity,
+                                                          fit: BoxFit.contain,
+                                                          errorBuilder: (context, error, stackTrace) => Container(),
+                                                        );
+                                                      },
+                                                    ),
+                                            ),
+                                            SizedBox(height: 25),
+                                            Text('Ausführung:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.orange)),
+                                            SizedBox(height: 8),
+                                            Text(uebung.beschreibung, style: TextStyle(fontSize: 16, height: 1.5, color: Colors.grey[200])),
+                                            SizedBox(height: 40), // Puffer nach unten
+                                          ],
+                                        ),
+                                      ),
+                                      
+                                      // NEU: Fest verankertes Schließen-X oben rechts
+                                      Positioned(
+                                        top: 15,
+                                        right: 15,
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.grey[900]?.withOpacity(0.8),
+                                          child: IconButton(
+                                            icon: Icon(Icons.close, color: Colors.white),
+                                            onPressed: () => Navigator.pop(context),
                                           ),
                                         ),
-                                        SizedBox(height: 15),
-                                      ],
-                                      Text('Ausführung:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                      SizedBox(height: 5),
-                                      Text(uebung.beschreibung, style: TextStyle(fontSize: 15, height: 1.4)),
+                                      ),
                                     ],
                                   ),
                                 ),
