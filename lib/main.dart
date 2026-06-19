@@ -27,138 +27,138 @@ class Uebung {
   final String kategorie;
   final String bildUrl;
 
-  Uebung({
+  const Uebung({
     required this.name,
     required this.beschreibung,
     required this.muskeln,
     required this.kategorie,
     required this.bildUrl,
   });
-}
 
-// Globale Listen und Statistiken
-final List<Uebung> alleUebungen = [
-  Uebung(
-      name: 'Goblet Squat',
-      beschreibung: 'Kettlebell vor der Brust halten. Fuesse etwa schulterbreit. Gesaess nach hinten unten fuehren.',
-      muskeln: 'Oberschenkel, Gesaess, Core',
-      kategorie: 'Unterkoerper',
-      bildUrl: 'assets/gobletsquat.png'),
-  Uebung(
-      name: 'Single-Leg Deadlift',
-      beschreibung: 'Auf einem Bein stehen, das andere nach hinten anheben. Huefte nach hinten schieben.',
-      muskeln: 'Gesaess, hintere Oberschenkel, Ruecken',
-      kategorie: 'Unterkoerper',
-      bildUrl: 'https://picsum.photos/id/21/400/600'),
-  Uebung(
-      name: 'Bulgarian Split Squat',
-      beschreibung: 'Hinteren Fuss auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
-      muskeln: 'Beine, Gesaess, Gleichgewicht',
-      kategorie: 'Unterkoerper',
-      bildUrl: 'assets/bulgariansplitsquad.png'),
-  Uebung(
-      name: 'Reverse Lunge',
-      beschreibung: 'Kettlebell vor der Brust halten. Grossen Schritt nach hinten machen.',
-      muskeln: 'Beine, Gesaess, Core',
-      kategorie: 'Unterkoerper',
-      bildUrl: 'https://picsum.photos/id/23/400/600'),
-  Uebung(
-      name: 'Sumo Squat',
-      beschreibung: 'Breiter Stand, Fussspitzen nach aussen. Tief absenken und drei Sekunden halten.',
-      muskeln: 'Innenschenkel, Gesaess, Beine',
-      kategorie: 'Unterkoerper',
-      bildUrl: 'https://picsum.photos/id/24/400/600'),
-  Uebung(
-      name: 'Einarmiges Rudern',
-      beschreibung: 'Hand auf Knie abstuetzen. Kettlebell zur Huefte ziehen.',
-      muskeln: 'Oberer Ruecken, Latissimus, Bizeps',
-      kategorie: 'Ruecken',
-      bildUrl: 'assets/einarmigesrudern.png'),
-  Uebung(
-      name: 'Staggered Row',
-      beschreibung: 'Ausfallschritt, auf Oberschenkel abstuetzen und einarmig zur Huefte rudern.',
-      muskeln: 'Ruecken, Core',
-      kategorie: 'Ruecken',
-      bildUrl: 'https://picsum.photos/id/26/400/600'),
-  Uebung(
-      name: 'High Pull',
-      beschreibung: 'Aus der Huefte Schwung holen. Ellbogen fuehrt nach oben oder aussen.',
-      muskeln: 'Ruecken, Schultern, Huefte',
-      kategorie: 'Ruecken',
-      bildUrl: 'assets/highpull.png'),
-  Uebung(
-      name: 'Suitcase Carry',
-      beschreibung: 'Kettlebell einseitig wie einen Koffer tragen. Aufrecht gehen.',
-      muskeln: 'Ruecken, Griffkraft, seitlicher Core',
-      kategorie: 'Ruecken',
-      bildUrl: 'https://picsum.photos/id/28/400/600'),
-  Uebung(
-      name: 'Overhead Press',
-      beschreibung: 'Aus der Rack-Position ueber den Kopf druecken.',
-      muskeln: 'Schultern, Trizeps, Core',
-      kategorie: 'Oberkoerper',
-      bildUrl: 'assets/overheadpress.png'),
-  Uebung(
-      name: 'Push Press',
-      beschreibung: 'Kettlebell einarmig in Rack-Position halten, durch leichten Beinschwung explosiv ueber den Kopf druecken.',
-      muskeln: 'Schultern, Trizeps, Beine, Core',
-      kategorie: 'Oberkoerper',
-      bildUrl: 'https://picsum.photos/id/30/400/600'),
-  Uebung(
-      name: 'Floor Press',
-      beschreibung: 'Auf dem Ruecken liegen. Von der Brust nach oben druecken.',
-      muskeln: 'Brust, Trizeps, Schultern',
-      kategorie: 'Oberkoerper',
-      bildUrl: 'assets/floorpress.png'),
-  Uebung(
-      name: 'Quarter Get-Up',
-      beschreibung: 'Rueckenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
-      muskeln: 'Schulterstabilitaet, Core',
-      kategorie: 'Oberkoerper',
-      bildUrl: 'https://picsum.photos/id/32/400/600'),
-  Uebung(
-      name: 'Russian Twist',
-      beschreibung: 'Sitzen, leicht zuruecklehnen. Kettlebell von Seite zu Seite bewegen.',
-      muskeln: 'Schraeg Bauchmuskeln',
-      kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/33/400/600'),
-  Uebung(
-      name: 'Kettlebell Sit-Up',
-      beschreibung: 'Rueckenlage. Kettlebell vor der Brust halten. Aufrichten.',
-      muskeln: 'Gerade Bauchmuskulatur',
-      kategorie: 'Core',
-      bildUrl: 'assets/kettlebellsitup.png'),
-  Uebung(
-      name: 'Plank Pull-Through',
-      beschreibung: 'Unterarmstuetz. Kettlebell unter dem Koerper auf die andere Seite ziehen.',
-      muskeln: 'Gesamte Bauchmuskulatur, Schulterstabilitaet',
-      kategorie: 'Core',
-      bildUrl: 'assets/plankpullthrough.png'),
-  Uebung(
-      name: 'Dead Bug',
-      beschreibung: 'Rueckenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
-      muskeln: 'Tiefe Bauchmuskulatur',
-      kategorie: 'Core',
-      bildUrl: 'assets/deadbug.png'),
-  Uebung(
-      name: 'Kettlebell Swing',
-      beschreibung: 'Aus der Huefte schwingen. Kugel fliegt bis auf Brusthoehe.',
-      muskeln: 'Gesaess, Ruecken, Core, Kondition',
-      kategorie: 'Ganzkoerper',
-      bildUrl: 'assets/kettlebellswing.png'),
-  Uebung(
-      name: 'Clean',
-      beschreibung: 'Aus dem Schwung eng am Koerper in die Rack-Position fuehren.',
-      muskeln: 'Ganzkoerper, Koordination',
-      kategorie: 'Ganzkoerper',
-      bildUrl: 'assets/clean.png'),
-  Uebung(
-      name: 'Turkish Get-Up',
-      beschreibung: 'Vom Liegen mit ausgestrecktem Arm schrittweise zum Stand aufstehen.',
-      muskeln: 'Gesamter Koerper, Stabilitaet, Mobilitaet',
-      kategorie: 'Ganzkoerper',
-      bildUrl: 'https://picsum.photos/id/39/400/600'),
-];
+  // Hier als statische Liste innerhalb der Klasse, um Compiler-Scope-Fehler zu vermeiden
+  static const List<Uebung> alleUebungen = [
+    Uebung(
+        name: 'Goblet Squat',
+        beschreibung: 'Kettlebell vor der Brust halten. Fuesse etwa schulterbreit. Gesaess nach hinten unten fuehren.',
+        muskeln: 'Oberschenkel, Gesaess, Core',
+        kategorie: 'Unterkoerper',
+        bildUrl: 'assets/gobletsquat.png'),
+    Uebung(
+        name: 'Single-Leg Deadlift',
+        beschreibung: 'Auf einem Bein stehen, das andere nach hinten anheben. Huefte nach hinten schieben.',
+        muskeln: 'Gesaess, hintere Oberschenkel, Ruecken',
+        kategorie: 'Unterkoerper',
+        bildUrl: 'https://picsum.photos/id/21/400/600'),
+    Uebung(
+        name: 'Bulgarian Split Squat',
+        beschreibung: 'Hinteren Fuss auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
+        muskeln: 'Beine, Gesaess, Gleichgewicht',
+        kategorie: 'Unterkoerper',
+        bildUrl: 'assets/bulgariansplitsquad.png'),
+    Uebung(
+        name: 'Reverse Lunge',
+        beschreibung: 'Kettlebell vor der Brust halten. Grossen Schritt nach hinten machen.',
+        muskeln: 'Beine, Gesaess, Core',
+        kategorie: 'Unterkoerper',
+        bildUrl: 'https://picsum.photos/id/23/400/600'),
+    Uebung(
+        name: 'Sumo Squat',
+        beschreibung: 'Breiter Stand, Fussspitzen nach aussen. Tief absenken und drei Sekunden halten.',
+        muskeln: 'Innenschenkel, Gesaess, Beine',
+        kategorie: 'Unterkoerper',
+        bildUrl: 'https://picsum.photos/id/24/400/600'),
+    Uebung(
+        name: 'Einarmiges Rudern',
+        beschreibung: 'Hand auf Knie abstuetzen. Kettlebell zur Huefte ziehen.',
+        muskeln: 'Oberer Ruecken, Latissimus, Bizeps',
+        kategorie: 'Ruecken',
+        bildUrl: 'assets/einarmigesrudern.png'),
+    Uebung(
+        name: 'Staggered Row',
+        beschreibung: 'Ausfallschritt, auf Oberschenkel abstuetzen und einarmig zur Huefte rudern.',
+        muskeln: 'Ruecken, Core',
+        kategorie: 'Ruecken',
+        bildUrl: 'https://picsum.photos/id/26/400/600'),
+    Uebung(
+        name: 'High Pull',
+        beschreibung: 'Aus der Huefte Schwung holen. Ellbogen fuehrt nach oben oder aussen.',
+        muskeln: 'Ruecken, Schultern, Huefte',
+        kategorie: 'Ruecken',
+        bildUrl: 'assets/highpull.png'),
+    Uebung(
+        name: 'Suitcase Carry',
+        beschreibung: 'Kettlebell einseitig wie einen Koffer tragen. Aufrecht gehen.',
+        muskeln: 'Ruecken, Griffkraft, seitlicher Core',
+        kategorie: 'Ruecken',
+        bildUrl: 'https://picsum.photos/id/28/400/600'),
+    Uebung(
+        name: 'Overhead Press',
+        beschreibung: 'Aus der Rack-Position ueber den Kopf druecken.',
+        muskeln: 'Schultern, Trizeps, Core',
+        kategorie: 'Oberkoerper',
+        bildUrl: 'assets/overheadpress.png'),
+    Uebung(
+        name: 'Push Press',
+        beschreibung: 'Kettlebell einarmig in Rack-Position halten, durch leichten Beinschwung explosiv ueber den Kopf druecken.',
+        muskeln: 'Schultern, Trizeps, Beine, Core',
+        kategorie: 'Oberkoerper',
+        bildUrl: 'https://picsum.photos/id/30/400/600'),
+    Uebung(
+        name: 'Floor Press',
+        beschreibung: 'Auf dem Ruecken liegen. Von der Brust nach oben druecken.',
+        muskeln: 'Brust, Trizeps, Schultern',
+        kategorie: 'Oberkoerper',
+        bildUrl: 'assets/floorpress.png'),
+    Uebung(
+        name: 'Quarter Get-Up',
+        beschreibung: 'Rueckenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
+        muskeln: 'Schulterstabilitaet, Core',
+        kategorie: 'Oberkoerper',
+        bildUrl: 'https://picsum.photos/id/32/400/600'),
+    Uebung(
+        name: 'Russian Twist',
+        beschreibung: 'Sitzen, leicht zuruecklehnen. Kettlebell von Seite zu Seite bewegen.',
+        muskeln: 'Schraeg Bauchmuskeln',
+        kategorie: 'Core',
+        bildUrl: 'https://picsum.photos/id/33/400/600'),
+    Uebung(
+        name: 'Kettlebell Sit-Up',
+        beschreibung: 'Rueckenlage. Kettlebell vor der Brust halten. Aufrichten.',
+        muskeln: 'Gerade Bauchmuskulatur',
+        kategorie: 'Core',
+        bildUrl: 'assets/kettlebellsitup.png'),
+    Uebung(
+        name: 'Plank Pull-Through',
+        beschreibung: 'Unterarmstuetz. Kettlebell unter dem Koerper auf die andere Seite ziehen.',
+        muskeln: 'Gesamte Bauchmuskulatur, Schulterstabilitaet',
+        kategorie: 'Core',
+        bildUrl: 'assets/plankpullthrough.png'),
+    Uebung(
+        name: 'Dead Bug',
+        beschreibung: 'Rueckenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
+        muskeln: 'Tiefe Bauchmuskulatur',
+        kategorie: 'Core',
+        bildUrl: 'assets/deadbug.png'),
+    Uebung(
+        name: 'Kettlebell Swing',
+        beschreibung: 'Aus der Huefte schwingen. Kugel fliegt bis auf Brusthoehe.',
+        muskeln: 'Gesaess, Ruecken, Core, Kondition',
+        kategorie: 'Ganzkoerper',
+        bildUrl: 'assets/kettlebellswing.png'),
+    Uebung(
+        name: 'Clean',
+        beschreibung: 'Aus dem Schwung eng am Koerper in die Rack-Position fuehren.',
+        muskeln: 'Ganzkoerper, Koordination',
+        kategorie: 'Ganzkoerper',
+        bildUrl: 'assets/clean.png'),
+    Uebung(
+        name: 'Turkish Get-Up',
+        beschreibung: 'Vom Liegen mit ausgestrecktem Arm schrittweise zum Stand aufstehen.',
+        muskeln: 'Gesamter Koerper, Stabilitaet, Mobilitaet',
+        kategorie: 'Ganzkoerper',
+        bildUrl: 'https://picsum.photos/id/39/400/600'),
+  ];
+}
 
 int statistikGesamtMinuten = 0;
 int statistikAnzahlWorkouts = 0;
@@ -213,11 +213,11 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
     final random = Random();
     setState(() {
       _aktuellesWorkout = [
-        alleUebungen[random.nextInt(5)],       
-        alleUebungen[5 + random.nextInt(4)],   
-        alleUebungen[9 + random.nextInt(4)],   
-        alleUebungen[13 + random.nextInt(4)],  
-        alleUebungen[17 + random.nextInt(3)],  
+        Uebung.alleUebungen[random.nextInt(5)],       
+        Uebung.alleUebungen[5 + random.nextInt(4)],   
+        Uebung.alleUebungen[9 + random.nextInt(4)],   
+        Uebung.alleUebungen[13 + random.nextInt(4)],  
+        Uebung.alleUebungen[17 + random.nextInt(3)],  
       ];
       _aktuellesWorkout.shuffle(random);
     });
@@ -485,7 +485,7 @@ class _MediathekPageState extends State<MediathekPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Uebung> gefilterteListe = alleUebungen.where((uebung) {
+    List<Uebung> gefilterteListe = Uebung.alleUebungen.where((uebung) {
       if (_ausgewaehlterFilter == 'Alle') return true;
       return uebung.kategorie == _ausgewaehlterFilter;
     }).toList();
