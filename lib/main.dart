@@ -44,41 +44,163 @@ class Uebung {
   });
 
   static const List<Uebung> alleUebungen = [
-    // 0-4: Unterkörper (5 Übungen)
     Uebung(name: 'Goblet Squat', beschreibung: 'Kettlebell vor der Brust halten. Fuesse schulterbreit. Gesaess nach hinten absenken.', muskeln: 'Oberschenkel, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'assets/gobletsquat.png', standardWiederholungen: 10),
     Uebung(name: 'Single-Leg Deadlift', beschreibung: 'Einbeinig stehen, Huefte nach hinten schieben, Kettlebell kontrolliert senken.', muskeln: 'Beinrueckseite, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/21/400/600', standardWiederholungen: 8),
     Uebung(name: 'Bulgarian Split Squat', beschreibung: 'Hinterer Fuss erhöht ablegen. Kettlebell vor der Brust. Tief absenken.', muskeln: 'Beine, Balance', kategorie: 'Unterkoerper', bildUrl: 'assets/bulgariansplitsquad.png', standardWiederholungen: 8),
     Uebung(name: 'Reverse Lunge', beschreibung: 'Aufrechter Stand. Weiten Schritt nach hinten machen. Knie fast zum Boden.', muskeln: 'Beine, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/23/400/600', standardWiederholungen: 10),
     Uebung(name: 'Sumo Squat', beschreibung: 'Breiter Stand, Zehen nach aussen. 3 Sek. am tiefsten Punkt halten.', muskeln: 'Adduktoren, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/24/400/600', standardWiederholungen: 12),
-     
-    // 5-8: Rücken (4 Übungen)
     Uebung(name: 'Einarmiges Rudern', beschreibung: 'Vorgebeugt, einarmig die Kugel zur Huefte ziehen. Ellbogen eng am Körper.', muskeln: 'Ruecken, Bizeps', kategorie: 'Ruecken', bildUrl: 'assets/einarmigesrudern.png', standardWiederholungen: 8),
     Uebung(name: 'Staggered Row', beschreibung: 'Versetzter Stand. Gewicht auf vorderem Bein. Einarmig rudern.', muskeln: 'Ruecken, Latissimus', kategorie: 'Ruecken', bildUrl: 'https://picsum.photos/id/26/400/600', standardWiederholungen: 8),
     Uebung(name: 'High Pull', beschreibung: 'Explosiv aus der Huefte nach oben ziehen. Ellbogen fuehrt die Bewegung.', muskeln: 'Oberer Ruecken, Schultern', kategorie: 'Ruecken', bildUrl: 'assets/highpull.png', standardWiederholungen: 10),
     Uebung(name: 'Suitcase Carry', beschreibung: 'Kettlebell einseitig halten. Aufrecht gehen, ohne zur Seite zu kippen.', muskeln: 'Ruecken, Griffkraft, Core', kategorie: 'Ruecken', bildUrl: 'https://picsum.photos/id/28/400/600', standardWiederholungen: 1),
-     
-    // 9-12: Oberkörper (4 Übungen)
     Uebung(name: 'Overhead Press', beschreibung: 'Aus der Rack-Position gerade nach oben druecken. Core fest halten.', muskeln: 'Schultern, Trizeps', kategorie: 'Oberkoerper', bildUrl: 'assets/overheadpress.png', standardWiederholungen: 6),
     Uebung(name: 'Push Press', beschreibung: 'Leichter Schwung aus den Beinen nutzen, um die Kugel nach oben zu druecken.', muskeln: 'Schultern, Beine', kategorie: 'Oberkoerper', bildUrl: 'https://picsum.photos/id/30/400/600', standardWiederholungen: 8),
     Uebung(name: 'Floor Press', beschreibung: 'Auf dem Boden liegend die Kugel nach oben druecken. Ellbogen beruehrt kurz Boden.', muskeln: 'Brust, Trizeps', kategorie: 'Oberkoerper', bildUrl: 'assets/floorpress.png', standardWiederholungen: 10),
     Uebung(name: 'Quarter Get-Up', beschreibung: 'Auf dem Ruecken, Arm gestreckt. Auf den Ellbogen aufrollen, Kugel fixieren.', muskeln: 'Schultern, Core', kategorie: 'Oberkoerper', bildUrl: 'https://picsum.photos/id/32/400/600', standardWiederholungen: 5),
-     
-    // 13-16: Core (4 Übungen)
     Uebung(name: 'Russian Twist', beschreibung: 'Sitzend, Beine leicht angehoben. Kugel von links nach rechts bewegen.', muskeln: 'Schraege Bauchmuskeln', kategorie: 'Core', bildUrl: 'https://picsum.photos/id/33/400/600', standardWiederholungen: 16),
     Uebung(name: 'Kettlebell Sit-Up', beschreibung: 'Rueckenlage, Kugel vor der Brust. Kontrolliert aufsetzen.', muskeln: 'Bauchmuskeln', kategorie: 'Core', bildUrl: 'assets/kettlebellsitup.png', standardWiederholungen: 10),
     Uebung(name: 'Plank Pull-Through', beschreibung: 'In Liegestuetzposition die Kugel unter dem Körper durchziehen.', muskeln: 'Core-Stabilitaet', kategorie: 'Core', bildUrl: 'assets/plankpullthrough.png', standardWiederholungen: 10),
     Uebung(name: 'Dead Bug', beschreibung: 'Rueckenlage, Kugel halten. Beine abwechselnd gestreckt absenken.', muskeln: 'Tiefer Core', kategorie: 'Core', bildUrl: 'assets/deadbug.png', standardWiederholungen: 10),
-     
-    // 17-19: Ganzkörper (3 Übungen)
     Uebung(name: 'Kettlebell Swing', beschreibung: 'Hüft-Scharnier Bewegung. Kugel durch den Beinschwung auf Brusthöhe bringen.', muskeln: 'Gesaess, Ruecken, Ausdauer', kategorie: 'Ganzkoerper', bildUrl: 'assets/kettlebellswing.png', standardWiederholungen: 15),
     Uebung(name: 'Clean', beschreibung: 'Kugel explosiv vom Boden in die Rack-Position (Schulter) bringen.', muskeln: 'Ganzkoerper, Koordination', kategorie: 'Ganzkoerper', bildUrl: 'assets/clean.png', standardWiederholungen: 10),
     Uebung(name: 'Turkish Get-Up', beschreibung: 'Vom Liegen zum Stand aufstehen, waehrend die Kugel ueber Kopf gehalten wird.', muskeln: 'Ganzkoerper, Stabilitaet', kategorie: 'Ganzkoerper', bildUrl: 'https://picsum.photos/id/39/400/600', standardWiederholungen: 3),
   ];
 }
 
-int statistikGesamtMinuten = 0;
-int statistikAnzahlWorkouts = 0;
-Map<String, int> uebungsZaehler = {};
+// Globale Gamification-Verwaltung (wird persistiert)
+class GamificationManager {
+  static int xp = 0;
+  static int gesamtMinuten = 0;
+  static int gesamtWorkouts = 0;
+  static int amrapHighscoreRunden = 0;
+  static int streakWochen = 0;
+  
+  // Interne Variablen zur Berechnung des wöchentlichen Streaks
+  static int workoutsDieseWoche = 0;
+  static int letzteWocheJahr = 0; // Format: YYYYWW (z.B. 202625)
+
+  static const List<String> levelNamen = [
+    'Rostige Kugel 🥉', 'Kettlebell-Neuling 🪵', 'Eisen-Anfänger 🏋️', 'Kugel-Symphat異', 'Schwung-Lehrling 🌀',
+    'Zirkel-Freund 🔄', 'Bronze-Athlet 🥉', 'Ausdauer-Sammler ⏱️', 'Schweiß-Krieger 💦', 'Gusseisen-Herz 🔥',
+    'Kettlebell-Bandit 👑', 'Stahl-Muskel 💪', 'Silber-Ritter 🥈', 'Ganzkörper-Meister 🏆', 'Rep-Maschine 🤖',
+    'Takt-Halter ⏱️', 'Power-Generator ⚡', 'Kugel-Flüsterer 🤫', 'Gold-Krieger 🥇', 'Schwerkraft-Trotzer 🚀',
+    'Meister des Swings 🌪️', 'Unaufhaltsam 🚄', 'Titanium-Body 💎', 'Kettlebell-Legende 🌌', 'Gott des Eisens 🪐'
+  ];
+
+  static Map<String, dynamic> getLevelInfo() {
+    int aktuellesLevel = 1;
+    int verbleibendeXp = xp;
+    int benoetigteXpFuerNaechstes = 200;
+
+    for (int l = 1; l <= 25; l++) {
+      int kosten = l * 200;
+      if (verbleibendeXp >= kosten) {
+        verbleibendeXp -= kosten;
+        aktuellesLevel = l + 1;
+      } else {
+        benoetigteXpFuerNaechstes = kosten;
+        break;
+      }
+    }
+    if (aktuellesLevel > 25) {
+      aktuellesLevel = 25;
+      benoetigteXpFuerNaechstes = xp; // Max Level erreicht
+    }
+
+    String name = levelNamen[min(aktuellesLevel - 1, 24)];
+    return {
+      'level': aktuellesLevel,
+      'name': name,
+      'xpImLevel': verbleibendeXp,
+      'benoetigteXp': benoetigteXpFuerNaechstes,
+      'fortschritt': min(1.0, verbleibendeXp / benoetigteXpFuerNaechstes)
+    };
+  }
+
+  static int getKW(DateTime date) {
+    // Einfache ISO-Wochennummer-Berechnung
+    final dayTarget = DateTime(date.year, date.month, date.day - (date.weekday - 1) + 3);
+    final firstThursday = DateTime(dayTarget.year, 1, 4);
+    final firstThursdayTarget = DateTime(firstThursday.year, firstThursday.month, firstThursday.day - (firstThursday.weekday - 1) + 3);
+    final weekNum = ((dayTarget.difference(firstThursdayTarget).inDays / 7).floor()) + 1;
+    return date.year * 100 + weekNum;
+  }
+
+  static Future<void> loadStats() async {
+    final prefs = await SharedPreferences.getInstance();
+    xp = prefs.getInt('g_xp') ?? 0;
+    gesamtMinuten = prefs.getInt('g_minuten') ?? 0;
+    gesamtWorkouts = prefs.getInt('g_workouts') ?? 0;
+    amrapHighscoreRunden = prefs.getInt('g_amrap_highscore') ?? 0;
+    streakWochen = prefs.getInt('g_streak') ?? 0;
+    workoutsDieseWoche = prefs.getInt('g_workouts_woche') ?? 0;
+    letzteWocheJahr = prefs.getInt('g_letzte_woche_jahr') ?? 0;
+
+    // Überprüfen, ob eine neue Woche angefangen hat
+    int aktuelleKW = getKW(DateTime.now());
+    if (aktuelleKW != letzteWocheJahr) {
+      // Wenn in der alten Woche das Soll von 2 Workouts nicht erfüllt wurde -> Streak reißt ab
+      if (letzteWocheJahr != 0 && workoutsDieseWoche < 2) {
+        streakWochen = 0;
+      }
+      workoutsDieseWoche = 0;
+      letzteWocheJahr = aktuelleKW;
+      await saveStats();
+    }
+  }
+
+  static Future<void> saveStats() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('g_xp', xp);
+    await prefs.setInt('g_minuten', gesamtMinuten);
+    await prefs.setInt('g_workouts', gesamtWorkouts);
+    await prefs.setInt('g_amrap_highscore', amrapHighscoreRunden);
+    await prefs.setInt('g_streak', streakWochen);
+    await prefs.setInt('g_workouts_woche', workoutsDieseWoche);
+    await prefs.setInt('g_letzte_woche_jahr', letzteWocheJahr);
+  }
+
+  static Future<void> addWorkoutErgebnis({required int minuten, required int amrapRunden, required bool isAmrap}) async {
+    await loadStats();
+
+    gesamtWorkouts++;
+    gesamtMinuten += minuten;
+    
+    // XP Berechnung: 1 Minute = 10 XP. Jede AMRAP-Runde = 20 XP zusätzlich.
+    int verdienteXp = minuten * 10;
+    if (isAmrap) {
+      verdienteXp += amrapRunden * 20;
+      if (amrapRunden > amrapHighscoreRunden) {
+        amrapHighscoreRunden = amrapRunden;
+      }
+    }
+    xp += verdienteXp;
+
+    // Streak-Logik (2 Workouts pro Woche nötig)
+    workoutsDieseWoche++;
+    if (workoutsDieseWoche == 2) {
+      streakWochen++; // Streak erhöht sich, sobald das Wochenziel erreicht ist
+    }
+
+    await saveStats();
+  }
+
+  static List<Map<String, dynamic>> checkAchievements() {
+    int lvl = getLevelInfo()['level'];
+    return [
+      {'id': 1, 'titel': 'Erstkontakt 🚀', 'sub': 'Dein allererstes Kugel-Workout abgeschlossen.', 'done': gesamtWorkouts >= 1, 'icon': Icons.rocket_launch},
+      {'id': 2, 'titel': 'Kettlebell-Lehrling ⏱️', 'sub': 'Insgesamt 50 Minuten trainiert.', 'done': gesamtMinuten >= 50, 'icon': Icons.timer},
+      {'id': 3, 'titel': 'Ausdauer-Monster 🐉', 'sub': 'Insgesamt 200 Minuten trainiert.', 'done': gesamtMinuten >= 200, 'icon': Icons.workspace_premium},
+      {'id': 4, 'titel': 'Zirkel-Starter 🔄', 'sub': 'Dein erstes AMRAP-Workout beendet.', 'done': amrapHighscoreRunden >= 1, 'icon': Icons.loop},
+      {'id': 5, 'titel': 'Zirkel-Meister 👑', 'sub': 'Schaffe im AMRAP mindestens 6 Runden.', 'done': amrapHighscoreRunden >= 6, 'icon': Icons.military_tech},
+      {'id': 6, 'titel': 'Zeit-Krieger 🛡️', 'sub': 'Ein langes AMRAP (>= 20 Min) durchgezogen.', 'done': gesamtMinuten >= 20 && amrapHighscoreRunden >= 1, 'icon': Icons.shield},
+      {'id': 7, 'titel': 'Beständigkeit 🔥', 'sub': 'Erreiche einen 2-Wochen-Streak.', 'done': streakWochen >= 2, 'icon': Icons.local_fire_department},
+      {'id': 8, 'titel': 'Eiserner Wille 💎', 'sub': 'Erreiche einen 4-Wochen-Streak.', 'done': streakWochen >= 4, 'icon': Icons.diamond},
+      {'id': 9, 'titel': 'Fleißbiene 🐝', 'sub': 'Absolviere insgesamt 10 Workouts.', 'done': gesamtWorkouts >= 10, 'icon': Icons.fitness_center},
+      {'id': 10, 'titel': 'Banditen-König 👑', 'sub': 'Erreiche Level 10 der Hierarchie.', 'done': lvl >= 10, 'icon': Icons.auto_awesome},
+    ];
+  }
+}
 
 class HauptNavigationsPage extends StatefulWidget {
   const HauptNavigationsPage({super.key});
@@ -91,13 +213,23 @@ class _HauptNavigationsPageState extends State<HauptNavigationsPage> {
   final List<Widget> _seiten = [const SlotMachinePage(), const MediathekPage(), const StatistikPage()];
 
   @override
+  void initState() {
+    super.initState();
+    GamificationManager.loadStats();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: _seiten[_aktuellerIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _aktuellerIndex,
         selectedItemColor: Colors.orange,
-        onTap: (index) => setState(() => _aktuellerIndex = index),
+        onTap: (index) {
+          setState(() {
+            _aktuellerIndex = index;
+          });
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.casino), label: 'Slot Machine'),
           BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Mediathek'),
@@ -139,11 +271,11 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
     final r = Random();
     setState(() {
       _aktuellesWorkout = [
-        Uebung.alleUebungen[r.nextInt(5)],       // Unterkörper
-        Uebung.alleUebungen[5 + r.nextInt(4)],   // Rücken
-        Uebung.alleUebungen[9 + r.nextInt(4)],   // Oberkörper
-        Uebung.alleUebungen[13 + r.nextInt(4)],  // Core
-        Uebung.alleUebungen[17 + r.nextInt(3)],  // Ganzkörper
+        Uebung.alleUebungen[r.nextInt(5)],       
+        Uebung.alleUebungen[5 + r.nextInt(4)],   
+        Uebung.alleUebungen[9 + r.nextInt(4)],   
+        Uebung.alleUebungen[13 + r.nextInt(4)],  
+        Uebung.alleUebungen[17 + r.nextInt(3)],  
       ];
       _aktuellesWorkout.shuffle();
     });
@@ -267,12 +399,9 @@ class _AktiverEMOMBildschirmState extends State<AktiverEMOMBildschirm> {
         setState(() {
           _sekunden = 60;
           _minutenGespielt++;
-          statistikGesamtMinuten++;
-          uebungsZaehler[widget.aktuellesWorkout[_index].name] = (uebungsZaehler[widget.aktuellesWorkout[_index].name] ?? 0) + 1;
           if (_minutenGespielt >= 30) {
             _timer?.cancel();
-            statistikAnzahlWorkouts++;
-            _beendet();
+            _beendet(complete: true);
           } else {
             _index = (_index + 1) % 5;
           }
@@ -281,8 +410,19 @@ class _AktiverEMOMBildschirmState extends State<AktiverEMOMBildschirm> {
     });
   }
 
-  void _beendet() {
-    showDialog(context: context, builder: (c) => AlertDialog(title: const Text('🎉 Fertig!'), content: const Text('30 Minuten EMOM erfolgreich absolviert!'), actions: [TextButton(onPressed: () { Navigator.pop(context); Navigator.pop(context); }, child: const Text('OK'))]));
+  void _beendet({required bool complete}) async {
+    if (complete && _minutenGespielt > 0) {
+      await GamificationManager.addWorkoutErgebnis(minuten: _minutenGespielt, amrapRunden: 0, isAmrap: false);
+    }
+    showDialog(
+      context: context, 
+      barrierDismissible: false,
+      builder: (c) => AlertDialog(
+        title: const Text('🎉 Fertig!'), 
+        content: Text('$_minutenGespielt Minuten EMOM erfolgreich absolviert und XP gesichert!'), 
+        actions: [TextButton(onPressed: () { Navigator.pop(context); Navigator.pop(context); }, child: const Text('OK'))]
+      )
+    );
   }
 
   @override
@@ -321,7 +461,20 @@ class _AktiverEMOMBildschirmState extends State<AktiverEMOMBildschirm> {
                     const SizedBox(height: 10),
                     Text('Fortschritt: $_minutenGespielt/30 Min', style: const TextStyle(color: Colors.grey)),
                     const SizedBox(height: 10),
-                    ElevatedButton(onPressed: () => Navigator.pop(context), style: ElevatedButton.styleFrom(backgroundColor: Colors.red), child: const Text('Abbrechen')),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            _timer?.cancel();
+                            _beendet(complete: true); // Vorzeitig beenden sichert die gespielten Minuten!
+                          }, 
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.green[800]), 
+                          child: const Text('Workout Beenden')
+                        ),
+                        ElevatedButton(onPressed: () => Navigator.pop(context), style: ElevatedButton.styleFrom(backgroundColor: Colors.red[900]), child: const Text('Abbrechen')),
+                      ],
+                    ),
                   ],
                 ),
               ),
@@ -359,25 +512,23 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
         setState(() => _gesamtSekunden--);
       } else {
         _timer?.cancel();
-        setState(() {
-          statistikGesamtMinuten += widget.gesamtMinuten;
-          statistikAnzahlWorkouts++;
-          for (var u in widget.aktuellesWorkout) {
-            uebungsZaehler[u.name] = (uebungsZaehler[u.name] ?? 0) + _rundenZaehler;
-          }
-        });
         _beendet();
       }
     });
   }
 
-  void _beendet() {
+  void _beendet() async {
+    int gespielteMinuten = widget.gesamtMinuten - (_gesamtSekunden ~/ 60);
+    if (gespielteMinuten == 0 && _gesamtSekunden > 0) gespielteMinuten = 1; // Mindestens 1 Min Gutschrift
+
+    await GamificationManager.addWorkoutErgebnis(minuten: gespielteMinuten, amrapRunden: _rundenZaehler, isAmrap: true);
+    
     showDialog(
       context: context, 
       barrierDismissible: false,
       builder: (c) => AlertDialog(
-        title: const Text('⏱️ Zeit um!'), 
-        content: Text('Hervorragend! Du hast in ${widget.gesamtMinuten} Minuten stolze $_rundenZaehler Runden geschafft!'), 
+        title: const Text('⏱️ Zeit um / Beendet!'), 
+        content: Text('Hervorragend! Du hast in $gespielteMinuten Minuten stolze $_rundenZaehler Runden geschafft und massive XP erhalten!'), 
         actions: [TextButton(onPressed: () { Navigator.pop(context); Navigator.pop(context); }, child: const Text('Wahnsinn!'))]
       )
     );
@@ -394,26 +545,14 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(
-                u.bildUrl, 
-                height: 180, 
-                fit: BoxFit.contain, 
-                errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 80, color: Colors.orange)
-              ),
+              child: Image.asset(u.bildUrl, height: 180, fit: BoxFit.contain, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 80, color: Colors.orange)),
             ),
             const SizedBox(height: 15),
-            Text(
-              u.beschreibung, 
-              textAlign: TextAlign.center, 
-              style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4)
-            ),
+            Text(u.beschreibung, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4)),
           ],
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Zurück zum Workout ↩️', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
-          )
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Zurück zum Workout ↩️', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)))
         ],
       ),
     );
@@ -435,10 +574,7 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('🔄 AMRAP Zirkel-Board'),
-        automaticallyImplyLeading: false,
-      ),
+      appBar: AppBar(title: const Text('🔄 AMRAP Zirkel-Board'), automaticallyImplyLeading: false),
       body: SafeArea(
         child: Column(
           children: [
@@ -492,6 +628,17 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
                 children: [
                   Expanded(
                     child: ElevatedButton(
+                      onPressed: () {
+                        _timer?.cancel();
+                        _beendet(); // Manuelles Beenden sichert den aktuellen Fortschritt!
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey[800], padding: const EdgeInsets.symmetric(vertical: 15)),
+                      child: const Text('Beenden', style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
                       onPressed: () => Navigator.pop(context),
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.red[900], padding: const EdgeInsets.symmetric(vertical: 15)),
                       child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),
@@ -501,11 +648,9 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
                   Expanded(
                     flex: 2,
                     child: ElevatedButton(
-                      onPressed: () {
-                        setState(() => _rundenZaehler++);
-                      },
+                      onPressed: () => setState(() => _rundenZaehler++),
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.green[700], padding: const EdgeInsets.symmetric(vertical: 20)),
-                      child: const Text('RUNDEN-ZÄHLER (+1) 🏁', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
+                      child: const Text('RUNDEN (+1) 🏁', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],
@@ -608,7 +753,6 @@ class _MediathekPageState extends State<MediathekPage> {
                         const SizedBox(height: 5),
                         Text(u.kategorie, style: const TextStyle(color: Colors.grey)),
                         const SizedBox(height: 20),
-                        
                         Container(
                           padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
@@ -638,13 +782,10 @@ class _MediathekPageState extends State<MediathekPage> {
                             ],
                           ),
                         ),
-                        
                         const SizedBox(height: 20),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15),
-                          child: u.bildUrl.startsWith('http') 
-                            ? Image.network(u.bildUrl) 
-                            : Image.asset(u.bildUrl, errorBuilder: (c,e,s) => Image.asset('assets/${u.bildUrl.split('/').last}')),
+                          child: u.bildUrl.startsWith('http') ? Image.network(u.bildUrl) : Image.asset(u.bildUrl, errorBuilder: (c,e,s) => const Icon(Icons.fitness_center, size: 100)),
                         ),
                         const SizedBox(height: 20),
                         const Text('Ausführung:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange)),
@@ -674,21 +815,205 @@ class _MediathekPageState extends State<MediathekPage> {
   }
 }
 
-class StatistikPage extends StatelessWidget {
+// DIE NEUE GAMIFIED STATISTIK SEITE
+class StatistikPage extends StatefulWidget {
   const StatistikPage({super.key});
+
+  @override
+  State<StatistikPage> createState() => _StatistikPageState();
+}
+
+class _StatistikPageState extends State<StatistikPage> {
+  @override
+  void initState() {
+    super.initState();
+    GamificationManager.loadStats().then((_) => setState(() {}));
+  }
+
   @override
   Widget build(BuildContext context) {
+    final lvlInfo = GamificationManager.getLevelInfo();
+    final achievements = GamificationManager.checkAchievements();
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Statistik')),
-      body: Center(
+      appBar: AppBar(title: const Text('💪 Fitness Zentrale')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('$statistikGesamtMinuten', style: const TextStyle(fontSize: 80, color: Colors.orange, fontWeight: FontWeight.bold)),
-            const Text('Minuten trainiert'),
-            const SizedBox(height: 30),
-            Text('$statistikAnzahlWorkouts', style: const TextStyle(fontSize: 40, color: Colors.green)),
-            const Text('Workouts abgeschlossen'),
+            // LEVEL SYSTEM CARD
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(colors: [Colors.grey[900]!, Colors.grey[850]!]),
+                borderRadius: BorderRadius.circular(15),
+                border: Border.all(color: Colors.orange.withOpacity(0.3)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('LEVEL ${lvlInfo['level']}', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.orange)),
+                      Text('${GamificationManager.xp} Gesamt-XP', style: const TextStyle(color: Colors.grey)),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Text(lvlInfo['name'], style: const TextStyle(fontSize: 16, color: Colors.white70, fontStyle: FontStyle.italic)),
+                  const SizedBox(height: 15),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: LinearProgressIndicator(
+                      value: lvlInfo['fortschritt'],
+                      minHeight: 12,
+                      backgroundColor: Colors.grey[800],
+                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('${lvlInfo['xpImLevel']} XP', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                      Text('Nächstes Level bei: ${lvlInfo['benoetigteXp']} XP', style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // STATS & STREAK ROW
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      children: [
+                        Icon(Icons.local_fire_department, color: GamificationManager.streakWochen > 0 ? Colors.red : Colors.grey, size: 36),
+                        const SizedBox(height: 5),
+                        Text('${GamificationManager.streakWochen} Wochen', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const Text('Streak (>=2x/W)', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      children: [
+                        const Icon(Icons.fitness_center, color: Colors.green, size: 36),
+                        const SizedBox(height: 5),
+                        Text('${GamificationManager.gesamtWorkouts}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const Text('Workouts', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
+                    child: Column(
+                      children: [
+                        const Icon(Icons.timer, color: Colors.blue, size: 36),
+                        const SizedBox(height: 5),
+                        Text('${GamificationManager.gesamtMinuten}m', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        const Text('Gesamtzeit', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 25),
+
+            // TROPHÄEN WAND ÜBERSCHRIFT
+            const Text('🏆 Trophäen-Wand (Achievements)', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+            const SizedBox(height: 10),
+
+            // GRID FÜR DIE 10 ACHIEVEMENTS
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+                childAspectRatio: 1.1,
+              ),
+              itemCount: achievements.length,
+              itemBuilder: (context, idx) {
+                final ach = achievements[idx];
+                final bool done = ach['done'];
+
+                return Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: done ? Colors.grey[900] : Colors.grey[950]!.withOpacity(0.4),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: done ? Colors.orange.withOpacity(0.6) : Colors.grey[900]!,
+                      width: done ? 1.5 : 1,
+                    ),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Badge Icon Design mit reinem Flutter Code
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 45,
+                            height: 45,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: done 
+                                ? const LinearGradient(colors: [Colors.amber, Colors.orange])
+                                : LinearGradient(colors: [Colors.grey[800]!, Colors.grey[700]!]),
+                            ),
+                          ),
+                          Icon(
+                            done ? ach['icon'] : Icons.lock, 
+                            color: done ? Colors.black : Colors.grey[500], 
+                            size: 22
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        ach['titel'], 
+                        textAlign: TextAlign.center,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 13, 
+                          fontWeight: FontWeight.bold, 
+                          color: done ? Colors.white : Colors.grey[600]
+                        )
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        ach['sub'], 
+                        textAlign: TextAlign.center, 
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 10, color: done ? Colors.grey[400] : Colors.grey[700]),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
