@@ -1,556 +1,223 @@
-import 'dart:async';
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One Kettled Bandit - KB Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @keyframes spin {
+            0% { transform: translateY(-100%); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .animate-slot { animation: spin 0.4s ease-out; }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const KettlebellApp());
-}
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 p-4 sticky top-0 z-50">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-emerald-400 flex items-center gap-2">
+                <i data-lucide="dices"></i> One Kettled Bandit
+            </h1>
+            <span id="streak-badge" class="bg-slate-800 text-amber-400 text-xs px-2.5 py-1 rounded-full border border-slate-700 flex items-center gap-1">
+                <i data-lucide="flame" class="w-3.5 h-3.5"></i> <span id="streak-count">0</span> Tage
+            </span>
+        </div>
+    </header>
 
-class KettlebellApp extends StatelessWidget {
-  const KettlebellApp({super.key});
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-md w-full mx-auto p-4 pb-24">
+        
+        <!-- SECTION 1: SLOT MACHINE -->
+        <section id="sec-slot" class="space-y-4">
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4">
+                <label class="block text-sm font-medium mb-2 text-slate-400">Workout Modus</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="setMode('EMOM')" id="btn-emom" class="mode-btn bg-emerald-600 text-white font-semibold py-2 rounded-lg text-sm">EMOM</button>
+                    <button onclick="setMode('AMRAP')" id="btn-amrap" class="mode-btn bg-slate-800 text-slate-300 font-semibold py-2 rounded-lg text-sm">AMRAP</button>
+                    <button onclick="setMode('For Time')" id="btn-fortime" class="mode-btn bg-slate-800 text-slate-300 font-semibold py-2 rounded-lg text-sm">For Time</button>
+                </div>
+            </div>
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'KB Club Manager',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF020617),
-        colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF22C55E),
-          secondary: Color(0xFF3B82F6),
-          surface: Color(0xFF0F172A),
-        ),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF0F172A),
-          elevation: 0,
-        ),
-      ),
-      home: const MainHomeScreen(),
-    );
-  }
-}
+            <button onclick="spinSlots()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-4 rounded-xl shadow-lg transition active:scale-95 flex items-center justify-center gap-2 text-lg">
+                <i data-lucide="rotate-cw"></i> SLOT MACHINE DREHEN
+            </button>
 
-class Exercise {
-  final String id;
-  final String name;
-  final String category;
-  final String description;
+            <!-- Slot Results -->
+            <div id="slot-results" class="space-y-3">
+                <div class="text-center py-8 text-slate-500">Klicke auf Drehen, um ein Workout zu generieren!</div>
+            </div>
 
-  const Exercise({
-    required this.id,
-    required this.name,
-    required this.category,
-    required this.description,
-  });
-}
+            <div id="slot-actions" class="hidden flex gap-2">
+                <button onclick="startWorkout()" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2">
+                    <i data-lucide="play"></i> Starten
+                </button>
+                <button onclick="saveCurrentSlot()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-3 rounded-lg flex items-center justify-center">
+                    <i data-lucide="bookmark"></i>
+                </button>
+            </div>
+        </section>
 
-const List<Exercise> exerciseLibrary = [
-  Exercise(
-      id: 'swings',
-      name: 'Kettlebell Swings',
-      category: 'Pull/Posterior',
-      description: 'Hüftdominante Explosivübung für Posterior Chain.'),
-  Exercise(
-      id: 'goblet_squat',
-      name: 'Goblet Squats',
-      category: 'Legs',
-      description: 'Tiefe Kniebeuge mit KB vor der Brust.'),
-  Exercise(
-      id: 'overhead_press',
-      name: 'Strict Overhead Press',
-      category: 'Push',
-      description: 'Schulterdrücken im festen Stand.'),
-  Exercise(
-      id: 'push_press',
-      name: 'Push Press',
-      category: 'Push',
-      description: 'Schulterdrücken mit leichtem Schwung aus den Beinen.'),
-  Exercise(
-      id: 'snatch',
-      name: 'KB Snatch',
-      category: 'Full Body',
-      description: 'Explosives Reißen über den Kopf.'),
-  Exercise(
-      id: 'clean_press',
-      name: 'Clean & Press',
-      category: 'Full Body',
-      description: 'Umsetzen auf Brusthöhe mit anschließendem Drücken.'),
-  Exercise(
-      id: 'turkish_getup',
-      name: 'Turkish Get-Up',
-      category: 'Core/Full Body',
-      description: 'Komplexe Ganzkörperübung im Aufstehen.'),
-  Exercise(
-      id: 'situps',
-      name: 'KB Sit-Ups',
-      category: 'Core',
-      description: 'Rumpfbeugen mit Zusatzgewicht an der Brust.'),
-  Exercise(
-      id: 'renegade_row',
-      name: 'Renegade Rows',
-      category: 'Pull',
-      description: 'Liegestützposition mit wechselseitigem Rudern.'),
-];
+        <!-- SECTION 2: TIMER (Standardmäßig verborgen) -->
+        <section id="sec-timer" class="hidden space-y-6 text-center py-6">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6">
+                <span id="timer-mode-label" class="text-emerald-400 text-sm font-semibold uppercase tracking-wider">EMOM</span>
+                <div id="timer-display" class="text-6xl font-black my-4 tracking-tight">01:00</div>
+                <p id="timer-exercise" class="text-lg text-slate-300 font-medium">Bereit machen...</p>
+            </div>
+            <div class="flex gap-4">
+                <button onclick="toggleTimer()" id="btn-timer-control" class="flex-1 bg-emerald-500 text-slate-950 font-bold py-3 rounded-xl">Start</button>
+                <button onclick="resetTimer()" class="bg-slate-800 text-slate-300 px-6 py-3 rounded-xl">Beenden</button>
+            </div>
+        </section>
 
-class MainHomeScreen extends StatefulWidget {
-  const MainHomeScreen({super.key});
+        <!-- SECTION 3: WORKOUT ERSTELLEN -->
+        <section id="sec-custom" class="hidden space-y-4">
+            <h2 class="text-lg font-bold text-slate-200">Eigenes Workout erstellen</h2>
+            <input type="text" id="custom-name" placeholder="Workout Name (z.B. Montag Kraft)" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-sm text-slate-100 focus:outline-none focus:border-emerald-500">
+            <div id="custom-exercises-list" class="space-y-2"></div>
+            <button onclick="addExerciseToCustom()" class="w-full border border-dashed border-slate-700 text-slate-400 py-3 rounded-lg text-sm hover:text-slate-200">+ Übung hinzufügen</button>
+            <button onclick="saveCustomWorkout()" class="w-full bg-emerald-500 text-slate-950 font-bold py-3 rounded-lg">Workout Speichern</button>
+        </section>
 
-  @override
-  State<MainHomeScreen> createState() => _MainHomeScreenState();
-}
+        <!-- SECTION 4: MEDIATHEK -->
+        <section id="sec-library" class="hidden space-y-3">
+            <h2 class="text-lg font-bold text-slate-200 mb-2">Übungs-Mediathek</h2>
+            <div id="library-list" class="space-y-2"></div>
+        </section>
 
-class _MainHomeScreenState extends State<MainHomeScreen> {
-  int _currentIndex = 0;
+        <!-- SECTION 5: ERFOLGE -->
+        <section id="sec-stats" class="hidden space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-900 p-4 border border-slate-800 rounded-xl text-center">
+                    <div id="stat-completed" class="text-2xl font-bold text-emerald-400">0</div>
+                    <div class="text-xs text-slate-400">Absolvierte Workouts</div>
+                </div>
+                <div class="bg-slate-900 p-4 border border-slate-800 rounded-xl text-center">
+                    <div id="stat-spins" class="text-2xl font-bold text-blue-400">0</div>
+                    <div class="text-xs text-slate-400">Spins Durchgeführt</div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-  final List<Widget> _screens = [
-    const SlotMachineScreen(),
-    const CustomWorkoutScreen(),
-    const SavedWorkoutsScreen(),
-    const LibraryScreen(),
-    const StatsAchievementsScreen(),
-  ];
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800">
+        <div class="max-w-md mx-auto flex justify-around p-2">
+            <button onclick="nav('slot')" id="nav-slot" class="flex flex-col items-center gap-1 p-2 text-emerald-400 text-xs">
+                <i data-lucide="casino" class="w-5 h-5"></i> Slot
+            </button>
+            <button onclick="nav('custom')" id="nav-custom" class="flex flex-col items-center gap-1 p-2 text-slate-400 text-xs">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i> Erstellen
+            </button>
+            <button onclick="nav('library')" id="nav-library" class="flex flex-col items-center gap-1 p-2 text-slate-400 text-xs">
+                <i data-lucide="book-open" class="w-5 h-5"></i> Übungen
+            </button>
+            <button onclick="nav('stats')" id="nav-stats" class="flex flex-col items-center gap-1 p-2 text-slate-400 text-xs">
+                <i data-lucide="trophy" class="w-5 h-5"></i> Erfolge
+            </button>
+        </div>
+    </nav>
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        selectedItemColor: const Color(0xFF22C55E),
-        unselectedItemColor: Colors.grey,
-        backgroundColor: const Color(0xFF0F172A),
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.casino), label: 'Slot'),
-          BottomNavigationBarItem(icon: Icon(Icons.add_circle), label: 'Erstellen'),
-          BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: 'Gespeichert'),
-          BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Übungen'),
-          BottomNavigationBarItem(icon: Icon(Icons.emoji_events), label: 'Erfolge'),
-        ],
-      ),
-    );
-  }
-}
+    <!-- JavaScript Logik -->
+    <script>
+        const exercises = [
+            { id: 1, name: 'Kettlebell Swings', cat: 'Posterior', desc: 'Explosive Hüftstreckung aus der Beuge.' },
+            { id: 2, name: 'Goblet Squats', cat: 'Beine', desc: 'Tiefe Kniebeuge mit KB vor der Brust.' },
+            { id: 3, name: 'Strict Overhead Press', cat: 'Schultern', desc: 'Sauberes Drücken über den Kopf.' },
+            { id: 4, name: 'Push Press', cat: 'Schultern/Beine', desc: 'Schwungvolles Drücken mit Beinunterstützung.' },
+            { id: 5, name: 'KB Sit-Ups', cat: 'Core', desc: 'Rumpfbeugen mit Zusatzgewicht.' },
+            { id: 6, name: 'Turkish Get-Up', cat: 'Ganzkörper', desc: 'Langsames Aufstehen aus dem Liegen mit KB.' }
+        ];
 
-class SlotMachineScreen extends StatefulWidget {
-  const SlotMachineScreen({super.key});
+        let currentMode = 'EMOM';
+        let currentWorkout = [];
+        let timerInterval = null;
 
-  @override
-  State<SlotMachineScreen> createState() => _SlotMachineScreenState();
-}
+        function init() {
+            lucide.createIcons();
+            renderLibrary();
+            loadStats();
+        }
 
-class _SlotMachineScreenState extends State<SlotMachineScreen> {
-  String _selectedMode = 'EMOM';
-  int _amrapMinutes = 12;
-  bool _isSpinning = false;
-  List<Exercise> _generatedSlots = [];
+        function setMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(b => {
+                b.className = 'mode-btn bg-slate-800 text-slate-300 font-semibold py-2 rounded-lg text-sm';
+            });
+            document.getElementById(`btn-${mode.toLowerCase().replace(' ', '')}`).className = 'mode-btn bg-emerald-600 text-white font-semibold py-2 rounded-lg text-sm';
+        }
 
-  void _spinSlots() {
-    setState(() {
-      _isSpinning = true;
-    });
+        function spinSlots() {
+            const results = document.getElementById('slot-results');
+            results.innerHTML = '';
+            
+            // Zufällige 4 Übungen wählen
+            const shuffled = [...exercises].sort(() => 0.5 - Math.random());
+            currentWorkout = shuffled.slice(0, 4);
 
-    Timer(const Duration(milliseconds: 600), () {
-      final random = Random();
-      final List<Exercise> shuffled = List.from(exerciseLibrary)..shuffle(random);
+            currentWorkout.forEach((ex, idx) => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-900 border border-slate-800 p-3 rounded-lg flex justify-between items-center animate-slot';
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="w-7 h-7 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center font-bold text-xs">${idx + 1}</span>
+                        <div>
+                            <div class="font-bold text-sm text-slate-200">${ex.name}</div>
+                            <div class="text-xs text-slate-500">${ex.cat}</div>
+                        </div>
+                    </div>
+                `;
+                results.appendChild(card);
+            });
 
-      setState(() {
-        _generatedSlots = shuffled.take(4).toList();
-        _isSpinning = false;
-      });
-    });
-  }
+            document.getElementById('slot-actions').classList.remove('hidden');
+            incrementStat('spins');
+        }
 
-  void _saveCurrentWorkout() async {
-    if (_generatedSlots.isEmpty) return;
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> saved = prefs.getStringList('saved_workouts') ?? [];
-    
-    final workoutSummary = '$_selectedMode: ' + _generatedSlots.map((e) => e.name).join(', ');
-    saved.add(workoutSummary);
-    await prefs.setStringList('saved_workouts', saved);
+        function nav(section) {
+            ['slot', 'custom', 'library', 'stats', 'timer'].forEach(s => {
+                document.getElementById(`sec-${s}`)?.classList.add('hidden');
+                document.getElementById(`nav-${s}`)?.classList.replace('text-emerald-400', 'text-slate-400');
+            });
+            document.getElementById(`sec-${section}`).classList.remove('hidden');
+            if(document.getElementById(`nav-${section}`)) {
+                document.getElementById(`nav-${section}`).classList.replace('text-slate-400', 'text-emerald-400');
+            }
+        }
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Workout erfolgreich gespeichert!')),
-      );
-    }
-  }
+        function startWorkout() {
+            nav('timer');
+            document.getElementById('timer-mode-label').innerText = currentMode;
+            document.getElementById('timer-exercise').innerText = currentWorkout[0]?.name || 'Bereit?';
+        }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('KB Workout Generator')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Card(
-              color: const Color(0xFF1E293B),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Workout Modus:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    SegmentedButton<String>(
-                      segments: const [
-                        ButtonSegment(value: 'EMOM', label: Text('EMOM')),
-                        ButtonSegment(value: 'AMRAP', label: Text('AMRAP')),
-                        ButtonSegment(value: 'For Time', label: Text('For Time')),
-                      ],
-                      selected: {_selectedMode},
-                      onSelectionChanged: (Set<String> newSelection) {
-                        setState(() {
-                          _selectedMode = newSelection.first;
-                        });
-                      },
-                    ),
-                    if (_selectedMode == 'AMRAP') ...[
-                      const SizedBox(height: 12),
-                      Row(
-                        children: [
-                          const Text('Zeit (Minuten): '),
-                          DropdownButton<int>(
-                            value: _amrapMinutes,
-                            dropdownColor: const Color(0xFF1E293B),
-                            items: [8, 10, 12, 15, 20].map((int val) {
-                              return DropdownMenuItem<int>(value: val, child: Text('$val Min'));
-                            }).toList(),
-                            onChanged: (val) {
-                              if (val != null) setState(() => _amrapMinutes = val);
-                            },
-                          ),
-                        ],
-                      ),
-                    ]
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              onPressed: _isSpinning ? null : _spinSlots,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF22C55E),
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              icon: const Icon(Icons.casino, color: Colors.black),
-              label: Text(
-                _isSpinning ? 'Mische Übungen...' : 'SLOT MACHINE DREHEN',
-                style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-            ),
-            const SizedBox(height: 20),
-            if (_generatedSlots.isNotEmpty) ...[
-              Text(
-                'Dein Workout ($_selectedMode):',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: _generatedSlots.length,
-                itemBuilder: (context, index) {
-                  final ex = _generatedSlots[index];
-                  return Card(
-                    color: const Color(0xFF1E293B),
-                    margin: const EdgeInsets.only(bottom: 8),
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: const Color(0xFF22C55E),
-                        child: Text('${index + 1}', style: const TextStyle(color: Colors.black)),
-                      ),
-                      title: Text(ex.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text(ex.category),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: _saveCurrentWorkout,
-                icon: const Icon(Icons.bookmark_add),
-                label: const Text('Speichern'),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
-  }
-}
+        function renderLibrary() {
+            const list = document.getElementById('library-list');
+            list.innerHTML = exercises.map(ex => `
+                <div class="bg-slate-900 border border-slate-800 p-3 rounded-lg">
+                    <div class="font-bold text-slate-200 text-sm">${ex.name}</div>
+                    <div class="text-xs text-slate-400 mt-1">${ex.desc}</div>
+                </div>
+            `).join('');
+        }
 
-class CustomWorkoutScreen extends StatefulWidget {
-  const CustomWorkoutScreen({super.key});
+        function incrementStat(key) {
+            let val = parseInt(localStorage.getItem(key) || '0') + 1;
+            localStorage.setItem(key, val);
+            loadStats();
+        }
 
-  @override
-  State<CustomWorkoutScreen> createState() => _CustomWorkoutScreenState();
-}
+        function loadStats() {
+            document.getElementById('stat-spins').innerText = localStorage.getItem('spins') || '0';
+            document.getElementById('stat-completed').innerText = localStorage.getItem('completed') || '0';
+        }
 
-class _CustomWorkoutScreenState extends State<CustomWorkoutScreen> {
-  final _titleController = TextEditingController();
-  final List<Exercise> _selectedExercises = [];
-
-  void _addExercise(Exercise ex) {
-    setState(() {
-      _selectedExercises.add(ex);
-    });
-  }
-
-  void _saveCustomWorkout() async {
-    if (_titleController.text.isEmpty || _selectedExercises.isEmpty) return;
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> saved = prefs.getStringList('saved_workouts') ?? [];
-    
-    final workoutSummary = '${_titleController.text}: ' + _selectedExercises.map((e) => e.name).join(', ');
-    saved.add(workoutSummary);
-    await prefs.setStringList('saved_workouts', saved);
-
-    _titleController.clear();
-    setState(() {
-      _selectedExercises.clear();
-    });
-
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Manuelles Workout gespeichert!')),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Workout Erstellen')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Workout Name (z.B. Montag Kraft)',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Ausgewählte Übungen:', style: TextStyle(fontWeight: FontWeight.bold)),
-                PopupMenuButton<Exercise>(
-                  icon: const Icon(Icons.add_circle_outline, color: Color(0xFF22C55E)),
-                  onSelected: _addExercise,
-                  itemBuilder: (context) {
-                    return exerciseLibrary.map((ex) {
-                      return PopupMenuItem(value: ex, child: Text(ex.name));
-                    }).toList();
-                  },
-                )
-              ],
-            ),
-            Expanded(
-              child: _selectedExercises.isEmpty
-                  ? const Center(child: Text('Füge Übungen über das + Symbol hinzu.'))
-                  : ListView.builder(
-                      itemCount: _selectedExercises.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(_selectedExercises[index].name),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.redAccent),
-                            onPressed: () {
-                              setState(() {
-                                _selectedExercises.removeAt(index);
-                              });
-                            },
-                          ),
-                        );
-                      },
-                    ),
-            ),
-            ElevatedButton(
-              onPressed: _saveCustomWorkout,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF22C55E),
-                minimumSize: const Size.fromHeight(50),
-              ),
-              child: const Text('Workout Speichern', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SavedWorkoutsScreen extends StatefulWidget {
-  const SavedWorkoutsScreen({super.key});
-
-  @override
-  State<SavedWorkoutsScreen> createState() => _SavedWorkoutsScreenState();
-}
-
-class _SavedWorkoutsScreenState extends State<SavedWorkoutsScreen> {
-  List<String> _savedWorkouts = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSavedWorkouts();
-  }
-
-  void _loadSavedWorkouts() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _savedWorkouts = prefs.getStringList('saved_workouts') ?? [];
-    });
-  }
-
-  void _deleteWorkout(int index) async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _savedWorkouts.removeAt(index);
-    });
-    await prefs.setStringList('saved_workouts', _savedWorkouts);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Gespeicherte Workouts')),
-      body: _savedWorkouts.isEmpty
-          ? const Center(child: Text('Noch keine gespeicherten Workouts.'))
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: _savedWorkouts.length,
-              itemBuilder: (context, index) {
-                return Card(
-                  color: const Color(0xFF1E293B),
-                  margin: const EdgeInsets.only(bottom: 12),
-                  child: ListTile(
-                    title: Text(_savedWorkouts[index], style: const TextStyle(fontWeight: FontWeight.bold)),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.redAccent),
-                      onPressed: () => _deleteWorkout(index),
-                    ),
-                  ),
-                );
-              },
-            ),
-    );
-  }
-}
-
-class LibraryScreen extends StatelessWidget {
-  const LibraryScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Kettlebell Mediathek')),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: exerciseLibrary.length,
-        itemBuilder: (context, index) {
-          final ex = exerciseLibrary[index];
-          return Card(
-            color: const Color(0xFF1E293B),
-            margin: const EdgeInsets.only(bottom: 12),
-            child: ExpansionTile(
-              leading: const Icon(Icons.fitness_center, color: Color(0xFF22C55E)),
-              title: Text(ex.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text(ex.category),
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(ex.description, style: const TextStyle(color: Colors.grey)),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class StatsAchievementsScreen extends StatelessWidget {
-  const StatsAchievementsScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Stats & Erfolge')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Card(
-              color: const Color(0xFF1E293B),
-              child: const Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        Text('12', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF22C55E))),
-                        Text('Workouts'),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Text('180', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Color(0xFF3B82F6))),
-                        Text('Minuten'),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Erfolge:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            ),
-            const SizedBox(height: 12),
-            Expanded(
-              child: ListView(
-                children: const [
-                  ListTile(
-                    leading: Icon(Icons.emoji_events, color: Colors.amber),
-                    title: Text('Erster Spin'),
-                    subtitle: Text('Slot Machine zum ersten Mal genutzt.'),
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.fitness_center, color: Colors.grey),
-                    title: Text('Kettlebell Master'),
-                    subtitle: Text('Schließe 10 Workouts ab.'),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+        window.onload = init;
+    </script>
+</body>
+</html>
