@@ -17,11 +17,11 @@ class KettlebellApp extends StatelessWidget {
       title: 'KB Club Manager',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(0xFF020617), // Dark Slate
+        scaffoldBackgroundColor: const Color(0xFF020617),
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF22C55E), // Green Accent
-          secondary: Color(0xFF3B82F6), // Blue Accent
-          surface: Color(0xFF0F172A), // Card BG
+          primary: Color(0xFF22C55E),
+          secondary: Color(0xFF3B82F6),
+          surface: Color(0xFF0F172A),
         ),
         appBarTheme: const AppBarTheme(
           backgroundColor: Color(0xFF0F172A),
@@ -33,11 +33,10 @@ class KettlebellApp extends StatelessWidget {
   }
 }
 
-// Model für Übungen
 class Exercise {
   final String id;
   final String name;
-  final String category; // Legs, Push, Pull, Core, Full Body
+  final String category;
   final String description;
 
   const Exercise({
@@ -48,7 +47,6 @@ class Exercise {
   });
 }
 
-// Beseitigt/Vordefinierte Übungs-Bibliothek
 const List<Exercise> exerciseLibrary = [
   Exercise(
       id: 'swings',
@@ -145,7 +143,6 @@ class _MainHomeScreenState extends State<MainHomeScreen> {
   }
 }
 
-// --- 1. SLOT MACHINE SCREEN ---
 class SlotMachineScreen extends StatefulWidget {
   const SlotMachineScreen({super.key});
 
@@ -194,13 +191,12 @@ class _SlotMachineScreenState extends State<SlotMachineScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('🎰 KB Workout Generator')),
+      appBar: AppBar(title: const Text('KB Workout Generator')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // Mode Select Card
             Card(
               color: const Color(0xFF1E293B),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -247,8 +243,6 @@ class _SlotMachineScreenState extends State<SlotMachineScreen> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // Spin Button
             ElevatedButton.icon(
               onPressed: _isSpinning ? null : _spinSlots,
               style: ElevatedButton.styleFrom(
@@ -258,13 +252,11 @@ class _SlotMachineScreenState extends State<SlotMachineScreen> {
               ),
               icon: const Icon(Icons.casino, color: Colors.black),
               label: Text(
-                _isSpinning ? 'Mische Übungen...' : '🎲 SLOT MACHINE DREHEN',
+                _isSpinning ? 'Mische Übungen...' : 'SLOT MACHINE DREHEN',
                 style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
             const SizedBox(height: 20),
-
-            // Slot Display Area
             if (_generatedSlots.isNotEmpty) ...[
               Text(
                 'Dein Workout ($_selectedMode):',
@@ -292,16 +284,10 @@ class _SlotMachineScreenState extends State<SlotMachineScreen> {
                 },
               ),
               const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: _saveCurrentWorkout,
-                      icon: const Icon(Icons.bookmark_add),
-                      label: const Text('Speichern'),
-                    ),
-                  ),
-                ],
+              OutlinedButton.icon(
+                onPressed: _saveCurrentWorkout,
+                icon: const Icon(Icons.bookmark_add),
+                label: const Text('Speichern'),
               ),
             ],
           ],
@@ -311,7 +297,6 @@ class _SlotMachineScreenState extends State<SlotMachineScreen> {
   }
 }
 
-// --- 2. MANUELLES WORKOUT SCREEN ---
 class CustomWorkoutScreen extends StatefulWidget {
   const CustomWorkoutScreen({super.key});
 
@@ -353,7 +338,7 @@ class _CustomWorkoutScreenState extends State<CustomWorkoutScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('➕ Workout Erstellen')),
+      appBar: AppBar(title: const Text('Workout Erstellen')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -416,7 +401,6 @@ class _CustomWorkoutScreenState extends State<CustomWorkoutScreen> {
   }
 }
 
-// --- 3. GESPEICHERTE WORKOUTS SCREEN ---
 class SavedWorkoutsScreen extends StatefulWidget {
   const SavedWorkoutsScreen({super.key});
 
@@ -451,7 +435,7 @@ class _SavedWorkoutsScreenState extends State<SavedWorkoutsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('📌 Gespeicherte Workouts')),
+      appBar: AppBar(title: const Text('Gespeicherte Workouts')),
       body: _savedWorkouts.isEmpty
           ? const Center(child: Text('Noch keine gespeicherten Workouts.'))
           : ListView.builder(
@@ -475,14 +459,13 @@ class _SavedWorkoutsScreenState extends State<SavedWorkoutsScreen> {
   }
 }
 
-// --- 4. ÜBUNGS MEDIATHEK SCREEN ---
 class LibraryScreen extends StatelessWidget {
   const LibraryScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('📖 Kettlebell Mediathek')),
+      appBar: AppBar(title: const Text('Kettlebell Mediathek')),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: exerciseLibrary.length,
@@ -509,14 +492,13 @@ class LibraryScreen extends StatelessWidget {
   }
 }
 
-// --- 5. STATS & ERFOLGE SCREEN ---
 class StatsAchievementsScreen extends StatelessWidget {
   const StatsAchievementsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('🏆 Stats & Erfolge')),
+      appBar: AppBar(title: const Text('Stats & Erfolge')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
