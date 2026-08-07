@@ -1,331 +1,386 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wakelock_plus/wakelock_plus.dart';
+import 'dart:math';
+import 'dart:async';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(const KettlebellApp());
-}
+void main() => runApp(KettlebellApp());
 
 class KettlebellApp extends StatelessWidget {
-  const KettlebellApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Kettlebell & Gamification',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
+        primaryColor: Colors.orange,
         scaffoldBackgroundColor: Colors.black,
-        colorScheme: const ColorScheme.dark(
-          primary: Colors.orange,
-          secondary: Colors.orangeAccent,
-        ),
       ),
-      home: const HauptMenuePage(),
+      home: HauptNavigationsPage(),
     );
   }
 }
 
-// ==========================================
-// DATENMODELL: UEBUNG
-// ==========================================
+// Datenstruktur für die Übungen
 class Uebung {
   final String name;
-  final String kategorie;
-  final int standardWiederholungen;
-  final String bildUrl;
   final String beschreibung;
+  final String muskeln;
+  final String kategorie;
+  final String bildUrl;
 
   Uebung({
     required this.name,
-    required this.kategorie,
-    required this.standardWiederholungen,
-    required this.bildUrl,
     required this.beschreibung,
+    required this.muskeln,
+    required this.kategorie,
+    required this.bildUrl,
   });
+}
 
-  static List<Uebung> alleUebungen = [
-    Uebung(
-      name: 'Kettlebell Swing',
-      kategorie: 'Ganzkoerper',
-      standardWiederholungen: 15,
-      bildUrl: 'https://via.placeholder.com/180',
-      beschreibung: 'Hüftdominante Bewegung. Rücken gerade halten, Explosivität aus der Hüfte nutzen.',
-    ),
-    Uebung(
+// Globale Listen und Statistiken
+final List<Uebung> alleUebungen = [
+  Uebung(
       name: 'Goblet Squat',
-      kategorie: 'Unterkoerper',
-      standardWiederholungen: 10,
-      bildUrl: 'https://via.placeholder.com/180',
-      beschreibung: 'Kettlebell vor der Brust halten, tief beugen, Knie zeigen nach außen.',
-    ),
-    Uebung(
+      beschreibung:
+          'Kettlebell vor der Brust halten. Füße etwa schulterbreit. Gesäß nach hinten unten führen.',
+      muskeln: 'Oberschenkel, Gesäß, Core',
+      kategorie: 'Unterkörper',
+      bildUrl: 'https://picsum.photos/id/20/400/600'),
+  Uebung(
+      name: 'Single-Leg Deadlift',
+      beschreibung:
+          'Auf einem Bein stehen, das andere nach hinten anheben. Hüfte nach hinten schieben.',
+      muskeln: 'Gesäß, hintere Oberschenkel, Rücken',
+      kategorie: 'Unterkörper',
+      bildUrl: 'https://picsum.photos/id/21/400/600'),
+  Uebung(
+      name: 'Bulgarian Split Squat',
+      beschreibung:
+          'Hinteren Fuß auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
+      muskeln: 'Beine, Gesäß, Gleichgewicht',
+      kategorie: 'Unterkörper',
+      bildUrl: 'https://picsum.photos/id/22/400/600'),
+  Uebung(
+      name: 'Reverse Lunge',
+      beschreibung:
+          'Kettlebell vor der Brust halten. Großen Schritt nach hinten machen.',
+      muskeln: 'Beine, Gesäß, Core',
+      kategorie: 'Unterkörper',
+      bildUrl: 'https://picsum.photos/id/23/400/600'),
+  Uebung(
+      name: 'Sumo Squat (3s Stop)',
+      beschreibung:
+          'Breiter Stand, Fußspitzen nach außen. Tief absenken, 3 Sekunden halten.',
+      muskeln: 'Innenschenkel, Gesäß, Beine',
+      kategorie: 'Unterkörper',
+      bildUrl: 'https://picsum.photos/id/24/400/600'),
+  Uebung(
+      name: 'Einarmiges Rudern',
+      beschreibung: 'Hand auf Knie abstützen. Kettlebell zur Hüfte ziehen.',
+      muskeln: 'Oberer Rücken, Latissimus, Bizeps',
+      kategorie: 'Rücken',
+      bildUrl: 'https://picsum.photos/id/25/400/600'),
+  Uebung(
+      name: 'Staggered Row',
+      beschreibung:
+          'Ausfallschritt, auf Oberschenkel abstützen und einarmig zur Hüfte rudern.',
+      muskeln: 'Rücken, Core',
+      kategorie: 'Rücken',
+      bildUrl: 'https://picsum.photos/id/26/400/600'),
+  Uebung(
+      name: 'High Pull',
+      beschreibung:
+          'Aus der Hüfte Schwung holen. Ellbogen führt nach oben/außen.',
+      muskeln: 'Rücken, Schultern, Hüfte',
+      kategorie: 'Rücken',
+      bildUrl: 'https://picsum.photos/id/27/400/600'),
+  Uebung(
+      name: 'Suitcase Carry',
+      beschreibung:
+          'Kettlebell einseitig wie einen Koffer tragen. Aufrecht gehen.',
+      muskeln: 'Rücken, Griffkraft, seitlicher Core',
+      kategorie: 'Rücken',
+      bildUrl: 'https://picsum.photos/id/28/400/600'),
+  Uebung(
       name: 'Overhead Press',
-      kategorie: 'Oberkoerper',
-      standardWiederholungen: 8,
-      bildUrl: 'https://via.placeholder.com/180',
-      beschreibung: 'Kettlebell aus der Rack-Position strikt über den Kopf drücken. Core anspannen.',
-    ),
-    Uebung(
-      name: 'Single Arm Row',
-      kategorie: 'Ruecken',
-      standardWiederholungen: 10,
-      bildUrl: 'https://via.placeholder.com/180',
-      beschreibung: 'Vorgebeugt abstützen, Kettlebell dynamisch zur Hüfte ziehen.',
-    ),
-    Uebung(
+      beschreibung: 'Aus der Rack-Position über den Kopf drücken.',
+      muskeln: 'Schultern, Trizeps, Core',
+      kategorie: 'Oberkörper',
+      bildUrl: 'https://picsum.photos/id/29/400/600'),
+  Uebung(
+      name: 'Push Press',
+      beschreibung: 'Kleine Kniebeuge, mit Beinschwung über Kopf drücken.',
+      muskeln: 'Schultern, Trizeps, Beine, Core',
+      kategorie: 'Oberkörper',
+      bildUrl: 'https://picsum.photos/id/30/400/600'),
+  Uebung(
+      name: 'Floor Press',
+      beschreibung: 'Auf dem Rücken liegen. Von der Brust nach oben drücken.',
+      muskeln: 'Brust, Trizeps, Schultern',
+      kategorie: 'Oberkörper',
+      bildUrl: 'https://picsum.photos/id/31/400/600'),
+  Uebung(
+      name: 'Quarter Get-Up',
+      beschreibung:
+          'Rückenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
+      muskeln: 'Schulterstabilität, Core',
+      kategorie: 'Oberkörper',
+      bildUrl: 'https://picsum.photos/id/32/400/600'),
+  Uebung(
       name: 'Russian Twist',
+      beschreibung:
+          'Sitzen, leicht zurücklehnen. Kettlebell von Seite zu Seite bewegen.',
+      muskeln: 'Schräge Bauchmuskeln',
       kategorie: 'Core',
-      standardWiederholungen: 20,
-      bildUrl: 'https://via.placeholder.com/180',
-      beschreibung: 'Auf den Boden setzen, Oberkörper leicht zurücklehnen, Gewicht seitlich rotieren.',
-    ),
+      bildUrl: 'https://picsum.photos/id/33/400/600'),
+  Uebung(
+      name: 'Kettlebell Sit-Up',
+      beschreibung: 'Rückenlage. Kettlebell vor der Brust halten. Aufrichten.',
+      muskeln: 'Gerade Bauchmuskulatur',
+      kategorie: 'Core',
+      bildUrl: 'https://picsum.photos/id/34/400/600'),
+  Uebung(
+      name: 'Plank Pull-Through',
+      beschreibung:
+          'Unterarmstütz. Kettlebell unter dem Körper auf die andere Seite ziehen.',
+      muskeln: 'Gesamte Bauchmuskulatur, Schulterstabilität',
+      kategorie: 'Core',
+      bildUrl: 'https://picsum.photos/id/35/400/600'),
+  Uebung(
+      name: 'Dead Bug',
+      beschreibung:
+          'Rückenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
+      muskeln: 'Tiefe Bauchmuskulatur',
+      kategorie: 'Core',
+      bildUrl: 'https://picsum.photos/id/36/400/600'),
+  Uebung(
+      name: 'Kettlebell Swing',
+      beschreibung: 'Aus der Hüfte schwingen. Kugel fliegt bis auf Brusthöhe.',
+      muskeln: 'Gesäß, Rücken, Core, Kondition',
+      kategorie: 'Ganzkörper',
+      bildUrl: 'https://picsum.photos/id/37/400/600'),
+  Uebung(
+      name: 'Clean',
+      beschreibung:
+          'Aus dem Schwung eng am Körper in die Rack-Position führen.',
+      muskeln: 'Ganzkörper, Koordination',
+      kategorie: 'Ganzkörper',
+      bildUrl: 'https://picsum.photos/id/38/400/600'),
+  Uebung(
+      name: 'Turkish Get-Up',
+      beschreibung:
+          'Vom Liegen mit ausgestrecktem Arm schrittweise zum Stand aufstehen.',
+      muskeln: 'Gesamter Körper, Stabilität, Mobilität',
+      kategorie: 'Ganzkörper',
+      bildUrl: 'https://picsum.photos/id/39/400/600'),
+];
+
+int statistikGesamtMinuten = 0;
+int statistikAnzahlWorkouts = 0;
+Map<String, int> uebungsZaehler = {};
+
+class HauptNavigationsPage extends StatefulWidget {
+  @override
+  _HauptNavigationsPageState createState() => _HauptNavigationsPageState();
+}
+
+class _HauptNavigationsPageState extends State<HauptNavigationsPage> {
+  int _aktuellerIndex = 0;
+
+  final List<Widget> _seiten = [
+    SlotMachinePage(),
+    MediathekPage(),
+    StatistikPage(),
   ];
-}
-
-// ==========================================
-// GAMIFICATION MANAGER
-// ==========================================
-class GamificationManager {
-  static int xp = 0;
-  static int gesamtWorkouts = 0;
-  static int gesamtMinuten = 0;
-  static int streakWochen = 0;
-
-  static Future<void> loadStats() async {
-    final prefs = await SharedPreferences.getInstance();
-    xp = prefs.getInt('xp') ?? 0;
-    gesamtWorkouts = prefs.getInt('gesamtWorkouts') ?? 0;
-    gesamtMinuten = prefs.getInt('gesamtMinuten') ?? 0;
-    streakWochen = prefs.getInt('streakWochen') ?? 0;
-  }
-
-  static Future<void> addWorkoutErgebnis({
-    required int minuten,
-    required int amrapRunden,
-    required bool isAmrap,
-  }) async {
-    final prefs = await SharedPreferences.getInstance();
-    
-    // XP Berechnung: 10 XP pro Min + 25 XP pro Runden
-    int erhalteneXp = (minuten * 10) + (amrapRunden * 25);
-    xp += erhalteneXp;
-    gesamtWorkouts += 1;
-    gesamtMinuten += minuten;
-
-    await prefs.setInt('xp', xp);
-    await prefs.setInt('gesamtWorkouts', gesamtWorkouts);
-    await prefs.setInt('gesamtMinuten', gesamtMinuten);
-  }
-
-  static Map<String, dynamic> getLevelInfo() {
-    int level = (xp ~/ 300) + 1;
-    int xpImLevel = xp % 300;
-    int benoetigteXp = 300;
-    double fortschritt = xpImLevel / benoetigteXp;
-
-    String levelName = 'Anfänger';
-    if (level > 3) levelName = 'Kettlebell Fortgeschrittener';
-    if (level > 7) levelName = 'Eisen-Athlet';
-    if (level > 10) levelName = 'Master of Swing';
-
-    return {
-      'level': level,
-      'name': levelName,
-      'xpImLevel': xpImLevel,
-      'benoetigteXp': benoetigteXp,
-      'fortschritt': fortschritt > 1.0 ? 1.0 : fortschritt,
-    };
-  }
-
-  static List<Map<String, dynamic>> checkAchievements() {
-    return [
-      {
-        'titel': 'Erster Schritt',
-        'sub': 'Schließe 1 Workout ab',
-        'icon': Icons.star,
-        'done': gesamtWorkouts >= 1,
-      },
-      {
-        'titel': 'Dauerbrenner',
-        'sub': '30 Minuten Gesamttraining',
-        'icon': Icons.timer,
-        'done': gesamtMinuten >= 30,
-      },
-      {
-        'titel': 'XP Sammler',
-        'sub': 'Erreiche 500 Gesamt-XP',
-        'icon': Icons.bolt,
-        'done': xp >= 500,
-      },
-      {
-        'titel': 'Kettlebell Meister',
-        'sub': 'Schließe 10 Workouts ab',
-        'icon': Icons.fitness_center,
-        'done': gesamtWorkouts >= 10,
-      },
-    ];
-  }
-}
-
-// ==========================================
-// HAUPTMENÜ SCREEN
-// ==========================================
-class HauptMenuePage extends StatelessWidget {
-  const HauptMenuePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('🏋️ Kettlebell Workout App')),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ElevatedButton.icon(
-              icon: const Icon(Icons.play_arrow),
-              label: const Text('AMRAP Workout Starten (10 Min)'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orange,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.all(18),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (c) => AktiverAMRAPBildschirm(
-                      gesamtMinuten: 10,
-                      aktuellesWorkout: Uebung.alleUebungen,
-                      repsMap: const {},
-                    ),
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: 15),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.library_books),
-              label: const Text('Übungs-Mediathek'),
-              style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(18)),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (c) => const MediathekPage()));
-              },
-            ),
-            const SizedBox(height: 15),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.bar_chart),
-              label: const Text('Fitness Zentrale (Statistik)'),
-              style: ElevatedButton.styleFrom(padding: const EdgeInsets.all(18)),
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (c) => const StatistikPage()));
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ==========================================
-// SCREEN 1: AKTIVER AMRAP BILDSCHIRM
-// ==========================================
-class AktiverAMRAPBildschirm extends StatefulWidget {
-  final int gesamtMinuten;
-  final List<Uebung> aktuellesWorkout;
-  final Map<String, int> repsMap;
-
-  const AktiverAMRAPBildschirm({
-    super.key,
-    required this.gesamtMinuten,
-    required this.aktuellesWorkout,
-    required this.repsMap,
-  });
-
-  @override
-  State<AktiverAMRAPBildschirm> createState() => _AktiverAMRAPBildschirmState();
-}
-
-class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
-  int _gesamtSekunden = 0;
-  int _rundenZaehler = 0;
-  Timer? _timer;
-
-  @override
-  void initState() {
-    super.initState();
-    WakelockPlus.enable();
-    _gesamtSekunden = widget.gesamtMinuten * 60;
-    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (_gesamtSekunden > 1) {
-        setState(() => _gesamtSekunden--);
-      } else {
-        _timer?.cancel();
-        _beendet();
-      }
-    });
-  }
-
-  void _beendet() async {
-    int gespielteMinuten = widget.gesamtMinuten - (_gesamtSekunden ~/ 60);
-    if (gespielteMinuten == 0 && _gesamtSekunden > 0) gespielteMinuten = 1;
-
-    await GamificationManager.addWorkoutErgebnis(
-      minuten: gespielteMinuten,
-      amrapRunden: _rundenZaehler,
-      isAmrap: true,
-    );
-
-    if (!mounted) return;
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (c) => AlertDialog(
-        title: const Text('⏱️ Zeit um / Beendet!'),
-        content: Text('Hervorragend! Du hast in $gespielteMinuten Minuten stolze $_rundenZaehler Runden geschafft und massive XP erhalten!'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            child: const Text('Wahnsinn!'),
-          )
+      body: _seiten[_aktuellerIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _aktuellerIndex,
+        selectedItemColor: Colors.orange,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _aktuellerIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.casino), label: 'Slot Machine'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.fitness_center), label: 'Mediathek'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.analytics), label: 'Statistik'),
         ],
       ),
     );
   }
+}
 
-  void _zeigeUebungsInfo(Uebung u) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.grey[950],
-        title: Text(u.name, style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
+class SlotMachinePage extends StatefulWidget {
+  @override
+  _SlotMachinePageState createState() => _SlotMachinePageState();
+}
+
+class _SlotMachinePageState extends State<SlotMachinePage> {
+  List<Uebung?> _aktuellesWorkout = [null, null, null, null, null];
+
+  void _spinSlotMachine() {
+    final random = Random();
+    setState(() {
+      _aktuellesWorkout = [
+        alleUebungen[random.nextInt(5)],
+        alleUebungen[5 + random.nextInt(4)],
+        alleUebungen[9 + random.nextInt(4)],
+        alleUebungen[13 + random.nextInt(4)],
+        alleUebungen[17 + random.nextInt(3)],
+      ];
+    });
+  }
+
+  void _startWorkout() {
+    if (_aktuellesWorkout.contains(null)) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        fullscreenDialog: true,
+        builder: (context) => AktiverWorkoutBildschirm(
+            aktuellesWorkout: _aktuellesWorkout.cast<Uebung>()),
+      ),
+    ).then((_) {
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title: Text('🎰 One-kettled bandit'), backgroundColor: Colors.black),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: u.bildUrl.startsWith('http')
-                  ? Image.network(u.bildUrl, height: 180, fit: BoxFit.contain, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 80, color: Colors.orange))
-                  : Image.asset(u.bildUrl, height: 180, fit: BoxFit.contain, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 80, color: Colors.orange)),
+            Text('Dein heutiger Trainingsplan:',
+                style: TextStyle(fontSize: 18, color: Colors.grey)),
+            SizedBox(height: 15),
+            Card(
+              color: Colors.grey[900],
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  children: _aktuellesWorkout.asMap().entries.map((entry) {
+                    return ListTile(
+                      leading: CircleAvatar(
+                          backgroundColor: Colors.orange,
+                          child: Text('${entry.key + 1}',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold))),
+                      title: Text(entry.value?.name ?? '?',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
-            const SizedBox(height: 15),
-            Text(u.beschreibung, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4)),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _spinSlotMachine,
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12)),
+              child: Text('SPIN! 🎰',
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold)),
+            ),
+            SizedBox(height: 12),
+            if (!_aktuellesWorkout.contains(null))
+              ElevatedButton(
+                onPressed: _startWorkout,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 40, vertical: 12)),
+                child: Text('WORKOUT STARTEN ▶️',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold)),
+              ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class AktiverWorkoutBildschirm extends StatefulWidget {
+  final List<Uebung> aktuellesWorkout;
+
+  AktiverWorkoutBildschirm({required this.aktuellesWorkout});
+
+  @override
+  _AktiverWorkoutBildschirmState createState() =>
+      _AktiverWorkoutBildschirmState();
+}
+
+class _AktiverWorkoutBildschirmState extends State<AktiverWorkoutBildschirm> {
+  int _aktuelleUebungIndex = 0;
+  int _verbleibendeSekunden = 60;
+  int _abgelaufeneGesamtMinuten = 0;
+  Timer? _uebungsTimer;
+
+  @override
+  void initState() {
+    super.initState();
+    _starteTimer();
+  }
+
+  void _starteTimer() {
+    _uebungsTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        if (_verbleibendeSekunden > 1) {
+          _verbleibendeSekunden--;
+        } else {
+          _verbleibendeSekunden = 60;
+          _abgelaufeneGesamtMinuten++;
+          statistikGesamtMinuten++;
+
+          String uebungsName =
+              widget.aktuellesWorkout[_aktuelleUebungIndex].name;
+          uebungsZaehler[uebungsName] = (uebungsZaehler[uebungsName] ?? 0) + 1;
+
+          if (_abgelaufeneGesamtMinuten >= 30) {
+            _uebungsTimer?.cancel();
+            statistikAnzahlWorkouts++;
+            _zeigeWorkoutBeendetDialog();
+          } else {
+            _aktuelleUebungIndex = (_aktuelleUebungIndex + 1) % 5;
+          }
+        }
+      });
+    });
+  }
+
+  void _zeigeWorkoutBeendetDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text('🎉 Gratulation!'),
+        content: Text('Du hast das 30-minütige Kettlebell-Workout beendet!'),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Zurück zum Workout ↩️', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
-          )
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: Text('Super!'))
         ],
       ),
     );
@@ -333,466 +388,361 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
 
   @override
   void dispose() {
-    WakelockPlus.disable();
-    _timer?.cancel();
+    _uebungsTimer?.cancel();
     super.dispose();
   }
 
-  String _formatTime(int sekunden) {
-    int m = sekunden ~/ 60;
-    int s = sekunden % 60;
-    return '$m:${s.toString().padLeft(2, '0')}';
-  }
-
   @override
   Widget build(BuildContext context) {
+    Uebung uebung = widget.aktuellesWorkout[_aktuelleUebungIndex];
+
     return Scaffold(
-      appBar: AppBar(title: const Text('🔄 AMRAP Zirkel-Board'), automaticallyImplyLeading: false),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              color: Colors.grey[950],
-              width: double.infinity,
-              child: Column(
-                children: [
-                  Text(_formatTime(_gesamtSekunden), style: const TextStyle(fontSize: 55, fontWeight: FontWeight.bold, color: Colors.orange)),
-                  Text('Verbleibende Zeit von ${widget.gesamtMinuten} Min', style: const TextStyle(color: Colors.grey)),
-                  const SizedBox(height: 5),
-                  Text('Abgeschlossene Runden: $_rundenZaehler', style: const TextStyle(fontSize: 18, color: Colors.green, fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(10),
-                itemCount: widget.aktuellesWorkout.length,
-                itemBuilder: (context, idx) {
-                  final u = widget.aktuellesWorkout[idx];
-                  final reps = widget.repsMap[u.name] ?? u.standardWiederholungen;
-                  return Card(
-                    color: Colors.grey[900],
-                    margin: const EdgeInsets.symmetric(vertical: 5),
-                    child: ListTile(
-                      onTap: () => _zeigeUebungsInfo(u),
-                      leading: CircleAvatar(backgroundColor: Colors.orange[800], child: Text('${idx + 1}', style: const TextStyle(color: Colors.white))),
-                      title: Text(u.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      subtitle: const Row(
-                        children: [
-                          Icon(Icons.info_outline, size: 14, color: Colors.grey),
-                          SizedBox(width: 4),
-                          Text('Anleitung zeigen', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                        ],
-                      ),
-                      trailing: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(10)),
-                        child: Text('$reps Reps', style: const TextStyle(color: Colors.orange, fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        _timer?.cancel();
-                        _beendet();
-                      },
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey[800], padding: const EdgeInsets.symmetric(vertical: 15)),
-                      child: const Text('Beenden', style: TextStyle(color: Colors.white)),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red[900], padding: const EdgeInsets.symmetric(vertical: 15)),
-                      child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-                  Expanded(
-                    flex: 2,
-                    child: ElevatedButton(
-                      onPressed: () => setState(() => _rundenZaehler++),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green[700], padding: const EdgeInsets.symmetric(vertical: 20)),
-                      child: const Text('RUNDEN (+1) 🏁', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ==========================================
-// SCREEN 2: MEDIATHEK PAGE
-// ==========================================
-class MediathekPage extends StatefulWidget {
-  const MediathekPage({super.key});
-  @override
-  State<MediathekPage> createState() => _MediathekPageState();
-}
-
-class _MediathekPageState extends State<MediathekPage> {
-  String _filter = 'Alle';
-  final Map<String, int> _customReps = {};
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSavedReps();
-  }
-
-  Future<void> _loadSavedReps() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      for (var u in Uebung.alleUebungen) {
-        _customReps[u.name] = prefs.getInt('reps_${u.name}') ?? u.standardWiederholungen;
-      }
-    });
-  }
-
-  Future<void> _updateReps(String name, int neuWert) async {
-    if (neuWert < 1) return;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('reps_$name', neuWert);
-    setState(() {
-      _customReps[name] = neuWert;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final liste = Uebung.alleUebungen.where((u) => _filter == 'Alle' || u.kategorie == _filter).toList();
-    return Scaffold(
-      appBar: AppBar(title: const Text('Mediathek')),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: DropdownButton<String>(
-              value: _filter,
-              isExpanded: true,
-              onChanged: (v) => setState(() => _filter = v!),
-              items: ['Alle', 'Unterkoerper', 'Ruecken', 'Oberkoerper', 'Core', 'Ganzkoerper']
-                  .map((s) => DropdownMenuItem(value: s, child: Text(s)))
-                  .toList(),
+          Positioned(
+            top: 0,
+            left: 0,
+            right: 0,
+            height: MediaQuery.of(context).size.height * 0.60,
+            child: Image.network(
+              uebung.bildUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (c, e, s) => Container(
+                  color: Colors.grey[900],
+                  child: Icon(Icons.fitness_center,
+                      size: 80, color: Colors.orange)),
             ),
           ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: liste.length,
-              itemBuilder: (c, i) {
-                final u = liste[i];
-                final aktuelleReps = _customReps[u.name] ?? u.standardWiederholungen;
-                return ListTile(
-                  title: Text(u.name),
-                  subtitle: Text(u.kategorie),
-                  trailing: Text('$aktuelleReps Reps', style: const TextStyle(color: Colors.orange)),
-                  onTap: () => _showDetails(context, u),
-                );
-              },
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.black.withOpacity(0.7),
+                  Colors.transparent,
+                  Colors.black
+                ],
+                stops: [0.0, 0.4, 0.85],
+              ),
             ),
-          )
+          ),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('ÜBUNG ${_aktuelleUebungIndex + 1} VON 5',
+                          style: TextStyle(
+                              color: Colors.orange,
+                              fontWeight: FontWeight.bold)),
+                      Text('Gesamt: $_abgelaufeneGesamtMinuten/30 Min',
+                          style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                ),
+                Spacer(),
+                Container(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Text(uebung.name,
+                          style: TextStyle(
+                              fontSize: 28, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center),
+                      SizedBox(height: 5),
+                      Text(uebung.beschreibung,
+                          style:
+                              TextStyle(fontSize: 14, color: Colors.grey[300]),
+                          textAlign: TextAlign.center),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text('Abbrechen 🛑',
+                                  style: TextStyle(
+                                      color: Colors.red, fontSize: 16))),
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              SizedBox(
+                                  width: 80,
+                                  height: 80,
+                                  child: CircularProgressIndicator(
+                                      value: _verbleibendeSekunden / 60,
+                                      strokeWidth: 6,
+                                      valueColor: AlwaysStoppedAnimation(
+                                          Colors.orange))),
+                              Text(
+                                  '0:${_verbleibendeSekunden.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
   }
-
-  void _showDetails(BuildContext context, Uebung u) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter modalState) {
-            final aktuelleReps = _customReps[u.name] ?? u.standardWiederholungen;
-            return DraggableScrollableSheet(
-              initialChildSize: 0.95,
-              builder: (context, scrollController) => Container(
-                decoration: BoxDecoration(color: Colors.grey[950], borderRadius: const BorderRadius.vertical(top: Radius.circular(20))),
-                child: Stack(
-                  children: [
-                    ListView(
-                      controller: scrollController,
-                      padding: const EdgeInsets.all(20),
-                      children: [
-                        const SizedBox(height: 40),
-                        Text(u.name, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.orange)),
-                        const SizedBox(height: 5),
-                        Text(u.kategorie, style: const TextStyle(color: Colors.grey)),
-                        const SizedBox(height: 20),
-                        Container(
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text('Wiederholungen:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.remove_circle_outline, color: Colors.orange),
-                                    onPressed: () async {
-                                      await _updateReps(u.name, aktuelleReps - 1);
-                                      modalState(() {});
-                                    },
-                                  ),
-                                  Text('$aktuelleReps', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-                                  IconButton(
-                                    icon: const Icon(Icons.add_circle_outline, color: Colors.orange),
-                                    onPressed: () async {
-                                      await _updateReps(u.name, aktuelleReps + 1);
-                                      modalState(() {});
-                                    },
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(15),
-                          child: u.bildUrl.startsWith('http')
-                              ? Image.network(u.bildUrl, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 100))
-                              : Image.asset(u.bildUrl, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 100)),
-                        ),
-                        const SizedBox(height: 20),
-                        const Text('Ausführung:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange)),
-                        const SizedBox(height: 10),
-                        Text(u.beschreibung, style: const TextStyle(fontSize: 16, height: 1.5)),
-                      ],
-                    ),
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.black54,
-                        child: IconButton(
-                          icon: const Icon(Icons.close, color: Colors.white),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    ).then((_) => setState(() {}));
-  }
 }
 
-// ==========================================
-// SCREEN 3: STATISTIK PAGE
-// ==========================================
-class StatistikPage extends StatefulWidget {
-  const StatistikPage({super.key});
-
+class MediathekPage extends StatefulWidget {
   @override
-  State<StatistikPage> createState() => _StatistikPageState();
+  _MediathekPageState createState() => _MediathekPageState();
 }
 
-class _StatistikPageState extends State<StatistikPage> {
-  @override
-  void initState() {
-    super.initState();
-    GamificationManager.loadStats().then((_) => setState(() {}));
-  }
+class _MediathekPageState extends State<MediathekPage> {
+  String _ausgewaehlterFilter = 'Alle';
+  String _ausgewaehlteSortierung = 'Alphabetisch (A-Z)';
+
+  final List<String> _kategorien = [
+    'Alle',
+    'Unterkörper',
+    'Rücken',
+    'Oberkörper',
+    'Core',
+    'Ganzkörper'
+  ];
+  final List<String> _sortierOptionen = [
+    'Alphabetisch (A-Z)',
+    'Nach Muskelgruppe'
+  ];
 
   @override
   Widget build(BuildContext context) {
-    final lvlInfo = GamificationManager.getLevelInfo();
-    final achievements = GamificationManager.checkAchievements();
+    List<Uebung> gefilterteListe = alleUebungen.where((uebung) {
+      if (_ausgewaehlterFilter == 'Alle') return true;
+      return uebung.kategorie == _ausgewaehlterFilter;
+    }).toList();
+
+    if (_ausgewaehlteSortierung == 'Alphabetisch (A-Z)') {
+      gefilterteListe.sort((a, b) => a.name.compareTo(b.name));
+    } else if (_ausgewaehlteSortierung == 'Nach Muskelgruppe') {
+      gefilterteListe.sort((a, b) => a.kategorie.compareTo(b.kategorie));
+    }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('💪 Fitness Zentrale')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      appBar: AppBar(
+          title: Text('📚 Übungs-Mediathek'), backgroundColor: Colors.black),
+      body: Column(
+        children: [
+          Container(
+            color: Colors.grey[950],
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _ausgewaehlterFilter,
+                    decoration: InputDecoration(
+                        labelText: 'Filter',
+                        labelStyle: TextStyle(color: Colors.orange)),
+                    items: _kategorien
+                        .map((kat) => DropdownMenuItem(
+                            value: kat,
+                            child: Text(kat, style: TextStyle(fontSize: 14))))
+                        .toList(),
+                    onChanged: (wert) {
+                      setState(() {
+                        _ausgewaehlterFilter = wert!;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(width: 15),
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    value: _ausgewaehlteSortierung,
+                    decoration: InputDecoration(
+                        labelText: 'Sortieren',
+                        labelStyle: TextStyle(color: Colors.orange)),
+                    items: _sortierOptionen
+                        .map((opt) => DropdownMenuItem(
+                            value: opt,
+                            child: Text(opt, style: TextStyle(fontSize: 14))))
+                        .toList(),
+                    onChanged: (wert) {
+                      setState(() {
+                        _ausgewaehlteSortierung = wert!;
+                      });
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: gefilterteListe.isEmpty
+                ? Center(
+                    child: Text('Keine Übungen für diesen Filter gefunden.',
+                        style: TextStyle(color: Colors.grey)))
+                : ListView.builder(
+                    itemCount: gefilterteListe.length,
+                    itemBuilder: (context, index) {
+                      Uebung uebung = gefilterteListe[index];
+                      return Card(
+                        color: Colors.grey[900],
+                        margin:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                        child: ListTile(
+                          leading:
+                              Icon(Icons.fitness_center, color: Colors.orange),
+                          title: Text(uebung.name,
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          subtitle: Text(
+                              '${uebung.kategorie} • ${uebung.muskeln}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey)),
+                          trailing: Icon(Icons.arrow_forward_ios,
+                              size: 14, color: Colors.grey),
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.grey[950],
+                              builder: (context) => Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(uebung.name,
+                                          style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.orange)),
+                                      SizedBox(height: 5),
+                                      Text('Kategorie: ${uebung.kategorie}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white70)),
+                                      Text('Fokus: ${uebung.muskeln}',
+                                          style: TextStyle(
+                                              fontStyle: FontStyle.italic,
+                                              color: Colors.grey)),
+                                      Divider(color: Colors.grey),
+                                      Text('Ausführung:',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold)),
+                                      SizedBox(height: 5),
+                                      Text(uebung.beschreibung,
+                                          style: TextStyle(
+                                              fontSize: 15, height: 1.4)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                  ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class StatistikPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+          title: Text('📊 Deine Erfolge'), backgroundColor: Colors.black),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [Colors.grey[900]!, Colors.grey[850]!]),
-                borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: Colors.orange.withOpacity(0.3)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('LEVEL ${lvlInfo['level']}', style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.orange)),
-                      Text('${GamificationManager.xp} Gesamt-XP', style: const TextStyle(color: Colors.grey)),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Text(lvlInfo['name'], style: const TextStyle(fontSize: 16, color: Colors.white70, fontStyle: FontStyle.italic)),
-                  const SizedBox(height: 15),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: LinearProgressIndicator(
-                      value: lvlInfo['fortschritt'],
-                      minHeight: 12,
-                      backgroundColor: Colors.grey[800],
-                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.orange),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('${lvlInfo['xpImLevel']} XP', style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                      Text('Nächstes Level bei: ${lvlInfo['benoetigteXp']} XP', style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
-                    child: Column(
-                      children: [
-                        Icon(Icons.local_fire_department, color: GamificationManager.streakWochen > 0 ? Colors.red : Colors.grey, size: 36),
-                        const SizedBox(height: 5),
-                        Text('${GamificationManager.streakWochen} Wochen', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const Text('Streak (>=2x/W)', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                      ],
+                  child: Card(
+                    color: Colors.grey[900],
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Text('$statistikGesamtMinuten',
+                              style: TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange)),
+                          Text('Minuten trainiert',
+                              style: TextStyle(color: Colors.grey),
+                              textAlign: TextAlign.center),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 10),
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.fitness_center, color: Colors.green, size: 36),
-                        const SizedBox(height: 5),
-                        Text('${GamificationManager.gesamtWorkouts}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const Text('Workouts', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
-                    child: Column(
-                      children: [
-                        const Icon(Icons.timer, color: Colors.blue, size: 36),
-                        const SizedBox(height: 5),
-                        Text('${GamificationManager.gesamtMinuten}m', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                        const Text('Gesamtzeit', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                      ],
+                  child: Card(
+                    color: Colors.grey[900],
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Text('$statistikAnzahlWorkouts',
+                              style: TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green)),
+                          Text('Workouts beendet',
+                              style: TextStyle(color: Colors.grey),
+                              textAlign: TextAlign.center),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 25),
-            const Text('🏆 Trophäen-Wand (Achievements)', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-            const SizedBox(height: 10),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                childAspectRatio: 1.1,
-              ),
-              itemCount: achievements.length,
-              itemBuilder: (context, idx) {
-                final ach = achievements[idx];
-                final bool done = ach['done'];
-
-                return Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: done ? Colors.grey[900] : Colors.grey[950]!.withOpacity(0.4),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: done ? Colors.orange.withOpacity(0.6) : Colors.grey[900]!,
-                      width: done ? 1.5 : 1,
+            SizedBox(height: 25),
+            Text('Häufigkeit der Übungen:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 10),
+            Expanded(
+              child: uebungsZaehler.isEmpty
+                  ? Center(
+                      child: Text(
+                          'Noch keine Daten vorhanden.\nStarte ein Workout!',
+                          style: TextStyle(color: Colors.grey),
+                          textAlign: TextAlign.center))
+                  : ListView(
+                      children: uebungsZaehler.entries.map((entry) {
+                        return ListTile(
+                          title: Text(entry.key),
+                          trailing: Chip(
+                            backgroundColor: Colors.orange,
+                            label: Text('${entry.value}x',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        );
+                      }).toList(),
                     ),
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: 45,
-                            height: 45,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: done
-                                  ? const LinearGradient(colors: [Colors.amber, Colors.orange])
-                                  : LinearGradient(colors: [Colors.grey[800]!, Colors.grey[700]!]),
-                            ),
-                          ),
-                          Icon(
-                            done ? ach['icon'] : Icons.lock,
-                            color: done ? Colors.black : Colors.grey[500],
-                            size: 22,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        ach['titel'],
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                          color: done ? Colors.white : Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        ach['sub'],
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 10, color: done ? Colors.grey[400] : Colors.grey[700]),
-                      ),
-                    ],
-                  ),
-                );
-              },
             ),
           ],
         ),
