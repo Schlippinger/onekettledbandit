@@ -1,599 +1,970 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-void main() {
-  runApp(const OneKettledBanditApp());
-}
-
-class OneKettledBanditApp extends StatelessWidget {
-  const OneKettledBanditApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'One-kettled bandit',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFFF6B00),
-          brightness: Brightness.dark,
-        ),
-        scaffoldBackgroundColor: const Color(0xFF121212),
-      ),
-      home: const MainNavigationScreen(),
-    );
-  }
-}
-
-// ==========================================
-// MODELLE & DATEN
-// ==========================================
-
-enum Schwierigkeit { Anfanger, Fortgeschritten, Profi }
-
-class Uebung {
-  final String id;
-  final String name;
-  final String beschreibung;
-  final String muskeln;
-  final String kategorie;
-  final String bildUrl;
-  final int standardWiederholungen;
-  final Schwierigkeit schwierigkeit;
-
-  const Uebung({
-    required this.id,
-    required this.name,
-    required this.beschreibung,
-    required this.muskeln,
-    required this.kategorie,
-    required this.bildUrl,
-    required this.standardWiederholungen,
-    required this.schwierigkeit,
-  });
-}
-
-class CustomWorkout {
-  final String id;
-  final String name;
-  final List<String> uebungIds;
-
-  CustomWorkout({
-    required this.id,
-    required this.name,
-    required this.uebungIds,
-  });
-
-  Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'uebungIds': uebungIds,
-      };
-
-  factory CustomWorkout.fromJson(Map<String, dynamic> json) => CustomWorkout(
-        id: json['id'],
-        name: json['name'],
-        uebungIds: List<String>.from(json['uebungIds']),
-      );
-}
-
-class ExerciseData {
-  static const List<Uebung> alleUebungen = [
-    // UNTERKÖRPER
-    Uebung(id: 'gobletsquat', name: 'Goblet Squat', beschreibung: 'Kettlebell vor der Brust halten. Fuesse schulterbreit. Gesaess nach hinten absenken.', muskeln: 'Oberschenkel, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'assets/gobletsquat.png', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'singlelegdeadlift', name: 'Single-Leg Deadlift', beschreibung: 'Einbeinig stehen, Huefte nach hinten schieben, Kettlebell kontrolliert senken.', muskeln: 'Beinrueckseite, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/21/400/600', standardWiederholungen: 8, schwierigkeit: Schwierigkeit.Fortgeschritten),
-    Uebung(id: 'bulgariansplitsquat', name: 'Bulgarian Split Squat', beschreibung: 'Hinterer Fuss erhöht ablegen. Kettlebell vor der Brust. Tief absenken.', muskeln: 'Beine, Balance', kategorie: 'Unterkoerper', bildUrl: 'assets/bulgariansplitsquad.png', standardWiederholungen: 8, schwierigkeit: Schwierigkeit.Fortgeschritten),
-    Uebung(id: 'reverselunge', name: 'Reverse Lunge', beschreibung: 'Aufrechter Stand. Weiten Schritt nach hinten machen. Knie fast zum Boden.', muskeln: 'Beine, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/23/400/600', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'sumosquat', name: 'Sumo Squat', beschreibung: 'Breiter Stand, Zehen nach aussen. Tief absenken.', muskeln: 'Adduktoren, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/24/400/600', standardWiederholungen: 12, schwierigkeit: Schwierigkeit.Anfanger),
-    
-    // RÜCKEN & ZUG
-    Uebung(id: 'plankrow', name: 'Plank Row', beschreibung: 'In stabiler Liegestuetzposition aufstützen. Die Kugel abwechselnd zur Huefte ziehen.', muskeln: 'Ruecken, Core, Bizeps', kategorie: 'Ruecken', bildUrl: 'assets/plankrow.png', standardWiederholungen: 8, schwierigkeit: Schwierigkeit.Fortgeschritten),
-    Uebung(id: 'staggeredrow', name: 'Staggered Row', beschreibung: 'Versetzter Stand. Gewicht auf vorderem Bein. Einarmig rudern.', muskeln: 'Ruecken, Latissimus', kategorie: 'Ruecken', bildUrl: 'https://picsum.photos/id/26/400/600', standardWiederholungen: 8, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'highpull', name: 'High Pull', beschreibung: 'Explosiv aus der Huefte nach oben ziehen. Ellbogen fuehrt die Bewegung.', muskeln: 'Oberer Ruecken, Schultern', kategorie: 'Ruecken', bildUrl: 'assets/highpull.png', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Fortgeschritten),
-    Uebung(id: 'goodmorning', name: 'Good Morning', beschreibung: 'Kugel vor der Brust halten. Mit geradem Ruecken aus der Huefte nach vorne neigen.', muskeln: 'Rückenstrecker, Beinrückseite', kategorie: 'Ruecken', bildUrl: 'https://picsum.photos/id/40/400/600', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'pullover', name: 'Pullover', beschreibung: 'Auf dem Rücken liegen, Kugel mit leicht gebeugten Armen hinter den Kopf führen und zurückziehen.', muskeln: 'Latissimus, Brust, Core', kategorie: 'Ruecken', bildUrl: 'https://picsum.photos/id/41/400/600', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Anfanger),
-
-    // OBERKÖRPER & DRUCK
-    Uebung(id: 'overheadpress', name: 'Overhead Press', beschreibung: 'Aus der Rack-Position gerade nach oben druecken. Core fest halten.', muskeln: 'Schultern, Trizeps', kategorie: 'Oberkoerper', bildUrl: 'assets/overheadpress.png', standardWiederholungen: 6, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'pushpress', name: 'Push Press', beschreibung: 'Leichter Schwung aus den Beinen nutzen, um die Kugel nach oben zu druecken.', muskeln: 'Schultern, Beine', kategorie: 'Oberkoerper', bildUrl: 'https://picsum.photos/id/30/400/600', standardWiederholungen: 8, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'floorpress', name: 'Floor Press', beschreibung: 'Auf dem Boden liegend die Kugel nach oben druecken. Ellbogen beruehrt kurz Boden.', muskeln: 'Brust, Trizeps', kategorie: 'Oberkoerper', bildUrl: 'assets/floorpress.png', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'seatedpress', name: 'Seated Press', beschreibung: 'Auf dem Boden sitzend mit gestreckten Beinen die Kugel ueber Kopf druecken.', muskeln: 'Schultern, Rumpf-Stabilitaet', kategorie: 'Oberkoerper', bildUrl: 'https://picsum.photos/id/42/400/600', standardWiederholungen: 8, schwierigkeit: Schwierigkeit.Fortgeschritten),
-    Uebung(id: 'tallkneelingpress', name: 'Tall Kneeling Press', beschreibung: 'Auf beiden Knien stehend aufrecht die Kugel ueber Kopf druecken.', muskeln: 'Schultern, Gesaess, Core', kategorie: 'Oberkoerper', bildUrl: 'https://picsum.photos/id/43/400/600', standardWiederholungen: 8, schwierigkeit: Schwierigkeit.Anfanger),
-
-    // CORE & MOBILITÄT
-    Uebung(id: 'halo', name: 'Halo', beschreibung: 'Die Kugel kopfüber eng um den Kopf kreisen lassen.', muskeln: 'Schultermobilität, Core', kategorie: 'Core', bildUrl: 'https://picsum.photos/id/44/400/600', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'tallkneelinghalo', name: 'Tall Kneeling Halo', beschreibung: 'Kniend die Kugel eng um den Kopf kreisen lassen. Hüfte voll gestreckt halten.', muskeln: 'Schultern, Tiefer Core', kategorie: 'Core', bildUrl: 'https://picsum.photos/id/45/400/600', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'pressout', name: 'Press Out', beschreibung: 'In der Hocke oder im Stand die Kugel auf Brusthöhe nach vorne wegdrücken und zurückziehen.', muskeln: 'Bauchmuskeln, Schultern', kategorie: 'Core', bildUrl: 'https://picsum.photos/id/46/400/600', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Fortgeschritten),
-    Uebung(id: 'russiantwist', name: 'Russian Twist', beschreibung: 'Sitzend, Beine leicht angehoben. Kugel von links nach rechts bewegen.', muskeln: 'Schraege Bauchmuskeln', kategorie: 'Core', bildUrl: 'https://picsum.photos/id/33/400/600', standardWiederholungen: 16, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'kettlebellsitup', name: 'Kettlebell Sit-Up', beschreibung: 'Rueckenlage, Kugel vor der Brust. Kontrolliert aufsetzen.', muskeln: 'Bauchmuskeln', kategorie: 'Core', bildUrl: 'assets/kettlebellsitup.png', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'plankpullthrough', name: 'Plank Pull-Through', beschreibung: 'In Liegestuetzposition die Kugel unter dem Körper durchziehen.', muskeln: 'Core-Stabilitaet', kategorie: 'Core', bildUrl: 'assets/plankpullthrough.png', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Fortgeschritten),
-
-    // GANZKÖRPER
-    Uebung(id: 'kettlebellswing', name: 'Kettlebell Swing', beschreibung: 'Hüft-Scharnier Bewegung. Kugel durch Beinschwung auf Brusthöhe bringen.', muskeln: 'Gesaess, Ruecken, Ausdauer', kategorie: 'Ganzkoerper', bildUrl: 'assets/kettlebellswing.png', standardWiederholungen: 15, schwierigkeit: Schwierigkeit.Anfanger),
-    Uebung(id: 'clean', name: 'Clean', beschreibung: 'Kugel explosiv vom Boden in die Rack-Position bringen.', muskeln: 'Ganzkoerper, Koordination', kategorie: 'Ganzkoerper', bildUrl: 'assets/clean.png', standardWiederholungen: 10, schwierigkeit: Schwierigkeit.Fortgeschritten),
-    Uebung(id: 'turkishgetup', name: 'Turkish Get-Up', beschreibung: 'Vom Liegen zum Stand aufstehen, waehrend die Kugel ueber Kopf gehalten wird.', muskeln: 'Ganzkoerper, Stabilitaet', kategorie: 'Ganzkoerper', bildUrl: 'https://picsum.photos/id/39/400/600', standardWiederholungen: 3, schwierigkeit: Schwierigkeit.Profi),
-    Uebung(id: 'quartergetup', name: 'Quarter Get-Up', beschreibung: 'Auf dem Ruecken, Arm gestreckt. Auf den Ellbogen aufrollen, Kugel fixieren.', muskeln: 'Schultern, Core', kategorie: 'Ganzkoerper', bildUrl: 'https://picsum.photos/id/32/400/600', standardWiederholungen: 5, schwierigkeit: Schwierigkeit.Anfanger),
-  ];
-
-  static final List<CustomWorkout> presetWorkouts = [
-    CustomWorkout(id: 'p1', name: 'Beginner Full Body', uebungIds: ['gobletsquat', 'staggeredrow', 'overheadpress', 'kettlebellsitup', 'kettlebellswing']),
-    CustomWorkout(id: 'p2', name: 'Core & Cardio', uebungIds: ['halo', 'russiantwist', 'pressout', 'plankpullthrough', 'kettlebellswing']),
-    CustomWorkout(id: 'p3', name: 'Oberkörper Fokus', uebungIds: ['floorpress', 'seatedpress', 'tallkneelingpress', 'plankrow', 'halo']),
-    CustomWorkout(id: 'p4', name: 'Rücken & Core Spezial', uebungIds: ['goodmorning', 'pullover', 'staggeredrow', 'tallkneelinghalo', 'pressout']),
-  ];
-}
-
-// ==========================================
-// HAUPT-NAVIGATION
-// ==========================================
-
-class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
-
-  @override
-  State<MainNavigationScreen> createState() => _MainNavigationScreenState();
-}
-
-class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  int _currentIndex = 0;
-
-  final List<Widget> _screens = [
-    const WorkoutHubScreen(),
-    const MediathekScreen(),
-    const StatisikScreen(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
-        selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.grey,
-        backgroundColor: const Color(0xFF1E1E1E),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.casino), label: 'Workout'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: 'Mediathek'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Statistik'),
-        ],
-      ),
-    );
-  }
-}
-
-// ==========================================
-// WORKOUT HUB (TAB 1)
-// ==========================================
-
-class WorkoutHubScreen extends StatefulWidget {
-  const WorkoutHubScreen({super.key});
-
-  @override
-  State<WorkoutHubScreen> createState() => _WorkoutHubScreenState();
-}
-
-class _WorkoutHubScreenState extends State<WorkoutHubScreen> with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 3, vsync: this);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('One-kettled bandit 🎰'),
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Theme.of(context).colorScheme.primary,
-          tabs: const [
-            Tab(text: 'Slot Machine'),
-            Tab(text: 'Erstellen'),
-            Tab(text: 'Gespeichert'),
-          ],
-        ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: const [
-          SlotMachineTab(),
-          CreateWorkoutTab(),
-          SavedWorkoutsTab(),
-        ],
-      ),
-    );
-  }
-}
-
-// --- TAB 1A: SLOT MACHINE ---
-class SlotMachineTab extends StatefulWidget {
-  const SlotMachineTab({super.key});
-
-  @override
-  State<SlotMachineTab> createState() => _SlotMachineTabState();
-}
-
-class _SlotMachineTabState extends State<SlotMachineTab> {
-  Schwierigkeit? _selectedDifficulty; // null = Alle
-  List<Uebung> _currentSelection = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _generateRandomWorkout();
-  }
-
-  void _generateRandomWorkout() {
-    final pool = ExerciseData.alleUebungen.where((u) {
-      if (_selectedDifficulty == null) return true;
-      return u.schwierigkeit == _selectedDifficulty;
-    }).toList();
-
-    pool.shuffle();
-    setState(() {
-      _currentSelection = pool.take(5).toList();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text('Filter:', style: TextStyle(fontWeight: FontWeight.bold)),
-              DropdownButton<Schwierigkeit?>(
-                value: _selectedDifficulty,
-                hint: const Text('Alle Schwierigkeiten'),
-                items: [
-                  const DropdownMenuItem(value: null, child: Text('Alle Übungen')),
-                  ...Schwierigkeit.values.map((s) => DropdownMenuItem(
-                        value: s,
-                        child: Text(s.name),
-                      )),
-                ],
-                onChanged: (val) {
-                  setState(() {
-                    _selectedDifficulty = val;
-                  });
-                  _generateRandomWorkout();
-                },
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView.builder(
-              itemCount: _currentSelection.length,
-              itemBuilder: (context, i) {
-                final u = _currentSelection[i];
-                return Card(
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  child: ListTile(
-                    leading: CircleAvatar(child: Text('${i + 1}')),
-                    title: Text(u.name),
-                    subtitle: Text('${u.kategorie} • ${u.schwierigkeit.name}'),
-                    trailing: Text('${u.standardWiederholungen} Wh.'),
-                  ),
-                );
-              },
-            ),
-          ),
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(50),
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Colors.white,
-            ),
-            onPressed: _generateRandomWorkout,
-            icon: const Icon(Icons.casino),
-            label: const Text('NEU DREHEN', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// --- TAB 1B: WORKOUT ERSTELLEN ---
-class CreateWorkoutTab extends StatefulWidget {
-  const CreateWorkoutTab({super.key});
-
-  @override
-  State<CreateWorkoutTab> createState() => _CreateWorkoutTabState();
-}
-
-class _CreateWorkoutTabState extends State<CreateWorkoutTab> {
-  final List<Uebung> _selectedUebungen = [];
-  final TextEditingController _nameController = TextEditingController();
-
-  void _toggleUebung(Uebung u) {
-    setState(() {
-      if (_selectedUebungen.contains(u)) {
-        _selectedUebungen.remove(u);
-      } else {
-        if (_selectedUebungen.length < 5) {
-          _selectedUebungen.add(u);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Maximal 5 Übungen erlaubt!')),
-          );
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kettlebell Club & Workout Manager</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        },
+                        dark: {
+                            100: '#1f2937',
+                            200: '#111827',
+                            300: '#0b0f19',
+                        }
+                    }
+                }
+            }
         }
-      }
-    });
-  }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .slot-spin {
+            animation: spinAnimation 0.5s linear infinite;
+        }
+        @keyframes spinAnimation {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans flex flex-col justify-between selection:bg-brand-500 selection:text-black">
 
-  Future<void> _saveWorkout() async {
-    if (_nameController.text.trim().isEmpty || _selectedUebungen.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Bitte Namen eingeben und mind. 1 Übung wählen.')),
-      );
-      return;
-    }
+    <!-- Navigation Header -->
+    <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="bg-brand-500 text-slate-950 p-2 rounded-xl font-black text-xl flex items-center justify-center">
+                    🏋️
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">KB Club Manager</h1>
+                    <p class="text-xs text-slate-400">Workout & Mediathek</p>
+                </div>
+            </div>
 
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> rawList = prefs.getStringList('custom_workouts') ?? [];
+            <!-- Tab Buttons -->
+            <nav class="hidden md:flex items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-sm">
+                <button onclick="switchTab('slotmachine')" id="tab-slotmachine" class="px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 bg-brand-500 text-slate-950 font-semibold shadow">
+                    <i data-lucide="dices" class="w-4 h-4"></i> Slot Machine
+                </button>
+                <button onclick="switchTab('create')" id="tab-create" class="px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 text-slate-400 hover:text-white">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> Workout Erstellen
+                </button>
+                <button onclick="switchTab('saved')" id="tab-saved" class="px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 text-slate-400 hover:text-white">
+                    <i data-lucide="bookmark" class="w-4 h-4"></i> Gespeicherte (0)
+                </button>
+                <button onclick="switchTab('library')" id="tab-library" class="px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 text-slate-400 hover:text-white">
+                    <i data-lucide="library" class="w-4 h-4"></i> Mediathek
+                </button>
+                <button onclick="switchTab('stats')" id="tab-stats" class="px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 text-slate-400 hover:text-white">
+                    <i data-lucide="trophy" class="w-4 h-4"></i> Stats & Erfolge
+                </button>
+            </nav>
+        </div>
 
-    final newWorkout = CustomWorkout(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: _nameController.text.trim(),
-      uebungIds: _selectedUebungen.map((u) => u.id).toList(),
-    );
+        <!-- Mobile Navigation -->
+        <nav class="flex md:hidden border-t border-slate-800/80 bg-slate-950/90 justify-around p-2 text-xs">
+            <button onclick="switchTab('slotmachine')" id="mob-tab-slotmachine" class="flex flex-col items-center gap-1 text-brand-500 font-semibold">
+                <i data-lucide="dices" class="w-5 h-5"></i> Slot
+            </button>
+            <button onclick="switchTab('create')" id="mob-tab-create" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="plus-circle" class="w-5 h-5"></i> Neu
+            </button>
+            <button onclick="switchTab('saved')" id="mob-tab-saved" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="bookmark" class="w-5 h-5"></i> Favoriten
+            </button>
+            <button onclick="switchTab('library')" id="mob-tab-library" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="library" class="w-5 h-5"></i> Übungen
+            </button>
+            <button onclick="switchTab('stats')" id="mob-tab-stats" class="flex flex-col items-center gap-1 text-slate-400">
+                <i data-lucide="trophy" class="w-5 h-5"></i> Erfolge
+            </button>
+        </nav>
+    </header>
 
-    rawList.add(jsonEncode(newWorkout.toJson()));
-    await prefs.setStringList('custom_workouts', rawList);
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Workout erfolgreich gespeichert!')),
-      );
-      setState(() {
-        _selectedUebungen.clear();
-        _nameController.clear();
-      });
-    }
-  }
+        <!-- 1. TAB: SLOT MACHINE -->
+        <section id="view-slotmachine" class="space-y-6">
+            <div class="text-center max-w-xl mx-auto space-y-2">
+                <h2 class="text-2xl md:text-3xl font-extrabold">Zufalls-Workout Generieren</h2>
+                <p class="text-slate-400 text-sm">Lass die Slot Machine 5 zufällige Übungen für dein nächstes Workout zusammenstellen!</p>
+            </div>
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          TextField(
-            controller: _nameController,
-            decoration: const InputDecoration(
-              labelText: 'Workout Name (z.B. Mein Rumpf-Zirkel)',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'Ausgewählt (${_selectedUebungen.length}/5):',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 6),
-          // Horizontal gewählte Übungen anzeigen (mit Löschen-Funktion & Aufrücken)
-          SizedBox(
-            height: 50,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: _selectedUebungen.length,
-              itemBuilder: (context, i) {
-                final u = _selectedUebungen[i];
-                return Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: Chip(
-                    avatar: CircleAvatar(child: Text('${i + 1}')),
-                    label: Text(u.name),
-                    onDeleted: () => _toggleUebung(u),
-                  ),
-                );
-              },
-            ),
-          ),
-          const Divider(),
-          const Text('Übungspool (Klicken zum Hinzufügen/Entfernen):'),
-          Expanded(
-            child: ListView.builder(
-              itemCount: ExerciseData.alleUebungen.length,
-              itemBuilder: (context, i) {
-                final u = ExerciseData.alleUebungen[i];
-                final isSelected = _selectedUebungen.contains(u);
-                return ListTile(
-                  title: Text(u.name),
-                  subtitle: Text('${u.kategorie} • ${u.schwierigkeit.name}'),
-                  trailing: Icon(
-                    isSelected ? Icons.check_circle : Icons.add_circle_outline,
-                    color: isSelected ? Theme.of(context).colorScheme.primary : null,
-                  ),
-                  onTap: () => _toggleUebung(u),
-                );
-              },
-            ),
-          ),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(45)),
-            onPressed: _saveWorkout,
-            child: const Text('WORKOUT SPEICHERN'),
-          )
-        ],
-      ),
-    );
-  }
-}
+            <!-- Slots Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3" id="slots-container">
+                <!-- Wird initial leer/als Platzhalter gerendert -->
+            </div>
 
-// --- TAB 1C: GESPEICHERTE & PRESET WORKOUTS ---
-class SavedWorkoutsTab extends StatefulWidget {
-  const SavedWorkoutsTab({super.key});
+            <!-- Controls -->
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                <button onclick="spinSlots()" id="spin-btn" class="w-full sm:w-auto px-8 py-4 bg-brand-500 hover:bg-brand-600 active:scale-95 text-slate-950 font-black rounded-2xl shadow-lg shadow-brand-500/20 transition flex items-center justify-center gap-3 text-lg">
+                    <i data-lucide="dices" class="w-6 h-6"></i> SPIN / WÜRFELN
+                </button>
+            </div>
 
-  @override
-  State<SavedWorkoutsTab> createState() => _SavedWorkoutsTabState();
-}
+            <!-- Start Configuration Card (Wird erst nach dem ersten Spin voll nutzbar) -->
+            <div class="mt-8 p-6 bg-slate-900 border border-slate-800 rounded-2xl space-y-6" id="workout-config-card">
+                <h3 class="text-lg font-bold flex items-center gap-2">
+                    <i data-lucide="settings" class="w-5 h-5 text-brand-500"></i> Workout-Modus wählen
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- EMOM Option -->
+                    <label class="relative flex flex-col p-4 bg-slate-950 border-2 border-brand-500/40 rounded-xl cursor-pointer hover:border-brand-500 transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-white flex items-center gap-2">
+                                <input type="radio" name="workout-mode" value="EMOM" checked class="accent-brand-500" onchange="toggleModeSelect('EMOM')">
+                                EMOM (Every Minute On the Minute)
+                            </span>
+                            <span class="text-xs bg-brand-500/20 text-brand-500 px-2 py-0.5 rounded font-semibold">30 Min. Feste Dauer</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Jede Minute eine neue Übung. 6 volle Runden à 5 Minuten. Perfekte Pace-Kontrolle!</p>
+                    </label>
 
-class _SavedWorkoutsTabState extends State<SavedWorkoutsTab> {
-  List<CustomWorkout> _userWorkouts = [];
+                    <!-- AMRAP Option -->
+                    <label class="relative flex flex-col p-4 bg-slate-950 border-2 border-slate-800 rounded-xl cursor-pointer hover:border-brand-500 transition">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="font-bold text-white flex items-center gap-2">
+                                <input type="radio" name="workout-mode" value="AMRAP" class="accent-brand-500" onchange="toggleModeSelect('AMRAP')">
+                                AMRAP (As Many Rounds As Possible)
+                            </span>
+                            <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded font-semibold">5 - 30 Min. Flexibel</span>
+                        </div>
+                        <p class="text-xs text-slate-400">Absolviere so viele Runden wie möglich innerhalb der gewählten Zeit.</p>
+                        
+                        <div id="amrap-time-select" class="mt-3 hidden">
+                            <label class="text-xs text-slate-400 mb-1 block">Dauer wählen:</label>
+                            <select id="amrap-minutes" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-brand-500">
+                                <option value="5">5 Minuten</option>
+                                <option value="10">10 Minuten</option>
+                                <option value="15">15 Minuten</option>
+                                <option value="20" selected>20 Minuten</option>
+                                <option value="25">25 Minuten</option>
+                                <option value="30">30 Minuten</option>
+                            </select>
+                        </div>
+                    </label>
+                </div>
 
-  @override
-  void initState() {
-    super.initState();
-    _loadUserWorkouts();
-  }
+                <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button onclick="startWorkoutFromSlot()" id="start-slot-btn" disabled class="flex-1 py-3.5 bg-brand-500 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-brand-600 text-slate-950 font-bold rounded-xl transition flex items-center justify-center gap-2">
+                        <i data-lucide="play" class="w-5 h-5 fill-current"></i> Workout Jetzt Starten
+                    </button>
+                    <button onclick="saveCurrentSlotWorkout()" id="save-slot-btn" disabled class="px-6 py-3.5 bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-700 text-white font-semibold rounded-xl transition flex items-center justify-center gap-2">
+                        <i data-lucide="bookmark-plus" class="w-5 h-5"></i> Abspeichern
+                    </button>
+                </div>
+            </div>
+        </section>
 
-  Future<void> _loadUserWorkouts() async {
-    final prefs = await SharedPreferences.getInstance();
-    final List<String> rawList = prefs.getStringList('custom_workouts') ?? [];
-    setState(() {
-      _userWorkouts = rawList.map((str) => CustomWorkout.fromJson(jsonDecode(str))).toList();
-    });
-  }
+        <!-- 2. TAB: WORKOUT ERSTELLEN -->
+        <section id="view-create" class="hidden space-y-6">
+            <div class="max-w-xl mx-auto space-y-2 text-center">
+                <h2 class="text-2xl font-bold">Eigenes Workout Zusammenstellen</h2>
+                <p class="text-slate-400 text-sm">Wähle exakt 5 Übungen aus der Mediathek für dein individuelles Training.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Selection Overview -->
+                <div class="lg:col-span-1 bg-slate-900 p-5 rounded-2xl border border-slate-800 space-y-4 h-fit sticky top-20">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-lg">Ausgewählte Übungen</h3>
+                        <span id="custom-count" class="text-xs bg-brand-500/20 text-brand-500 font-bold px-2.5 py-1 rounded-full">0 / 5</span>
+                    </div>
+                    
+                    <div id="custom-selected-list" class="space-y-2 min-h-[150px] flex flex-col justify-center text-slate-500 text-sm text-center border-2 border-dashed border-slate-800 rounded-xl p-4">
+                        Klicke unten auf Übungen, um sie hinzuzufügen.
+                    </div>
 
-  @override
-  Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        const Text('Vordefinierte Workouts', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ...ExerciseData.presetWorkouts.map((w) => _buildWorkoutCard(w, isPreset: true)),
-        const SizedBox(height: 20),
-        const Text('Meine eigenen Workouts', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        if (_userWorkouts.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 20),
-            child: Text('Noch keine eigenen Workouts erstellt.'),
-          )
-        else
-          ..._userWorkouts.map((w) => _buildWorkoutCard(w, isPreset: false)),
-      ],
-    );
-  }
+                    <div class="space-y-3 pt-2">
+                        <input type="text" id="custom-workout-title" placeholder="Workout Name (z.B. Heavy Leg Day)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-brand-500">
+                        <button onclick="saveCustomWorkout()" id="save-custom-btn" disabled class="w-full py-3 bg-brand-500 disabled:opacity-40 hover:bg-brand-600 text-slate-950 font-bold rounded-xl transition flex items-center justify-center gap-2">
+                            <i data-lucide="save" class="w-4 h-4"></i> Workout Speichern
+                        </button>
+                    </div>
+                </div>
 
-  Widget _buildWorkoutCard(CustomWorkout w, {required bool isPreset}) {
-    final uebungen = w.uebungIds.map((id) => ExerciseData.alleUebungen.firstWhere((u) => u.id == id, orElse: () => ExerciseData.alleUebungen[0])).toList();
+                <!-- Selectable Exercises -->
+                <div class="lg:col-span-2 space-y-4">
+                    <h3 class="font-bold text-lg">Übungsauswahl</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="custom-exercises-picker">
+                        <!-- Dynamic content via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ExpansionTile(
-        title: Text(w.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text('${uebungen.length} Übungen'),
-        children: [
-          ...uebungen.map((u) => ListTile(
-                dense: true,
-                title: Text(u.name),
-                subtitle: Text(u.kategorie),
-              )),
-        ],
-      ),
-    );
-  }
-}
+        <!-- 3. TAB: GESPEICHERTE WORKOUTS -->
+        <section id="view-saved" class="hidden space-y-6">
+            <div class="max-w-xl mx-auto space-y-2 text-center">
+                <h2 class="text-2xl font-bold">Deine Gespeicherten Workouts</h2>
+                <p class="text-slate-400 text-sm">Starte deine Favoriten direkt oder passe sie an.</p>
+            </div>
+            
+            <div id="saved-workouts-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Dynamic content via JS -->
+            </div>
+        </section>
 
-// ==========================================
-// MEDIATHEK (TAB 2)
-// ==========================================
+        <!-- 4. TAB: MEDIATHEK -->
+        <section id="view-library" class="hidden space-y-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold">Kettlebell Mediathek</h2>
+                    <p class="text-slate-400 text-sm">Alle Übungen im Überblick. Klicke auf eine Übung für Details & Wiederholungs-Anpassung.</p>
+                </div>
+                
+                <!-- Filter Buttons -->
+                <div class="flex flex-wrap gap-2" id="library-filter">
+                    <button onclick="filterLibrary('ALL')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-500 text-slate-950">Alle</button>
+                    <button onclick="filterLibrary('Ganzkörper')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 hover:text-white">Ganzkörper</button>
+                    <button onclick="filterLibrary('Oberkörper')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 hover:text-white">Oberkörper</button>
+                    <button onclick="filterLibrary('Unterkörper')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 hover:text-white">Unterkörper</button>
+                    <button onclick="filterLibrary('Core')" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-slate-400 hover:text-white">Core</button>
+                </div>
+            </div>
 
-class MediathekScreen extends StatefulWidget {
-  const MediathekScreen({super.key});
+            <!-- Library Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4" id="library-grid">
+                <!-- Dynamic Content via JS -->
+            </div>
+        </section>
 
-  @override
-  State<MediathekScreen> createState() => _MediathekScreenState();
-}
+        <!-- 5. TAB: STATS & ACHIEVEMENTS -->
+        <section id="view-stats" class="hidden space-y-8">
+            <div class="max-w-xl mx-auto space-y-2 text-center">
+                <h2 class="text-2xl font-bold">Deine Trainingsstatistik & Erfolge</h2>
+                <p class="text-slate-400 text-sm">Verfolge deinen Fortschritt und schalte Achievements frei!</p>
+            </div>
 
-class _MediathekScreenState extends State<MediathekScreen> {
-  Schwierigkeit? _filterDifficulty;
+            <!-- Stat Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center">
+                    <div class="text-3xl font-black text-brand-500" id="stat-total-workouts">0</div>
+                    <div class="text-xs text-slate-400 mt-1">Absolvierte Workouts</div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center">
+                    <div class="text-3xl font-black text-brand-500" id="stat-total-minutes">0</div>
+                    <div class="text-xs text-slate-400 mt-1">Trainingsminuten</div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center">
+                    <div class="text-3xl font-black text-brand-500" id="stat-total-reps">0</div>
+                    <div class="text-xs text-slate-400 mt-1">Gesamt-Reps</div>
+                </div>
+                <div class="bg-slate-900 p-4 rounded-2xl border border-slate-800 text-center">
+                    <div class="text-3xl font-black text-brand-500" id="stat-streak">0 Tage</div>
+                    <div class="text-xs text-slate-400 mt-1">Aktueller Streak</div>
+                </div>
+            </div>
 
-  @override
-  Widget build(BuildContext context) {
-    final gefiltert = ExerciseData.alleUebungen.where((u) {
-      if (_filterDifficulty == null) return true;
-      return u.schwierigkeit == _filterDifficulty;
-    }).toList();
+            <!-- Achievements Section (Vorbereitet für ~50 Badges) -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-bold text-lg flex items-center gap-2">
+                        <i data-lucide="award" class="w-5 h-5 text-brand-500"></i> Erfolge & Badges 
+                        <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full" id="achievement-progress-text">0 / 6 freigeschaltet</span>
+                    </h3>
+                </div>
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Übungs-Mediathek 📚'),
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Schwierigkeit filtern:'),
-                DropdownButton<Schwierigkeit?>(
-                  value: _filterDifficulty,
-                  hint: const Text('Alle'),
-                  items: [
-                    const DropdownMenuItem(value: null, child: Text('Alle Übungen')),
-                    ...Schwierigkeit.values.map((s) => DropdownMenuItem(value: s, child: Text(s.name))),
-                  ],
-                  onChanged: (val) => setState(() => _filterDifficulty = val),
-                )
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: gefiltert.length,
-              itemBuilder: (context, index) {
-                final u = gefiltert[index];
-                return Card(
-                  margin: const EdgeInsets.all(8),
-                  child: ListTile(
-                    title: Text(u.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text('${u.kategorie} • ${u.muskeln}\n${u.beschreibung}'),
-                    trailing: Chip(label: Text(u.schwierigkeit.name)),
-                    isThreeLine: true,
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="achievements-grid">
+                    <!-- Dynamic Badges rendered via JS -->
+                </div>
+            </div>
+        </section>
 
-// ==========================================
-// STATISTIK (TAB 3)
-// ==========================================
+    </main>
 
-class StatisikScreen extends StatelessWidget {
-  const StatisikScreen({super.key});
+    <!-- LIVE WORKOUT SCREEN (MODAL / OVERLAY) -->
+    <div id="workout-modal" class="fixed inset-0 bg-slate-950 z-50 hidden flex flex-col justify-between p-4 md:p-8">
+        <!-- Top Header Controls -->
+        <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div class="flex items-center gap-3">
+                <span id="live-mode-badge" class="px-3 py-1 bg-brand-500 text-slate-950 font-black text-xs rounded-full uppercase tracking-wider">EMOM</span>
+                <h3 id="live-workout-title" class="font-bold text-slate-200">Kettlebell Workout</h3>
+            </div>
+            <!-- Wake Lock Status Indicator -->
+            <div class="flex items-center gap-2">
+                <span id="wake-lock-status" class="text-xs text-brand-500 flex items-center gap-1 bg-brand-500/10 px-2.5 py-1 rounded-full border border-brand-500/20">
+                    <i data-lucide="sun" class="w-3.5 h-3.5"></i> Display aktiv
+                </span>
+                <button onclick="confirmExitWorkout()" class="p-2 text-slate-400 hover:text-white bg-slate-900 rounded-xl">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </div>
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Statistik & Level 📊')),
-      body: const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.emoji_events, size: 80, color: Color(0xFFFF6B00)),
-            SizedBox(height: 16),
-            Text('Level 1: Kettlebell-Novize', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('Absolviere Workouts, um Punkte & Streaks zu sammeln!'),
-          ],
-        ),
-      ),
-    );
-  }
-}
+        <!-- Center Content: Main Timer & Current Exercise -->
+        <div class="max-w-2xl mx-auto w-full text-center space-y-6 my-auto py-4">
+            
+            <!-- Big Timer -->
+            <div class="space-y-1">
+                <div id="live-timer" class="text-6xl md:text-8xl font-black font-mono text-white tracking-tight">01:00</div>
+                <div class="text-sm text-slate-400 font-semibold" id="live-round-info">Runde 1 von 6 (Min 1 / 30)</div>
+            </div>
+
+            <!-- Current Exercise Card -->
+            <div class="bg-slate-900 border-2 border-brand-500 rounded-3xl p-6 shadow-2xl shadow-brand-500/10 space-y-4">
+                <div class="flex justify-between items-center text-xs font-bold text-brand-500">
+                    <span id="live-ex-category">GANZKÖRPER</span>
+                    <span id="live-ex-reps" class="bg-brand-500/20 px-3 py-1 rounded-full">15 REPS</span>
+                </div>
+
+                <div class="text-6xl my-2" id="live-ex-icon">🏋️</div>
+
+                <h2 id="live-ex-title" class="text-2xl md:text-3xl font-black text-white">Kettlebell Swing</h2>
+                <p id="live-ex-desc" class="text-slate-400 text-sm max-w-md mx-auto">Dynamische Hüftstreckung aus der Kniebeuge, Kettlebell schwingt auf Brusthöhe.</p>
+            </div>
+
+            <!-- Up Next Bar -->
+            <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-3 flex items-center justify-between text-sm">
+                <span class="text-slate-400 text-xs font-medium">Als Nächstes:</span>
+                <span id="live-next-ex" class="font-bold text-slate-200">Goblet Squat (12 Reps)</span>
+            </div>
+        </div>
+
+        <!-- Bottom Controls -->
+        <div class="max-w-md mx-auto w-full flex items-center justify-center gap-4 pt-2">
+            <button onclick="togglePauseWorkout()" id="pause-btn" class="flex-1 py-4 bg-brand-500 text-slate-950 font-black rounded-2xl shadow-lg flex items-center justify-center gap-2 text-lg">
+                <i data-lucide="pause" class="w-6 h-6 fill-current"></i> Pause
+            </button>
+            <button onclick="skipExercise()" class="p-4 bg-slate-900 hover:bg-slate-800 text-slate-300 font-bold rounded-2xl border border-slate-800">
+                <i data-lucide="skip-forward" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- EXERCISE DETAIL MODAL (Mediathek / Klick-Details) -->
+    <div id="exercise-detail-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-3xl p-6 space-y-6 shadow-2xl relative">
+            <button onclick="closeExerciseModal()" class="absolute top-4 right-4 p-2 text-slate-400 hover:text-white bg-slate-950 rounded-full border border-slate-800">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div class="text-center space-y-2">
+                <div id="modal-ex-icon" class="text-6xl mb-2">🏋️</div>
+                <h3 id="modal-ex-title" class="text-2xl font-black text-white">Übungsname</h3>
+                <div class="flex items-center justify-center gap-2">
+                    <span id="modal-ex-level" class="text-xs bg-slate-800 text-slate-300 font-semibold px-2.5 py-1 rounded-full">Anfänger</span>
+                    <span id="modal-ex-category" class="text-xs bg-brand-500/20 text-brand-500 font-bold px-2.5 py-1 rounded-full">Ganzkörper</span>
+                </div>
+            </div>
+
+            <p id="modal-ex-desc" class="text-slate-300 text-sm leading-relaxed text-center">
+                Detaillierte Beschreibung der Übungsausführung und Worauf geachtet werden muss.
+            </p>
+
+            <!-- Reps Customization -->
+            <div class="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                <label class="text-xs font-bold text-slate-400 block text-center uppercase tracking-wider">Standard Wiederholungen (Reps)</label>
+                <div class="flex items-center justify-center gap-4">
+                    <button onclick="adjustModalReps(-1)" class="w-10 h-10 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl border border-slate-800 flex items-center justify-center text-xl active:scale-95 transition">-</button>
+                    <input type="number" id="modal-ex-reps-input" class="w-20 bg-slate-900 border border-slate-700 rounded-xl py-2 text-center text-xl font-bold text-brand-500 focus:outline-none focus:border-brand-500" value="15" min="1" max="100">
+                    <button onclick="adjustModalReps(1)" class="w-10 h-10 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl border border-slate-800 flex items-center justify-center text-xl active:scale-95 transition">+</button>
+                </div>
+            </div>
+
+            <button onclick="saveModalReps()" class="w-full py-3.5 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold rounded-xl transition">
+                Speichern & Schließen
+            </button>
+        </div>
+    </div>
+
+    <!-- Application JavaScript Logic -->
+    <script>
+        // --- DATA & EXERCISES DATABASE ---
+        let exercises = [
+            { id: '1', name: 'Kettlebell Swing', category: 'Ganzkörper', level: 'Anfänger', reps: 15, icon: '🔄', desc: 'Explosiver Hüftstoß aus der Beuge. Stärkt den gesamten hinteren Bewegungsapparat.' },
+            { id: '2', name: 'Goblet Squat', category: 'Unterkörper', level: 'Anfänger', reps: 12, icon: '🦵', desc: 'Kniebeuge mit vor der Brust gehaltener Kettlebell. Tiefe Hocke bei geradem Rücken.' },
+            { id: '3', name: 'Single-Arm Clean', category: 'Oberkörper', level: 'Fortgeschritten', reps: 10, icon: '🏋️', desc: 'Kettlebell flüssig aus den Beinen auf Brusthöhe (Rack-Position) umsetzen.' },
+            { id: '4', name: 'Strict Overhead Press', category: 'Oberkörper', level: 'Fortgeschritten', reps: 8, icon: '⬆️', desc: 'Sauberes Drücken der Kettlebell aus der Rack-Position über den Kopf ohne Schwung.' },
+            { id: '5', name: 'Russian Twist', category: 'Core', level: 'Anfänger', reps: 20, icon: '🔄', desc: 'Sitzen mit leicht angehobenen Beinen, Kettlebell kontrolliert von Seite zu Seite führen.' },
+            { id: '6', name: 'Kettlebell Snatch', category: 'Ganzkörper', level: 'Experte', reps: 8, icon: '⚡', desc: 'In einer einzigen explosiven Bewegung von unten direkt über den Kopf führen.' },
+            { id: '7', name: 'Turkish Get-Up', category: 'Ganzkörper', level: 'Experte', reps: 4, icon: '🧘', desc: 'Vom Liegen bis zum Stand aufstehen, während die Kettlebell oben gehalten wird.' },
+            { id: '8', name: 'Sumo Deadlift High Pull', category: 'Ganzkörper', level: 'Fortgeschritten', reps: 12, icon: '📐', desc: 'Breiter Stand, Kreuzheben mit anschließendm hohem Ziehen der Ellbogen.' },
+            { id: '9', name: 'Windmill', category: 'Core', level: 'Fortgeschritten', reps: 6, icon: '💨', desc: 'Kettlebell oben halten und den Oberkörper seitlich zum Boden neigen.' },
+            { id: '10', name: 'Kettlebell Lunge', category: 'Unterkörper', level: 'Anfänger', reps: 10, icon: '🚶', desc: 'Ausfallschritte nach vorne oder hinten mit Kettlebell in Goblet- oder Rack-Haltung.' }
+        ];
+
+        // Achievements Database (Erweiterbar bis 50+)
+        let achievements = [
+            { id: 'first_step', title: 'Erster Schritt', desc: 'Absolviere dein erstes Workout', icon: '🥇', unlocked: false },
+            { id: 'streak_3', title: 'Streak Starter', desc: 'Trainiere 3 Tage in Folge', icon: '🔥', unlocked: false },
+            { id: 'amrap_5', title: 'AMRAP Beaster', desc: 'Schließe 5 AMRAP Workouts ab', icon: '⏱️', unlocked: false },
+            { id: 'emom_master', title: 'EMOM Titan', desc: 'Schließe ein 30-Minuten EMOM ab', icon: '⌛', unlocked: false },
+            { id: 'reps_1000', title: '1.000 Rep Club', desc: 'Absolviere insgesamt 1.000 Wiederholungen', icon: '💪', unlocked: false },
+            { id: 'slot_spinner', title: 'Glücksritter', desc: 'Nutze die Slot Machine 10 Mal', icon: '🎰', unlocked: false }
+        ];
+
+        // User Stats
+        let userStats = {
+            totalWorkouts: 0,
+            totalMinutes: 0,
+            totalReps: 0,
+            streakDays: 0,
+            spinCount: 0
+        };
+
+        // State Variables
+        let currentSlotExercises = [];
+        let customSelectedExercises = [];
+        let savedWorkouts = [];
+        let currentActiveWorkout = null;
+        let selectedExForModal = null;
+
+        // Timer State Variables
+        let timerInterval = null;
+        let timerSecondsLeft = 60;
+        let currentRound = 1;
+        let totalRounds = 6;
+        let currentExIndex = 0;
+        let isPaused = false;
+        let wakeLock = null;
+
+        // Init App
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            renderEmptySlots();
+            renderCustomPicker();
+            renderLibrary();
+            renderAchievements();
+            updateStatsUI();
+        });
+
+        // --- NAVIGATION TABS ---
+        function switchTab(tabId) {
+            ['slotmachine', 'create', 'saved', 'library', 'stats'].forEach(id => {
+                document.getElementById(`view-${id}`).classList.add('hidden');
+                
+                const btn = document.getElementById(`tab-${id}`);
+                const mobBtn = document.getElementById(`mob-tab-${id}`);
+                
+                if(btn) btn.className = "px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 text-slate-400 hover:text-white";
+                if(mobBtn) mobBtn.className = "flex flex-col items-center gap-1 text-slate-400";
+            });
+
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+            
+            const activeBtn = document.getElementById(`tab-${tabId}`);
+            const activeMobBtn = document.getElementById(`mob-tab-${tabId}`);
+            
+            if(activeBtn) activeBtn.className = "px-4 py-2 rounded-lg font-medium transition flex items-center gap-2 bg-brand-500 text-slate-950 font-semibold shadow";
+            if(activeMobBtn) activeMobBtn.className = "flex flex-col items-center gap-1 text-brand-500 font-semibold";
+        }
+
+        // --- 1. SLOT MACHINE LOGIC ---
+        function renderEmptySlots() {
+            const container = document.getElementById('slots-container');
+            container.innerHTML = '';
+            for(let i = 0; i < 5; i++) {
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 border-dashed rounded-2xl p-4 flex flex-col items-center justify-center min-h-[160px] text-center">
+                        <span class="text-3xl text-slate-700 mb-2">❓</span>
+                        <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Slot ${i+1}</span>
+                        <span class="text-xs text-slate-600 mt-1">Noch nicht gewürfelt</span>
+                    </div>
+                `;
+            }
+        }
+
+        function spinSlots() {
+            userStats.spinCount++;
+            if(userStats.spinCount >= 10) unlockAchievement('slot_spinner');
+
+            const container = document.getElementById('slots-container');
+            container.innerHTML = '';
+
+            // Random selection of 5 unique exercises
+            let shuffled = [...exercises].sort(() => 0.5 - Math.random());
+            currentSlotExercises = shuffled.slice(0, 5);
+
+            currentSlotExercises.forEach((ex, idx) => {
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between min-h-[160px] slot-spin shadow-lg">
+                        <div class="flex justify-between items-center text-xs text-slate-400">
+                            <span>Slot ${idx+1}</span>
+                            <span class="font-bold text-brand-500">${ex.reps} Reps</span>
+                        </div>
+                        <div class="text-center my-2">
+                            <span class="text-3xl">${ex.icon}</span>
+                            <h4 class="font-bold text-sm text-white mt-1 leading-tight">${ex.name}</h4>
+                        </div>
+                        <span class="text-[10px] text-center bg-slate-950 text-slate-400 py-1 rounded-md border border-slate-800">${ex.category}</span>
+                    </div>
+                `;
+            });
+
+            // Enable action buttons
+            document.getElementById('start-slot-btn').disabled = false;
+            document.getElementById('save-slot-btn').disabled = false;
+        }
+
+        function toggleModeSelect(mode) {
+            const amrapSelect = document.getElementById('amrap-time-select');
+            if(mode === 'AMRAP') {
+                amrapSelect.classList.remove('hidden');
+            } else {
+                amrapSelect.classList.add('hidden');
+            }
+        }
+
+        // --- 2. MEDIATHEK & DETAIL MODAL LOGIC ---
+        function renderLibrary(filterCategory = 'ALL') {
+            const grid = document.getElementById('library-grid');
+            grid.innerHTML = '';
+
+            const filtered = filterCategory === 'ALL' ? exercises : exercises.filter(e => e.category === filterCategory);
+
+            filtered.forEach(ex => {
+                grid.innerHTML += `
+                    <div onclick="openExerciseModal('${ex.id}')" class="bg-slate-900 border border-slate-800 hover:border-brand-500/50 p-4 rounded-2xl cursor-pointer transition hover:scale-[1.02] flex flex-col justify-between gap-3 group">
+                        <div class="flex justify-between items-start">
+                            <span class="text-3xl group-hover:scale-110 transition">${ex.icon}</span>
+                            <span class="text-xs bg-brand-500/10 text-brand-500 border border-brand-500/20 font-bold px-2 py-0.5 rounded-full">${ex.reps} Reps</span>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-white text-base">${ex.name}</h4>
+                            <p class="text-xs text-slate-400 line-clamp-2 mt-1">${ex.desc}</p>
+                        </div>
+                        <div class="flex justify-between items-center text-[10px] text-slate-400 pt-2 border-t border-slate-800/80">
+                            <span>${ex.category}</span>
+                            <span class="text-slate-400">${ex.level}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function filterLibrary(cat) {
+            renderLibrary(cat);
+        }
+
+        function openExerciseModal(id) {
+            selectedExForModal = exercises.find(e => e.id === id);
+            if(!selectedExForModal) return;
+
+            document.getElementById('modal-ex-icon').innerText = selectedExForModal.icon;
+            document.getElementById('modal-ex-title').innerText = selectedExForModal.name;
+            document.getElementById('modal-ex-category').innerText = selectedExForModal.category;
+            document.getElementById('modal-ex-level').innerText = selectedExForModal.level;
+            document.getElementById('modal-ex-desc').innerText = selectedExForModal.desc;
+            document.getElementById('modal-ex-reps-input').value = selectedExForModal.reps;
+
+            document.getElementById('exercise-detail-modal').classList.remove('hidden');
+        }
+
+        function closeExerciseModal() {
+            document.getElementById('exercise-detail-modal').classList.add('hidden');
+        }
+
+        function adjustModalReps(delta) {
+            const input = document.getElementById('modal-ex-reps-input');
+            let val = parseInt(input.value) || 0;
+            val = Math.max(1, val + delta);
+            input.value = val;
+        }
+
+        function saveModalReps() {
+            if(selectedExForModal) {
+                const newVal = parseInt(document.getElementById('modal-ex-reps-input').value);
+                if(newVal > 0) {
+                    selectedExForModal.reps = newVal;
+                    renderLibrary();
+                    renderCustomPicker();
+                }
+            }
+            closeExerciseModal();
+        }
+
+        // --- 3. CUSTOM WORKOUT BUILDER ---
+        function renderCustomPicker() {
+            const picker = document.getElementById('custom-exercises-picker');
+            picker.innerHTML = '';
+
+            exercises.forEach(ex => {
+                const isSelected = customSelectedExercises.some(item => item.id === ex.id);
+                picker.innerHTML += `
+                    <div onclick="toggleSelectCustom('${ex.id}')" class="p-3 bg-slate-900 border ${isSelected ? 'border-brand-500 bg-brand-500/10' : 'border-slate-800'} rounded-xl cursor-pointer transition flex items-center gap-3">
+                        <span class="text-2xl">${ex.icon}</span>
+                        <div class="flex-1 min-w-0">
+                            <h5 class="text-sm font-bold text-white truncate">${ex.name}</h5>
+                            <span class="text-xs text-slate-400">${ex.reps} Reps • ${ex.category}</span>
+                        </div>
+                        <i data-lucide="${isSelected ? 'check-circle-2' : 'plus'}" class="w-5 h-5 ${isSelected ? 'text-brand-500' : 'text-slate-500'}"></i>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function toggleSelectCustom(id) {
+            const index = customSelectedExercises.findIndex(e => e.id === id);
+            if(index > -1) {
+                customSelectedExercises.splice(index, 1);
+            } else {
+                if(customSelectedExercises.length >= 5) {
+                    alert('Du kannst maximal 5 Übungen auswählen.');
+                    return;
+                }
+                const ex = exercises.find(e => e.id === id);
+                customSelectedExercises.push(ex);
+            }
+            updateCustomSelectedUI();
+            renderCustomPicker();
+        }
+
+        function updateCustomSelectedUI() {
+            const list = document.getElementById('custom-selected-list');
+            document.getElementById('custom-count').innerText = `${customSelectedExercises.length} / 5`;
+
+            if(customSelectedExercises.length === 0) {
+                list.className = "space-y-2 min-h-[150px] flex flex-col justify-center text-slate-500 text-sm text-center border-2 border-dashed border-slate-800 rounded-xl p-4";
+                list.innerText = "Klicke rechts auf Übungen, um sie hinzuzufügen.";
+                document.getElementById('save-custom-btn').disabled = true;
+                return;
+            }
+
+            list.className = "space-y-2 min-h-[150px]";
+            list.innerHTML = '';
+            customSelectedExercises.forEach((ex, i) => {
+                list.innerHTML += `
+                    <div class="flex items-center justify-between p-2 bg-slate-950 border border-slate-800 rounded-lg text-xs">
+                        <span class="font-bold text-slate-200">${i+1}. ${ex.name}</span>
+                        <span class="text-brand-500 font-semibold">${ex.reps} Reps</span>
+                    </div>
+                `;
+            });
+
+            document.getElementById('save-custom-btn').disabled = customSelectedExercises.length !== 5;
+        }
+
+        function saveCustomWorkout() {
+            const titleInput = document.getElementById('custom-workout-title');
+            const title = titleInput.value.trim() || `Workout #${savedWorkouts.length + 1}`;
+
+            savedWorkouts.push({
+                id: Date.now().toString(),
+                title: title,
+                exercises: [...customSelectedExercises]
+            });
+
+            titleInput.value = '';
+            customSelectedExercises = [];
+            updateCustomSelectedUI();
+            renderCustomPicker();
+            renderSavedWorkouts();
+            updateSavedTabBadge();
+            alert('Workout erfolgreich gespeichert!');
+        }
+
+        function saveCurrentSlotWorkout() {
+            if(currentSlotExercises.length === 0) return;
+            savedWorkouts.push({
+                id: Date.now().toString(),
+                title: `Zufalls-Workout #${savedWorkouts.length + 1}`,
+                exercises: [...currentSlotExercises]
+            });
+            renderSavedWorkouts();
+            updateSavedTabBadge();
+            alert('Slot Machine Workout abgespeichert!');
+        }
+
+        // --- 4. SAVED WORKOUTS LOGIC ---
+        function renderSavedWorkouts() {
+            const grid = document.getElementById('saved-workouts-grid');
+            grid.innerHTML = '';
+
+            if(savedWorkouts.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-12 text-center text-slate-500 space-y-2">
+                        <i data-lucide="bookmark-x" class="w-10 h-10 mx-auto text-slate-600"></i>
+                        <p>Noch keine gespeicherten Workouts vorhanden.</p>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            savedWorkouts.forEach((w) => {
+                grid.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-4">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-bold text-lg text-white">${w.title}</h4>
+                            <button onclick="deleteSavedWorkout('${w.id}')" class="text-slate-500 hover:text-red-400 p-1">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+
+                        <div class="space-y-1.5">
+                            ${w.exercises.map((ex, i) => `
+                                <div class="flex justify-between text-xs text-slate-300 bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800/60">
+                                    <span>${i+1}. ${ex.name}</span>
+                                    <span class="text-brand-500 font-bold">${ex.reps} Reps</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <button onclick="startWorkoutObj('${w.id}')" class="w-full py-3 bg-brand-500 hover:bg-brand-600 text-slate-950 font-bold rounded-xl transition flex items-center justify-center gap-2 text-sm">
+                            <i data-lucide="play" class="w-4 h-4 fill-current"></i> Jetzt Starten
+                        </button>
+                    </div>
+                `;
+            });
+            lucide.createIcons();
+        }
+
+        function updateSavedTabBadge() {
+            document.getElementById('tab-saved').innerText = `Gespeicherte (${savedWorkouts.length})`;
+        }
+
+        function deleteSavedWorkout(id) {
+            savedWorkouts = savedWorkouts.filter(w => w.id !== id);
+            renderSavedWorkouts();
+            updateSavedTabBadge();
+        }
+
+        // --- 5. LIVE WORKOUT TIMER & WAKE LOCK ENGINE ---
+        
+        // Request Screen Wake Lock (Bildschirm anlassen)
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                    document.getElementById('wake-lock-status').classList.remove('hidden');
+                }
+            } catch (err) {
+                console.warn(`Wake Lock konnte nicht aktiviert werden: ${err.message}`);
+                document.getElementById('wake-lock-status').classList.add('hidden');
+            }
+        }
+
+        function releaseWakeLock() {
+            if (wakeLock !== null) {
+                wakeLock.release().then(() => {
+                    wakeLock = null;
+                });
+            }
+        }
+
+        function startWorkoutFromSlot() {
+            if(currentSlotExercises.length < 5) return;
+            const mode = document.querySelector('input[name="workout-mode"]:checked').value;
+            const amrapMins = parseInt(document.getElementById('amrap-minutes').value) || 20;
+
+            initLiveWorkout({
+                title: 'Slot Machine Workout',
+                mode: mode,
+                durationMinutes: mode === 'EMOM' ? 30 : amrapMins,
+                exercises: currentSlotExercises
+            });
+        }
+
+        function startWorkoutObj(id) {
+            const w = savedWorkouts.find(item => item.id === id);
+            if(!w) return;
+
+            // Standardmäßig als EMOM starten
+            initLiveWorkout({
+                title: w.title,
+                mode: 'EMOM',
+                durationMinutes: 30,
+                exercises: w.exercises
+            });
+        }
+
+        function initLiveWorkout(config) {
+            currentActiveWorkout = config;
+            currentExIndex = 0;
+            currentRound = 1;
+            isPaused = false;
+
+            document.getElementById('live-workout-title').innerText = config.title;
+            document.getElementById('live-mode-badge').innerText = config.mode;
+
+            if(config.mode === 'EMOM') {
+                totalRounds = 6; // 6 Runden à 5 Minuten = 30 Min
+                timerSecondsLeft = 60;
+            } else { // AMRAP
+                totalRounds = 1;
+                timerSecondsLeft = config.durationMinutes * 60;
+            }
+
+            updateLiveUI();
+            document.getElementById('workout-modal').classList.remove('hidden');
+            
+            // Aktivieren des Wake Locks
+            requestWakeLock();
+
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if(isPaused) return;
+
+                timerSecondsLeft--;
+
+                if(currentActiveWorkout.mode === 'EMOM') {
+                    if(timerSecondsLeft <= 0) {
+                        // Nächste Minute / Übung
+                        timerSecondsLeft = 60;
+                        currentExIndex++;
+                        if(currentExIndex >= currentActiveWorkout.exercises.length) {
+                            currentExIndex = 0;
+                            currentRound++;
+                        }
+
+                        if(currentRound > totalRounds) {
+                            completeWorkout();
+                            return;
+                        }
+                    }
+                } else { // AMRAP
+                    if(timerSecondsLeft <= 0) {
+                        completeWorkout();
+                        return;
+                    }
+                }
+
+                updateLiveUI();
+            }, 1000);
+        }
+
+        function updateLiveUI() {
+            // Format mm:ss
+            const mins = Math.floor(timerSecondsLeft / 60);
+            const secs = timerSecondsLeft % 60;
+            document.getElementById('live-timer').innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+
+            const currentEx = currentActiveWorkout.exercises[currentExIndex];
+            const nextExIndex = (currentExIndex + 1) % currentActiveWorkout.exercises.length;
+            const nextEx = currentActiveWorkout.exercises[nextExIndex];
+
+            if(currentActiveWorkout.mode === 'EMOM') {
+                const currentMinuteTotal = ((currentRound - 1) * 5) + (currentExIndex + 1);
+                document.getElementById('live-round-info').innerText = `Runde ${currentRound} von ${totalRounds} (Min. ${currentMinuteTotal} / 30)`;
+            } else {
+                document.getElementById('live-round-info').innerText = `AMRAP Zirkel • Durchgang ${currentRound}`;
+            }
+
+            document.getElementById('live-ex-category').innerText = currentEx.category.toUpperCase();
+            document.getElementById('live-ex-reps').innerText = `${currentEx.reps} REPS`;
+            document.getElementById('live-ex-icon').innerText = currentEx.icon;
+            document.getElementById('live-ex-title').innerText = currentEx.name;
+            document.getElementById('live-ex-desc').innerText = currentEx.desc;
+
+            document.getElementById('live-next-ex').innerText = `${nextEx.name} (${nextEx.reps} Reps)`;
+        }
+
+        function togglePauseWorkout() {
+            isPaused = !isPaused;
+            const btn = document.getElementById('pause-btn');
+            if(isPaused) {
+                btn.innerHTML = `<i data-lucide="play" class="w-6 h-6 fill-current"></i> Weiter`;
+            } else {
+                btn.innerHTML = `<i data-lucide="pause" class="w-6 h-6 fill-current"></i> Pause`;
+            }
+            lucide.createIcons();
+        }
+
+        function skipExercise() {
+            currentExIndex = (currentExIndex + 1) % currentActiveWorkout.exercises.length;
+            if(currentActiveWorkout.mode === 'EMOM') {
+                timerSecondsLeft = 60;
+            }
+            updateLiveUI();
+        }
+
+        function confirmExitWorkout() {
+            if(confirm("Möchtest du das aktuelle Workout wirklich abbrechen?")) {
+                closeWorkoutModal();
+            }
+        }
+
+        function completeWorkout() {
+            clearInterval(timerInterval);
+            releaseWakeLock();
+            
+            // Statistics Update
+            userStats.totalWorkouts++;
+            userStats.totalMinutes += currentActiveWorkout.durationMinutes;
+            
+            // Sum reps for the workout
+            let repsInWorkout = currentActiveWorkout.exercises.reduce((acc, curr) => acc + curr.reps, 0);
+            if(currentActiveWorkout.mode === 'EMOM') repsInWorkout *= 6;
+            userStats.totalReps += repsInWorkout;
+
+            // Check Achievements
+            if(userStats.totalWorkouts >= 1) unlockAchievement('first_step');
+            if(userStats.totalReps >= 1000) unlockAchievement('reps_1000');
+            if(currentActiveWorkout.mode === 'EMOM') unlockAchievement('emom_master');
+
+            updateStatsUI();
+            alert("🎉 Hervorragende Leistung! Workout erfolgreich abgeschlossen!");
+            closeWorkoutModal();
+        }
+
+        function closeWorkoutModal() {
+            clearInterval(timerInterval);
+            releaseWakeLock();
+            document.getElementById('workout-modal').classList.add('hidden');
+        }
+
+        // --- 6. STATS & ACHIEVEMENTS ENGINE ---
+        function updateStatsUI() {
+            document.getElementById('stat-total-workouts').innerText = userStats.totalWorkouts;
+            document.getElementById('stat-total-minutes').innerText = userStats.totalMinutes;
+            document.getElementById('stat-total-reps').innerText = userStats.totalReps;
+            document.getElementById('stat-streak').innerText = `${userStats.streakDays} Tage`;
+
+            renderAchievements();
+        }
+
+        function renderAchievements() {
+            const grid = document.getElementById('achievements-grid');
+            grid.innerHTML = '';
+
+            const unlockedCount = achievements.filter(a => a.unlocked).length;
+            document.getElementById('achievement-progress-text').innerText = `${unlockedCount} / ${achievements.length} freigeschaltet`;
+
+            achievements.forEach(ach => {
+                grid.innerHTML += `
+                    <div class="p-4 rounded-2xl border ${ach.unlocked ? 'bg-brand-500/10 border-brand-500/40' : 'bg-slate-900/40 border-slate-800 opacity-50'} flex items-center gap-4">
+                        <span class="text-3xl">${ach.icon}</span>
+                        <div>
+                            <h4 class="font-bold text-sm ${ach.unlocked ? 'text-white' : 'text-slate-400'}">${ach.title}</h4>
+                            <p class="text-xs text-slate-500">${ach.desc}</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function unlockAchievement(id) {
+            const ach = achievements.find(a => a.id === id);
+            if(ach && !ach.unlocked) {
+                ach.unlocked = true;
+                renderAchievements();
+            }
+        }
+    </script>
+</body>
+</html>
