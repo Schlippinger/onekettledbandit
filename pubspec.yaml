@@ -1,21 +1,46 @@
-name: kettlebell_app
-description: "Eine Kettlebell Workout App mit Slot Machine, Mediathek und Statistik."
-publish_to: 'none'
+name: Deploy Flutter Web to GitHub Pages
 
-version: 1.0.0+1
+on:
+  push:
+    branches:
+      - main # Falls dein Haupt-Branch "master" heißt, passe dies hier an
 
-environment:
-  sdk: '>=3.0.0 <4.0.0'
+permissions:
+  contents: write
 
-dependencies:
-  flutter:
-    sdk: flutter
-  cupertino_icons: ^1.0.8
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
 
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^4.0.0
+    steps:
+      # 1. Quellcode auschecken
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-flutter:
-  uses-material-design: true
+      # 2. Java-Umgebung einrichten
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # 3. Flutter SDK installieren
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      # 4. Abhängigkeiten (Pakete) laden
+      - name: Install Dependencies
+        run: flutter pub get
+
+      # 5. Flutter Web Build erstellen (inkl. passendem Base-Href für GitHub Pages)
+      - name: Build Flutter Web
+        run: flutter build web --release --base-href "/${{ github.event.repository.name }}/"
+
+      # 6. Build auf den gh-pages Branch hochladen
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
