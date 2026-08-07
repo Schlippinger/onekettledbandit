@@ -1,21 +1,37 @@
-name: onekettled_bandit
-description: A new Flutter project.
-publish_to: 'none'
+name: Deploy Static HTML to GitHub Pages
 
-version: 1.0.0+1
+on:
+  push:
+    branches:
+      - main
 
-environment:
-  sdk: '>=3.0.0 <4.0.0'
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
-dependencies:
-  flutter:
-    sdk: flutter
-  shared_preferences: ^2.2.2
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
-dev_dependencies:
-  flutter:
-    sdk: flutter
-  flutter_lints: ^4.0.0
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-flutter:
-  uses-material-design: true
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
