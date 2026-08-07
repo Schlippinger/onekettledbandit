@@ -43,134 +43,134 @@ final List<Uebung> alleUebungen = [
           'Kettlebell vor der Brust halten. Füße etwa schulterbreit. Gesäß nach hinten unten führen.',
       muskeln: 'Oberschenkel, Gesäß, Core',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/20/400/600'),
+      bildUrl: 'assets/gobletsquat.png'),
   Uebung(
       name: 'Single-Leg Deadlift',
       beschreibung:
           'Auf einem Bein stehen, das andere nach hinten anheben. Hüfte nach hinten schieben.',
       muskeln: 'Gesäß, hintere Oberschenkel, Rücken',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/21/400/600'),
+      bildUrl: 'assets/.singlelegdeadliftpng'),
   Uebung(
       name: 'Bulgarian Split Squat',
       beschreibung:
           'Hinteren Fuß auf Bank ablegen. Kettlebell vor der Brust halten. Kontrolliert absenken.',
       muskeln: 'Beine, Gesäß, Gleichgewicht',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/22/400/600'),
+      bildUrl: 'assets/bulgariansplitsquat.png'),
   Uebung(
       name: 'Reverse Lunge',
       beschreibung:
           'Kettlebell vor der Brust halten. Großen Schritt nach hinten machen.',
       muskeln: 'Beine, Gesäß, Core',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/23/400/600'),
+      bildUrl: 'assets/reverselunge.png'),
   Uebung(
       name: 'Sumo Squat (3s Stop)',
       beschreibung:
           'Breiter Stand, Fußspitzen nach außen. Tief absenken, 3 Sekunden halten.',
       muskeln: 'Innenschenkel, Gesäß, Beine',
       kategorie: 'Unterkörper',
-      bildUrl: 'https://picsum.photos/id/24/400/600'),
+      bildUrl: 'assets/sumosquat.png'),
   Uebung(
       name: 'Einarmiges Rudern',
       beschreibung: 'Hand auf Knie abstützen. Kettlebell zur Hüfte ziehen.',
       muskeln: 'Oberer Rücken, Latissimus, Bizeps',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/25/400/600'),
+      bildUrl: 'assets/einarmigesrudern.png'),
   Uebung(
       name: 'Staggered Row',
       beschreibung:
           'Ausfallschritt, auf Oberschenkel abstützen und einarmig zur Hüfte rudern.',
       muskeln: 'Rücken, Core',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/26/400/600'),
+      bildUrl: 'assets/staggeredrow.png'),
   Uebung(
       name: 'High Pull',
       beschreibung:
           'Aus der Hüfte Schwung holen. Ellbogen führt nach oben/außen.',
       muskeln: 'Rücken, Schultern, Hüfte',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/27/400/600'),
+      bildUrl: 'assets/highpull.png'),
   Uebung(
       name: 'Suitcase Carry',
       beschreibung:
           'Kettlebell einseitig wie einen Koffer tragen. Aufrecht gehen.',
       muskeln: 'Rücken, Griffkraft, seitlicher Core',
       kategorie: 'Rücken',
-      bildUrl: 'https://picsum.photos/id/28/400/600'),
+      bildUrl: 'assets/suitcasecarry.png'),
   Uebung(
       name: 'Overhead Press',
       beschreibung: 'Aus der Rack-Position über den Kopf drücken.',
       muskeln: 'Schultern, Trizeps, Core',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/29/400/600'),
+      bildUrl: 'assets/overheadpress.png'),
   Uebung(
       name: 'Push Press',
       beschreibung: 'Kleine Kniebeuge, mit Beinschwung über Kopf drücken.',
       muskeln: 'Schultern, Trizeps, Beine, Core',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/30/400/600'),
+      bildUrl: 'assets/pushpress.png'),
   Uebung(
       name: 'Floor Press',
       beschreibung: 'Auf dem Rücken liegen. Von der Brust nach oben drücken.',
       muskeln: 'Brust, Trizeps, Schultern',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/31/400/600'),
+      bildUrl: 'assets/floorpress.png'),
   Uebung(
       name: 'Quarter Get-Up',
       beschreibung:
           'Rückenlage. Kettlebell nach oben strecken. Aufrichten bis zum Ellbogen.',
       muskeln: 'Schulterstabilität, Core',
       kategorie: 'Oberkörper',
-      bildUrl: 'https://picsum.photos/id/32/400/600'),
+      bildUrl: 'assets/quartergetup.png'),
   Uebung(
       name: 'Russian Twist',
       beschreibung:
           'Sitzen, leicht zurücklehnen. Kettlebell von Seite zu Seite bewegen.',
       muskeln: 'Schräge Bauchmuskeln',
       kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/33/400/600'),
+      bildUrl: 'assets/russiantwist.png'),
   Uebung(
       name: 'Kettlebell Sit-Up',
       beschreibung: 'Rückenlage. Kettlebell vor der Brust halten. Aufrichten.',
       muskeln: 'Gerade Bauchmuskulatur',
       kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/34/400/600'),
+      bildUrl: 'assets/kettlebellsitup.png'),
   Uebung(
       name: 'Plank Pull-Through',
       beschreibung:
           'Unterarmstütz. Kettlebell unter dem Körper auf die andere Seite ziehen.',
       muskeln: 'Gesamte Bauchmuskulatur, Schulterstabilität',
       kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/35/400/600'),
+      bildUrl: 'assets/plankpullthrough.png'),
   Uebung(
       name: 'Dead Bug',
       beschreibung:
           'Rückenlage. Kettlebell mit gestreckten Armen halten. Beine wechselnd strecken.',
       muskeln: 'Tiefe Bauchmuskulatur',
       kategorie: 'Core',
-      bildUrl: 'https://picsum.photos/id/36/400/600'),
+      bildUrl: 'assets/deadbug.png'),
   Uebung(
       name: 'Kettlebell Swing',
       beschreibung: 'Aus der Hüfte schwingen. Kugel fliegt bis auf Brusthöhe.',
       muskeln: 'Gesäß, Rücken, Core, Kondition',
       kategorie: 'Ganzkörper',
-      bildUrl: 'https://picsum.photos/id/37/400/600'),
+      bildUrl: 'assets/kettlebellswing.png'),
   Uebung(
       name: 'Clean',
       beschreibung:
           'Aus dem Schwung eng am Körper in die Rack-Position führen.',
       muskeln: 'Ganzkörper, Koordination',
       kategorie: 'Ganzkörper',
-      bildUrl: 'https://picsum.photos/id/38/400/600'),
+      bildUrl: 'assets/clean.png'),
   Uebung(
       name: 'Turkish Get-Up',
       beschreibung:
           'Vom Liegen mit ausgestrecktem Arm schrittweise zum Stand aufstehen.',
       muskeln: 'Gesamter Körper, Stabilität, Mobilität',
       kategorie: 'Ganzkörper',
-      bildUrl: 'https://picsum.photos/id/39/400/600'),
+      bildUrl: 'assets/turkishgetup.png'),
 ];
 
 int statistikGesamtMinuten = 0;
