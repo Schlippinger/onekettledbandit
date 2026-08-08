@@ -1,437 +1,240 @@
-import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:math';
+import 'dart:async';
 import 'package:wakelock_plus/wakelock_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const OneKettledBanditApp());
+  runApp(const KettlebellApp());
 }
 
-/// Globale Modell-Klasse für eine Kettlebell-Übung
-class Uebung {
-  final String id;
-  final String name;
-  final String imagePath;
-  final String beschreibung;
-  int reps;
-
-  Uebung({
-    required this.id,
-    required this.name,
-    required this.imagePath,
-    required this.beschreibung,
-    this.reps = 10,
-  });
-}
-
-/// Globale Übungs-Datenbank mit deinen 22 eigenen PNG-Bildern
-final List<Uebung> globaleUebungen = [
-  Uebung(
-    id: 'bulgariansplitsquad',
-    name: 'Bulgarian Split Squat',
-    imagePath: 'assets/images/bulgariansplitsquad.png',
-    beschreibung:
-        'Ein Bein hinten auf einer Erhöhung ablegen. Das vordere Bein beugen, bis das hintere Knie fast den Boden berührt, dann kraftvoll hochdrücken.',
-    reps: 8,
-  ),
-  Uebung(
-    id: 'clean',
-    name: 'Clean',
-    imagePath: 'assets/images/clean.png',
-    beschreibung:
-        'Die Kettlebell durch den Hüftschwung nach oben führen und nahe am Körper sanft in der Rack-Position auf der Brust fangen.',
-    reps: 10,
-  ),
-  Uebung(
-    id: 'deadbug',
-    name: 'Deadbug',
-    imagePath: 'assets/images/deadbug.png',
-    beschreibung:
-        'Auf dem Rücken liegen, Arme und Beine im 90°-Winkel anheben. Diagonal Arm und Bein kontrolliert zum Boden absenken, während der untere Rücken flach aufliegt.',
-    reps: 12,
-  ),
-  Uebung(
-    id: 'einarmigesrudern',
-    name: 'Einarmiges Rudern',
-    imagePath: 'assets/images/einarmigesrudern.png',
-    beschreibung:
-        'Leicht vorgebeugt mit geradem Rücken aufstützen. Die Kettlebell seitlich am Körper entlang zum Becken ziehen.',
-    reps: 10,
-  ),
-  Uebung(
-    id: 'floorpress',
-    name: 'Floor Press',
-    imagePath: 'assets/images/floorpress.png',
-    beschreibung:
-        'Flach auf den Rücken legen, Füße aufstellen. Die Kettlebell wie beim Bankdrücken von der Brust nach oben drücken.',
-    reps: 10,
-  ),
-  Uebung(
-    id: 'gobletsquat',
-    name: 'Goblet Squat',
-    imagePath: 'assets/images/gobletsquat.png',
-    beschreibung:
-        'Die Kettlebell vor der Brust halten. Aufrecht in die Kniebeuge gehen, Hüfte unter Kniehöhe absenken und wieder aufstehen.',
-    reps: 12,
-  ),
-  Uebung(
-    id: 'highpull',
-    name: 'High Pull',
-    imagePath: 'assets/images/highpull.png',
-    beschreibung:
-        'Aus dem Swing heraus die Kettlebell auf Brust- bis Kinn-Höhe ziehen, der Ellbogen führt die Bewegung nach oben-außen an.',
-    reps: 10,
-  ),
-  Uebung(
-    id: 'kettlebellsitup',
-    name: 'Kettlebell Sit-Up',
-    imagePath: 'assets/images/kettlebellsitup.png',
-    beschreibung:
-        'Auf den Rücken legen, Kettlebell vor der Brust oder über dem Kopf halten. Aus der Rumpfmuskulatur aufrichten.',
-    reps: 12,
-  ),
-  Uebung(
-    id: 'kettlebellswing',
-    name: 'Kettlebell Swing',
-    imagePath: 'assets/images/kettlebellswing.png',
-    beschreibung:
-        'Dynamischer Hüftschwung (Hinge-Bewegung). Die Kraft kommt explizit aus Gesäß und Beinrückseite, nicht aus den Armen.',
-    reps: 15,
-  ),
-  Uebung(
-    id: 'overheadpress',
-    name: 'Overhead Press',
-    imagePath: 'assets/images/overheadpress.png',
-    beschreibung:
-        'Aus der Rack-Position auf Brusthöhe die Kettlebell kontrolliert direkt über den Kopf nach oben drücken.',
-    reps: 8,
-  ),
-  Uebung(
-    id: 'plankpullthrough',
-    name: 'Plank Pull Through',
-    imagePath: 'assets/images/plankpullthrough.png',
-    beschreibung:
-        'In der Liegestütz-Position die Kettlebell unter dem Körper hindurch von einer Seite zur anderen ziehen.',
-    reps: 10,
-  ),
-  Uebung(
-    id: 'plankrow',
-    name: 'Plank Row',
-    imagePath: 'assets/images/plankrow.png',
-    beschreibung:
-        'In der Liegestütz-Position abwechselnd eine Seite stabil zum Körper rudern.',
-    reps: 10,
-  ),
-  Uebung(
-    id: 'pushpress',
-    name: 'Push Press',
-    imagePath: 'assets/images/pushpress.png',
-    beschreibung:
-        'Leichten Impuls aus den Knien nutzen, um die Kettlebell schwungvoll über den Kopf zu drücken.',
-    reps: 10,
-  ),
-  Uebung(
-    id: 'quartergetup',
-    name: 'Quarter Get-Up',
-    imagePath: 'assets/images/quartergetup.png',
-    beschreibung:
-        'Erster Teil des Turkish Get-Up: Auf dem Rücken liegend die Kugel nach oben drücken und kontrolliert auf den Unterarm/Hand aufrichten.',
-    reps: 5,
-  ),
-  Uebung(
-    id: 'reverselunge',
-    name: 'Reverse Lunge',
-    imagePath: 'assets/images/reverselunge.png',
-    beschreibung:
-        'Einen Schritt nach hinten machen, beide Knie auf ca. 90° beugen und wieder in den Stand zurückkehren.',
-    reps: 10,
-  ),
-  Uebung(
-    id: 'romaniandeadlift',
-    name: 'Romanian Deadlift',
-    imagePath: 'assets/images/romaniandeadlift.png',
-    beschreibung:
-        'Mit leicht gebeugten Knien die Hüfte nach hinten schieben, den Oberkörper mit geradem Rücken absenken und wieder aufrichten.',
-    reps: 12,
-  ),
-  Uebung(
-    id: 'russiantwist',
-    name: 'Russian Twist',
-    imagePath: 'assets/images/russiantwist.png',
-    beschreibung:
-        'Im Sitzen leicht nach hinten lehnen und die Kettlebell kontrolliert von der linken zur rechten Seite führen.',
-    reps: 16,
-  ),
-  Uebung(
-    id: 'singlelegdeadlift',
-    name: 'Single Leg Deadlift',
-    imagePath: 'assets/images/singlelegdeadlift.png',
-    beschreibung:
-        'Auf einem Bein stehend das andere Bein nach hinten strecken, während der Oberkörper nach vorne kippt und die Kugel geführt wird.',
-    reps: 8,
-  ),
-  Uebung(
-    id: 'staggeredrow',
-    name: 'Staggered Row',
-    imagePath: 'assets/images/staggeredrow.png',
-    beschreibung:
-        'In versetzter Fußstellung (Schrittstellung) vorgebeugt stehen und die Kettlebell kontrolliert zur Hüfte rudern.',
-    reps: 10,
-  ),
-  Uebung(
-    id: 'suitcasecarry',
-    name: 'Suitcase Carry',
-    imagePath: 'assets/images/suitcasecarry.png',
-    beschreibung:
-        'Kettlebell wie einen Koffer in einer Hand halten. Aufrecht gehen, ohne zur Seite zu kippen.',
-    reps: 20,
-  ),
-  Uebung(
-    id: 'sumosquat',
-    name: 'Sumo Squat',
-    imagePath: 'assets/images/sumosquat.png',
-    beschreibung:
-        'Breiter Stand, Fußspitzen nach außen gedreht. Tief in die Kniebeuge gehen und die Kettlebell mittig führen.',
-    reps: 12,
-  ),
-  Uebung(
-    id: 'turkishgetup',
-    name: 'Turkish Get-Up',
-    imagePath: 'assets/images/turkishgetup.png',
-    beschreibung:
-        'Komplexe Abfolge vom Liegen auf dem Rücken bis zum vollen Stand mit permanent gestrecktem Arm über dem Kopf.',
-    reps: 3,
-  ),
-];
-
-// Globale Statistik-Speicherung
-int globalAbgeschlosseneWorkouts = 0;
-int globalGesamtTrainingsminuten = 0;
-
-class OneKettledBanditApp extends StatelessWidget {
-  const OneKettledBanditApp({super.key});
+class KettlebellApp extends StatelessWidget {
+  const KettlebellApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'onekettled_bandit',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        primarySwatch: Colors.amber,
-        scaffoldBackgroundColor: const Color(0xFF121212),
-        cardColor: const Color(0xFF1E1E1E),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF1E1E1E),
-          elevation: 0,
-        ),
+      theme: ThemeData.dark().copyWith(
+        primaryColor: Colors.orange,
+        scaffoldBackgroundColor: Colors.black,
+        appBarTheme: const AppBarTheme(backgroundColor: Colors.black),
       ),
-      home: const HauptmenueScreen(),
+      home: const HauptNavigationsPage(),
     );
   }
 }
 
-/// Helper-Funktion: Zeigt das Detail-Modal mit Bild und Beschreibung
-void showUebungDetailDialog(BuildContext context, Uebung uebung) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        backgroundColor: const Color(0xFF2C2C2C),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          uebung.name,
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.amber),
-        ),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  uebung.imagePath,
-                  height: 180,
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      height: 150,
-                      color: Colors.grey[800],
-                      child: const Center(
-                        child: Icon(Icons.fitness_center, size: 50, color: Colors.amber),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                uebung.beschreibung,
-                textAlign: TextAlign.start,
-                style: const TextStyle(fontSize: 15, height: 1.4, color: Colors.white70),
-              ),
-            ],
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Schließen', style: TextStyle(color: Colors.amber)),
-          ),
-        ],
-      );
-    },
-  );
+class Uebung {
+  final String name;
+  final String beschreibung;
+  final String muskeln;
+  final String kategorie;
+  final String bildUrl;
+  final int standardWiederholungen;
+
+  const Uebung({
+    required this.name,
+    required this.beschreibung,
+    required this.muskeln,
+    required this.kategorie,
+    required this.bildUrl,
+    required this.standardWiederholungen,
+  });
+
+  static const List<Uebung> alleUebungen = [
+    // 0-4: Unterkörper (5 Übungen)
+    Uebung(name: 'Goblet Squat', beschreibung: 'Kettlebell vor der Brust halten. Fuesse schulterbreit. Gesaess nach hinten absenken.', muskeln: 'Oberschenkel, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'assets/gobletsquat.png', standardWiederholungen: 10),
+    Uebung(name: 'Single-Leg Deadlift', beschreibung: 'Einbeinig stehen, Huefte nach hinten schieben, Kettlebell kontrolliert senken.', muskeln: 'Beinrueckseite, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/21/400/600', standardWiederholungen: 8),
+    Uebung(name: 'Bulgarian Split Squat', beschreibung: 'Hinterer Fuss erhöht ablegen. Kettlebell vor der Brust. Tief absenken.', muskeln: 'Beine, Balance', kategorie: 'Unterkoerper', bildUrl: 'assets/bulgariansplitsquad.png', standardWiederholungen: 8),
+    Uebung(name: 'Reverse Lunge', beschreibung: 'Aufrechter Stand. Weiten Schritt nach hinten machen. Knie fast zum Boden.', muskeln: 'Beine, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/23/400/600', standardWiederholungen: 10),
+    Uebung(name: 'Sumo Squat', beschreibung: 'Breiter Stand, Zehen nach aussen. 3 Sek. am tiefsten Punkt halten.', muskeln: 'Adduktoren, Gesaess', kategorie: 'Unterkoerper', bildUrl: 'https://picsum.photos/id/24/400/600', standardWiederholungen: 12),
+     
+    // 5-8: Rücken (4 Übungen)
+    Uebung(name: 'Einarmiges Rudern', beschreibung: 'Vorgebeugt, einarmig die Kugel zur Huefte ziehen. Ellbogen eng am Körper.', muskeln: 'Ruecken, Bizeps', kategorie: 'Ruecken', bildUrl: 'assets/einarmigesrudern.png', standardWiederholungen: 8),
+    Uebung(name: 'Staggered Row', beschreibung: 'Versetzter Stand. Gewicht auf vorderem Bein. Einarmig rudern.', muskeln: 'Ruecken, Latissimus', kategorie: 'Ruecken', bildUrl: 'https://picsum.photos/id/26/400/600', standardWiederholungen: 8),
+    Uebung(name: 'High Pull', beschreibung: 'Explosiv aus der Huefte nach oben ziehen. Ellbogen fuehrt die Bewegung.', muskeln: 'Oberer Ruecken, Schultern', kategorie: 'Ruecken', bildUrl: 'assets/highpull.png', standardWiederholungen: 10),
+    Uebung(name: 'Suitcase Carry', beschreibung: 'Kettlebell einseitig halten. Aufrecht gehen, ohne zur Seite zu kippen.', muskeln: 'Ruecken, Griffkraft, Core', kategorie: 'Ruecken', bildUrl: 'https://picsum.photos/id/28/400/600', standardWiederholungen: 1),
+     
+    // 9-12: Oberkörper (4 Übungen)
+    Uebung(name: 'Overhead Press', beschreibung: 'Aus der Rack-Position gerade nach oben druecken. Core fest halten.', muskeln: 'Schultern, Trizeps', kategorie: 'Oberkoerper', bildUrl: 'assets/overheadpress.png', standardWiederholungen: 6),
+    Uebung(name: 'Push Press', beschreibung: 'Leichter Schwung aus den Beinen nutzen, um die Kugel nach oben zu druecken.', muskeln: 'Schultern, Beine', kategorie: 'Oberkoerper', bildUrl: 'https://picsum.photos/id/30/400/600', standardWiederholungen: 8),
+    Uebung(name: 'Floor Press', beschreibung: 'Auf dem Boden liegend die Kugel nach oben druecken. Ellbogen beruehrt kurz Boden.', muskeln: 'Brust, Trizeps', kategorie: 'Oberkoerper', bildUrl: 'assets/floorpress.png', standardWiederholungen: 10),
+    Uebung(name: 'Quarter Get-Up', beschreibung: 'Auf dem Ruecken, Arm gestreckt. Auf den Ellbogen aufrollen, Kugel fixieren.', muskeln: 'Schultern, Core', kategorie: 'Oberkoerper', bildUrl: 'https://picsum.photos/id/32/400/600', standardWiederholungen: 5),
+     
+    // 13-16: Core (4 Übungen)
+    Uebung(name: 'Russian Twist', beschreibung: 'Sitzend, Beine leicht angehoben. Kugel von links nach rechts bewegen.', muskeln: 'Schraege Bauchmuskeln', kategorie: 'Core', bildUrl: 'https://picsum.photos/id/33/400/600', standardWiederholungen: 16),
+    Uebung(name: 'Kettlebell Sit-Up', beschreibung: 'Rueckenlage, Kugel vor der Brust. Kontrolliert aufsetzen.', muskeln: 'Bauchmuskeln', kategorie: 'Core', bildUrl: 'assets/kettlebellsitup.png', standardWiederholungen: 10),
+    Uebung(name: 'Plank Pull-Through', beschreibung: 'In Liegestuetzposition die Kugel unter dem Körper durchziehen.', muskeln: 'Core-Stabilitaet', kategorie: 'Core', bildUrl: 'assets/plankpullthrough.png', standardWiederholungen: 10),
+    Uebung(name: 'Dead Bug', beschreibung: 'Rueckenlage, Kugel halten. Beine abwechselnd gestreckt absenken.', muskeln: 'Tiefer Core', kategorie: 'Core', bildUrl: 'assets/deadbug.png', standardWiederholungen: 10),
+     
+    // 17-19: Ganzkörper (3 Übungen)
+    Uebung(name: 'Kettlebell Swing', beschreibung: 'Hüft-Scharnier Bewegung. Kugel durch den Beinschwung auf Brusthöhe bringen.', muskeln: 'Gesaess, Ruecken, Ausdauer', kategorie: 'Ganzkoerper', bildUrl: 'assets/kettlebellswing.png', standardWiederholungen: 15),
+    Uebung(name: 'Clean', beschreibung: 'Kugel explosiv vom Boden in die Rack-Position (Schulter) bringen.', muskeln: 'Ganzkoerper, Koordination', kategorie: 'Ganzkoerper', bildUrl: 'assets/clean.png', standardWiederholungen: 10),
+    Uebung(name: 'Turkish Get-Up', beschreibung: 'Vom Liegen zum Stand aufstehen, waehrend die Kugel ueber Kopf gehalten wird.', muskeln: 'Ganzkoerper, Stabilitaet', kategorie: 'Ganzkoerper', bildUrl: 'https://picsum.photos/id/39/400/600', standardWiederholungen: 3),
+  ];
 }
 
-class HauptmenueScreen extends StatefulWidget {
-  const HauptmenueScreen({super.key});
+int statistikGesamtMinuten = 0;
+int statistikAnzahlWorkouts = 0;
+Map<String, int> uebungsZaehler = {};
+
+class HauptNavigationsPage extends StatefulWidget {
+  const HauptNavigationsPage({super.key});
+  @override
+  _HauptNavigationsPageState createState() => _HauptNavigationsPageState();
+}
+
+class _HauptNavigationsPageState extends State<HauptNavigationsPage> {
+  int _aktuellerIndex = 0;
+  final List<Widget> _seiten = [const SlotMachinePage(), const MediathekPage(), const StatistikPage()];
 
   @override
-  State<HauptmenueScreen> createState() => _HauptmenueScreenState();
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _seiten[_aktuellerIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _aktuellerIndex,
+        selectedItemColor: Colors.orange,
+        onTap: (index) => setState(() => _aktuellerIndex = index),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.casino), label: 'Slot Machine'),
+          BottomNavigationBarItem(icon: Icon(Icons.fitness_center), label: 'Mediathek'),
+          BottomNavigationBarItem(icon: Icon(Icons.analytics), label: 'Statistik'),
+        ],
+      ),
+    );
+  }
 }
 
-class _HauptmenueScreenState extends State<HauptmenueScreen> {
+class SlotMachinePage extends StatefulWidget {
+  const SlotMachinePage({super.key});
+  @override
+  _SlotMachinePageState createState() => _SlotMachinePageState();
+}
+
+class _SlotMachinePageState extends State<SlotMachinePage> {
+  List<Uebung?> _aktuellesWorkout = [null, null, null, null, null];
+  String _workoutModus = 'EMOM';
+  int _amrapMinuten = 15;
+  Map<String, int> _geladeneReps = {};
+
   @override
   void initState() {
     super.initState();
-    _loadCustomReps();
+    _loadAllReps();
   }
 
-  Future<void> _loadCustomReps() async {
+  Future<void> _loadAllReps() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      for (var uebung in globaleUebungen) {
-        int? savedReps = prefs.getInt('reps_${uebung.id}');
-        if (savedReps != null) {
-          uebung.reps = savedReps;
-        }
+      for (var u in Uebung.alleUebungen) {
+        _geladeneReps[u.name] = prefs.getInt('reps_${u.name}') ?? u.standardWiederholungen;
       }
     });
   }
 
-  List<Uebung> _zieheZufallsUebungen() {
-    final list = List<Uebung>.from(globaleUebungen);
-    list.shuffle(Random());
-    return list.take(5).toList();
+  void _spin() {
+    final r = Random();
+    setState(() {
+      _aktuellesWorkout = [
+        Uebung.alleUebungen[r.nextInt(5)],       // Unterkörper
+        Uebung.alleUebungen[5 + r.nextInt(4)],   // Rücken
+        Uebung.alleUebungen[9 + r.nextInt(4)],   // Oberkörper
+        Uebung.alleUebungen[13 + r.nextInt(4)],  // Core
+        Uebung.alleUebungen[17 + r.nextInt(3)],  // Ganzkörper
+      ];
+      _aktuellesWorkout.shuffle();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('OneKettled Bandit 🎰', style: TextStyle(fontWeight: FontWeight.bold)),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      appBar: AppBar(title: const Text('🎰 One-kettled bandit')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Card(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Icon(Icons.casino, size: 48, color: Colors.amber),
-                    SizedBox(height: 8),
-                    Text(
-                      'Bereit für das nächste Workout?',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Lass den Zufall über deine 5 Übungen entscheiden.',
-                      style: TextStyle(color: Colors.grey),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+            const Text('Dein Workout:', style: TextStyle(fontSize: 18, color: Colors.grey)),
+            const SizedBox(height: 15),
+            Column(
+              children: _aktuellesWorkout.asMap().entries.map((e) {
+                final reps = _geladeneReps[e.value?.name] ?? e.value?.standardWiederholungen ?? 0;
+                return Card(
+                  color: Colors.grey[900],
+                  child: ListTile(
+                    leading: CircleAvatar(backgroundColor: Colors.orange, child: Text('${e.key + 1}', style: const TextStyle(color: Colors.black))),
+                    title: Text(e.value?.name ?? '?', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text(e.value?.kategorie ?? 'Kategorie wählen'),
+                    trailing: e.value != null 
+                        ? Text('$reps Reps', style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold))
+                        : null,
+                  ),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _spin,
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.orange, padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15)),
+              child: const Text('SPIN!', style: TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold)),
+            ),
+            if (!_aktuellesWorkout.contains(null)) ...[
+              const SizedBox(height: 25),
+              const Divider(color: Colors.grey),
+              const SizedBox(height: 10),
+              const Text('Wähle deinen Workout-Modus:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ChoiceChip(
+                    label: const Text('⏱️ EMOM'),
+                    selected: _workoutModus == 'EMOM',
+                    selectedColor: Colors.orange,
+                    labelStyle: TextStyle(color: _workoutModus == 'EMOM' ? Colors.black : Colors.white),
+                    onSelected: (s) => setState(() => _workoutModus = 'EMOM'),
+                  ),
+                  const SizedBox(width: 15),
+                  ChoiceChip(
+                    label: const Text('🔄 AMRAP'),
+                    selected: _workoutModus == 'AMRAP',
+                    selectedColor: Colors.orange,
+                    labelStyle: TextStyle(color: _workoutModus == 'AMRAP' ? Colors.black : Colors.white),
+                    onSelected: (s) => setState(() => _workoutModus = 'AMRAP'),
+                  ),
+                ],
+              ),
+              if (_workoutModus == 'AMRAP') ...[
+                const SizedBox(height: 10),
+                Text('AMRAP Zeit: $_amrapMinuten Minuten', style: const TextStyle(color: Colors.grey)),
+                Slider(
+                  value: _amrapMinuten.toDouble(),
+                  min: 5,
+                  max: 30,
+                  divisions: 5,
+                  activeColor: Colors.orange,
+                  inactiveColor: Colors.grey[800],
+                  onChanged: (v) => setState(() => _amrapMinuten = v.toInt()),
                 ),
+              ],
+              const SizedBox(height: 15),
+              ElevatedButton(
+                onPressed: () {
+                  _loadAllReps().then((_) {
+                    if (_workoutModus == 'EMOM') {
+                      Navigator.push(context, MaterialPageRoute(builder: (c) => AktiverEMOMBildschirm(aktuellesWorkout: _aktuellesWorkout.cast<Uebung>(), repsMap: _geladeneReps)));
+                    } else {
+                      Navigator.push(context, MaterialPageRoute(builder: (c) => AktiverAMRAPBildschirm(aktuellesWorkout: _aktuellesWorkout.cast<Uebung>(), gesamtMinuten: _amrapMinuten, repsMap: _geladeneReps)));
+                    }
+                  });
+                },
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green, padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12)),
+                child: Text(_workoutModus == 'EMOM' ? 'START EMOM ▶️' : 'START AMRAP ▶️', style: const TextStyle(color: Colors.white, fontSize: 16)),
               ),
-            ),
-            const SizedBox(height: 24),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.amber,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              icon: const Icon(Icons.timer),
-              label: const Text('EMOM Workout starten (30 Min)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              onPressed: () {
-                final gezogene = _zieheZufallsUebungen();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => EmomWorkoutScreen(uebungen: gezogene),
-                  ),
-                ).then((_) => setState(() {}));
-              },
-            ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orangeAccent,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-              ),
-              icon: const Icon(Icons.repeat),
-              label: const Text('AMRAP Workout starten', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-              onPressed: () {
-                final gezogene = _zieheZufallsUebungen();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AmrapConfigScreen(uebungen: gezogene),
-                  ),
-                ).then((_) => setState(() {}));
-              },
-            ),
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              style: OutlinedButton.styleFrom(
-                foregroundColor: Colors.amber,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                side: const BorderSide(color: Colors.amber),
-              ),
-              icon: const Icon(Icons.fitness_center),
-              label: const Text('Mediathek & Reps anpassen', style: TextStyle(fontSize: 16)),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MediathekScreen(),
-                  ),
-                ).then((_) => setState(() {}));
-              },
-            ),
-            const Spacer(),
-            Card(
-              color: Colors.grey[900],
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        const Text('Workouts', style: TextStyle(color: Colors.grey)),
-                        Text('$globalAbgeschlosseneWorkouts', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.amber)),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Text('Trainingszeit', style: TextStyle(color: Colors.grey)),
-                        Text('$globalGesamtTrainingsminuten Min.', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.amber)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            ]
           ],
         ),
       ),
@@ -439,99 +242,89 @@ class _HauptmenueScreenState extends State<HauptmenueScreen> {
   }
 }
 
-/// AMRAP Konfigurations-Screen
-class AmrapConfigScreen extends StatefulWidget {
-  final List<Uebung> uebungen;
-  const AmrapConfigScreen({super.key, required this.uebungen});
-
+class AktiverEMOMBildschirm extends StatefulWidget {
+  final List<Uebung> aktuellesWorkout;
+  final Map<String, int> repsMap;
+  const AktiverEMOMBildschirm({super.key, required this.aktuellesWorkout, required this.repsMap});
   @override
-  State<AmrapConfigScreen> createState() => _AmrapConfigScreenState();
+  _AktiverEMOMBildschirmState createState() => _AktiverEMOMBildschirmState();
 }
 
-class _AmrapConfigScreenState extends State<AmrapConfigScreen> {
-  int _dauerMinuten = 15;
+class _AktiverEMOMBildschirmState extends State<AktiverEMOMBildschirm> {
+  int _index = 0;
+  int _sekunden = 60;
+  int _minutenGespielt = 0;
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    WakelockPlus.enable();
+    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (_sekunden > 1) {
+        setState(() => _sekunden--);
+      } else {
+        setState(() {
+          _sekunden = 60;
+          _minutenGespielt++;
+          statistikGesamtMinuten++;
+          uebungsZaehler[widget.aktuellesWorkout[_index].name] = (uebungsZaehler[widget.aktuellesWorkout[_index].name] ?? 0) + 1;
+          if (_minutenGespielt >= 30) {
+            _timer?.cancel();
+            statistikAnzahlWorkouts++;
+            _beendet();
+          } else {
+            _index = (_index + 1) % 5;
+          }
+        });
+      }
+    });
+  }
+
+  void _beendet() {
+    showDialog(context: context, builder: (c) => AlertDialog(title: const Text('🎉 Fertig!'), content: const Text('30 Minuten EMOM erfolgreich absolviert!'), actions: [TextButton(onPressed: () { Navigator.pop(context); Navigator.pop(context); }, child: const Text('OK'))]));
+  }
+
+  @override
+  void dispose() {
+    WakelockPlus.disable();
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final u = widget.aktuellesWorkout[_index];
+    final zielReps = widget.repsMap[u.name] ?? u.standardWiederholungen;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('AMRAP Konfiguration')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'Wähle die Dauer des Workouts:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('$_dauerMinuten Minuten', style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.amber)),
-              ],
-            ),
-            Slider(
-              value: _dauerMinuten.toDouble(),
-              min: 5,
-              max: 30,
-              divisions: 5,
-              activeColor: Colors.amber,
-              label: '$_dauerMinuten Min',
-              onChanged: (val) {
-                setState(() {
-                  _dauerMinuten = val.round();
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            const Text('Deine gezogenen Übungen (Tippe für Details):', style: TextStyle(fontSize: 16, color: Colors.grey)),
-            const SizedBox(height: 8),
             Expanded(
-              child: ListView.builder(
-                itemCount: widget.uebungen.length,
-                itemBuilder: (context, index) {
-                  final uebung = widget.uebungen[index];
-                  return Card(
-                    child: ListTile(
-                      onTap: () => showUebungDetailDialog(context, uebung),
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          uebung.imagePath,
-                          width: 45,
-                          height: 45,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.fitness_center, color: Colors.amber),
-                        ),
-                      ),
-                      title: Text(uebung.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text('${uebung.reps} Wiederholungen'),
-                      trailing: const Icon(Icons.info_outline, color: Colors.grey),
-                    ),
-                  );
-                },
-              ),
+              flex: 3,
+              child: Image.asset(u.bildUrl, fit: BoxFit.contain, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 100, color: Colors.orange)),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.orangeAccent,
-                foregroundColor: Colors.black,
-                padding: const EdgeInsets.symmetric(vertical: 16),
+            Expanded(
+              flex: 2,
+              child: Container(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Text(u.name, style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.orange)),
+                    const SizedBox(height: 5),
+                    Text('ZIEL: $zielReps WIEDERHOLUNGEN', style: const TextStyle(fontSize: 18, color: Colors.green, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 5),
+                    Text(u.beschreibung, textAlign: TextAlign.center, style: const TextStyle(color: Colors.grey)),
+                    const Spacer(),
+                    Text('0:${_sekunden.toString().padLeft(2, '0')}', style: const TextStyle(fontSize: 40, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 10),
+                    Text('Fortschritt: $_minutenGespielt/30 Min', style: const TextStyle(color: Colors.grey)),
+                    const SizedBox(height: 10),
+                    ElevatedButton(onPressed: () => Navigator.pop(context), style: ElevatedButton.styleFrom(backgroundColor: Colors.red), child: const Text('Abbrechen')),
+                  ],
+                ),
               ),
-              child: const Text('AMRAP Starten', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => AmrapWorkoutScreen(
-                      uebungen: widget.uebungen,
-                      dauerMinuten: _dauerMinuten,
-                    ),
-                  ),
-                );
-              },
             )
           ],
         ),
@@ -540,179 +333,184 @@ class _AmrapConfigScreenState extends State<AmrapConfigScreen> {
   }
 }
 
-/// AMRAP Workout Screen
-class AmrapWorkoutScreen extends StatefulWidget {
-  final List<Uebung> uebungen;
-  final int dauerMinuten;
+class AktiverAMRAPBildschirm extends StatefulWidget {
+  final List<Uebung> aktuellesWorkout;
+  final int gesamtMinuten;
+  final Map<String, int> repsMap;
 
-  const AmrapWorkoutScreen({super.key, required this.uebungen, required this.dauerMinuten});
+  const AktiverAMRAPBildschirm({super.key, required this.aktuellesWorkout, required this.gesamtMinuten, required this.repsMap});
 
   @override
-  State<AmrapWorkoutScreen> createState() => _AmrapWorkoutScreenState();
+  _AktiverAMRAPBildschirmState createState() => _AktiverAMRAPBildschirmState();
 }
 
-class _AmrapWorkoutScreenState extends State<AmrapWorkoutScreen> {
-  late int _remainingSeconds;
-  Timer? _timer;
+class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
+  int _gesamtSekunden = 0;
   int _rundenZaehler = 0;
-  bool _isPaused = false;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
-    _remainingSeconds = widget.dauerMinuten * 60;
     WakelockPlus.enable();
-    _startTimer();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    WakelockPlus.disable();
-    super.dispose();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_remainingSeconds > 0) {
+    _gesamtSekunden = widget.gesamtMinuten * 60;
+    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (_gesamtSekunden > 1) {
+        setState(() => _gesamtSekunden--);
+      } else {
+        _timer?.cancel();
         setState(() {
-          _remainingSeconds--;
+          statistikGesamtMinuten += widget.gesamtMinuten;
+          statistikAnzahlWorkouts++;
+          for (var u in widget.aktuellesWorkout) {
+            uebungsZaehler[u.name] = (uebungsZaehler[u.name] ?? 0) + _rundenZaehler;
+          }
         });
-      } else {
-        _timer?.cancel();
-        _workoutBeenden();
+        _beendet();
       }
     });
   }
 
-  void _togglePause() {
-    setState(() {
-      _isPaused = !_isPaused;
-      if (_isPaused) {
-        _timer?.cancel();
-      } else {
-        _startTimer();
-      }
-    });
+  void _beendet() {
+    showDialog(
+      context: context, 
+      barrierDismissible: false,
+      builder: (c) => AlertDialog(
+        title: const Text('⏱️ Zeit um!'), 
+        content: Text('Hervorragend! Du hast in ${widget.gesamtMinuten} Minuten stolze $_rundenZaehler Runden geschafft!'), 
+        actions: [TextButton(onPressed: () { Navigator.pop(context); Navigator.pop(context); }, child: const Text('Wahnsinn!'))]
+      )
+    );
   }
 
-  void _workoutBeenden() {
-    globalAbgeschlosseneWorkouts++;
-    globalGesamtTrainingsminuten += widget.dauerMinuten;
+  void _zeigeUebungsInfo(Uebung u) {
     showDialog(
       context: context,
-      barrierDismissible: false,
       builder: (context) => AlertDialog(
-        title: const Text('AMRAP Beendet! 🎉'),
-        content: Text('Hervorragend! Du hast in ${widget.dauerMinuten} Minuten insg. $_rundenZaehler Runden geschafft.'),
+        backgroundColor: Colors.grey[950],
+        title: Text(u.name, style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                u.bildUrl, 
+                height: 180, 
+                fit: BoxFit.contain, 
+                errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 80, color: Colors.orange)
+              ),
+            ),
+            const SizedBox(height: 15),
+            Text(
+              u.beschreibung, 
+              textAlign: TextAlign.center, 
+              style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4)
+            ),
+          ],
+        ),
         actions: [
           TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            child: const Text('Fertig'),
-          ),
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Zurück zum Workout ↩️', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+          )
         ],
       ),
     );
   }
 
-  String _formatTime(int seconds) {
-    final m = (seconds ~/ 60).toString().padLeft(2, '0');
-    final s = (seconds % 60).toString().padLeft(2, '0');
-    return '$m:$s';
+  @override
+  void dispose() {
+    WakelockPlus.disable();
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  String _formatTime(int sekunden) {
+    int m = sekunden ~/ 60;
+    int s = sekunden % 60;
+    return '$m:${s.toString().padLeft(2, '0')}';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('AMRAP Workout'),
-        actions: [
-          IconButton(
-            icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
-            onPressed: _togglePause,
-          )
-        ],
+        title: const Text('🔄 AMRAP Zirkel-Board'),
+        automaticallyImplyLeading: false,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SafeArea(
         child: Column(
           children: [
-            Card(
-              color: Colors.grey[900],
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        const Text('Verbleibend', style: TextStyle(color: Colors.grey)),
-                        Text(_formatTime(_remainingSeconds),
-                            style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.orangeAccent)),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        const Text('Runden', style: TextStyle(color: Colors.grey)),
-                        Text('$_rundenZaehler',
-                            style: const TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: Colors.amber)),
-                      ],
-                    ),
-                  ],
-                ),
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 15),
+              color: Colors.grey[950],
+              width: double.infinity,
+              child: Column(
+                children: [
+                  Text(_formatTime(_gesamtSekunden), style: const TextStyle(fontSize: 55, fontWeight: FontWeight.bold, color: Colors.orange)),
+                  Text('Verbleibende Zeit von ${widget.gesamtMinuten} Min', style: const TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 5),
+                  Text('Abgeschlossene Runden: $_rundenZaehler', style: const TextStyle(fontSize: 18, color: Colors.green, fontWeight: FontWeight.bold)),
+                ],
               ),
             ),
-            const SizedBox(height: 12),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.amber,
-                foregroundColor: Colors.black,
-                minimumSize: const Size.fromHeight(50),
-              ),
-              icon: const Icon(Icons.add),
-              label: const Text('Runde abschließen (+1)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              onPressed: () {
-                setState(() {
-                  _rundenZaehler++;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Text('Zirkel-Übungen (Tippe für Details):', style: TextStyle(fontSize: 16, color: Colors.grey)),
-            ),
-            const SizedBox(height: 8),
             Expanded(
               child: ListView.builder(
-                itemCount: widget.uebungen.length,
-                itemBuilder: (context, index) {
-                  final uebung = widget.uebungen[index];
+                padding: const EdgeInsets.all(10),
+                itemCount: widget.aktuellesWorkout.length,
+                itemBuilder: (context, idx) {
+                  final u = widget.aktuellesWorkout[idx];
+                  final reps = widget.repsMap[u.name] ?? u.standardWiederholungen;
                   return Card(
+                    color: Colors.grey[900],
+                    margin: const EdgeInsets.symmetric(vertical: 5),
                     child: ListTile(
-                      onTap: () => showUebungDetailDialog(context, uebung),
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.asset(
-                          uebung.imagePath,
-                          width: 45,
-                          height: 45,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              const Icon(Icons.fitness_center, color: Colors.amber),
-                        ),
+                      onTap: () => _zeigeUebungsInfo(u),
+                      leading: CircleAvatar(backgroundColor: Colors.orange[800], child: Text('${idx + 1}', style: const TextStyle(color: Colors.white))),
+                      title: Text(u.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      subtitle: const Row(
+                        children: [
+                          Icon(Icons.info_outline, size: 14, color: Colors.grey),
+                          SizedBox(width: 4),
+                          Text('Anleitung zeigen', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                        ],
                       ),
-                      title: Text(uebung.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text('${uebung.reps} Wiederholungen'),
-                      trailing: const Icon(Icons.info_outline, color: Colors.grey),
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(color: Colors.black, borderRadius: BorderRadius.circular(10)),
+                        child: Text('$reps Reps', style: const TextStyle(color: Colors.orange, fontSize: 16, fontWeight: FontWeight.bold)),
+                      ),
                     ),
                   );
                 },
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red[900], padding: const EdgeInsets.symmetric(vertical: 15)),
+                      child: const Text('Abbrechen', style: TextStyle(color: Colors.white)),
+                    ),
+                  ),
+                  const SizedBox(width: 15),
+                  Expanded(
+                    flex: 2,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() => _rundenZaehler++);
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green[700], padding: const EdgeInsets.symmetric(vertical: 20)),
+                      child: const Text('RUNDEN-ZÄHLER (+1) 🏁', style: TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
@@ -720,294 +518,179 @@ class _AmrapWorkoutScreenState extends State<AmrapWorkoutScreen> {
   }
 }
 
-/// EMOM Workout Screen (30 Minuten Dauer)
-class EmomWorkoutScreen extends StatefulWidget {
-  final List<Uebung> uebungen;
-  const EmomWorkoutScreen({super.key, required this.uebungen});
-
+class MediathekPage extends StatefulWidget {
+  const MediathekPage({super.key});
   @override
-  State<EmomWorkoutScreen> createState() => _EmomWorkoutScreenState();
+  _MediathekPageState createState() => _MediathekPageState();
 }
 
-class _EmomWorkoutScreenState extends State<EmomWorkoutScreen> {
-  static const int gesamtMinuten = 30;
-  int _gesamteSekunden = gesamtMinuten * 60;
-  int _sekundeImIntervall = 60;
-  int _aktuellerSatz = 1; // 1 bis 30
-  Timer? _timer;
-  bool _isPaused = false;
+class _MediathekPageState extends State<MediathekPage> {
+  String _filter = 'Alle';
+  Map<String, int> _customReps = {};
 
   @override
   void initState() {
     super.initState();
-    WakelockPlus.enable();
-    _startTimer();
+    _loadSavedReps();
+  }
+
+  Future<void> _loadSavedReps() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      for (var u in Uebung.alleUebungen) {
+        _customReps[u.name] = prefs.getInt('reps_${u.name}') ?? u.standardWiederholungen;
+      }
+    });
+  }
+
+  Future<void> _updateReps(String name, int neuWert) async {
+    if (neuWert < 1) return;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('reps_$name', neuWert);
+    setState(() {
+      _customReps[name] = neuWert;
+    });
   }
 
   @override
-  void dispose() {
-    _timer?.cancel();
-    WakelockPlus.disable();
-    super.dispose();
-  }
-
-  void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_gesamteSekunden > 0) {
-        setState(() {
-          _gesamteSekunden--;
-          _sekundeImIntervall--;
-          if (_sekundeImIntervall == 0 && _gesamteSekunden > 0) {
-            _sekundeImIntervall = 60;
-            _aktuellerSatz++;
-          }
-        });
-      } else {
-        _timer?.cancel();
-        _workoutBeenden();
-      }
-    });
-  }
-
-  void _togglePause() {
-    setState(() {
-      _isPaused = !_isPaused;
-      if (_isPaused) {
-        _timer?.cancel();
-      } else {
-        _startTimer();
-      }
-    });
-  }
-
-  void _workoutBeenden() {
-    globalAbgeschlosseneWorkouts++;
-    globalGesamtTrainingsminuten += gesamtMinuten;
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text('EMOM Beendet! 🔥'),
-        content: const Text('Glückwunsch! Du hast die vollen 30 Minuten durchgezogen.'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-            child: const Text('Fertig'),
+  Widget build(BuildContext context) {
+    final liste = Uebung.alleUebungen.where((u) => _filter == 'Alle' || u.kategorie == _filter).toList();
+    return Scaffold(
+      appBar: AppBar(title: const Text('Mediathek')),
+      body: Column(
+        children: [
+          DropdownButton<String>(
+            value: _filter,
+            onChanged: (v) => setState(() => _filter = v!),
+            items: ['Alle', 'Unterkoerper', 'Ruecken', 'Oberkoerper', 'Core', 'Ganzkoerper'].map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
           ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: liste.length,
+              itemBuilder: (c, i) {
+                final u = liste[i];
+                final aktuelleReps = _customReps[u.name] ?? u.standardWiederholungen;
+                return ListTile(
+                  title: Text(u.name),
+                  subtitle: Text(u.kategorie),
+                  trailing: Text('$aktuelleReps Reps', style: const TextStyle(color: Colors.orange)),
+                  onTap: () => _showDetails(context, u),
+                );
+              },
+            ),
+          )
         ],
       ),
     );
   }
 
-  Uebung get _aktuelleUebung {
-    int index = (_aktuellerSatz - 1) % widget.uebungen.length;
-    return widget.uebungen[index];
-  }
-
-  String _formatTime(int seconds) {
-    final m = (seconds ~/ 60).toString().padLeft(2, '0');
-    final s = (seconds % 60).toString().padLeft(2, '0');
-    return '$m:$s';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final uebung = _aktuelleUebung;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('EMOM - Satz $_aktuellerSatz von $gesamtMinuten'),
-        actions: [
-          IconButton(
-            icon: Icon(_isPaused ? Icons.play_arrow : Icons.pause),
-            onPressed: _togglePause,
-          )
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text('Gesamtziel: ${_formatTime(_gesamteSekunden)}', style: const TextStyle(color: Colors.grey, fontSize: 16)),
-            const SizedBox(height: 12),
-            Card(
-              color: Colors.grey[900],
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Column(
+  void _showDetails(BuildContext context, Uebung u) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter modalState) {
+            final aktuelleReps = _customReps[u.name] ?? u.standardWiederholungen;
+            return DraggableScrollableSheet(
+              initialChildSize: 0.95,
+              builder: (context, scrollController) => Container(
+                decoration: BoxDecoration(color: Colors.grey[950], borderRadius: const BorderRadius.vertical(top: Radius.circular(20))),
+                child: Stack(
                   children: [
-                    const Text('Satz-Timer (1 Min)', style: TextStyle(color: Colors.grey)),
-                    Text(
-                      '$_sekundeImIntervall',
-                      style: TextStyle(
-                        fontSize: 64,
-                        fontWeight: FontWeight.bold,
-                        color: _sekundeImIntervall <= 10 ? Colors.redAccent : Colors.amber,
+                    ListView(
+                      controller: scrollController,
+                      padding: const EdgeInsets.all(20),
+                      children: [
+                        const SizedBox(height: 40),
+                        Text(u.name, style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.orange)),
+                        const SizedBox(height: 5),
+                        Text(u.kategorie, style: const TextStyle(color: Colors.grey)),
+                        const SizedBox(height: 20),
+                        
+                        Container(
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(color: Colors.grey[900], borderRadius: BorderRadius.circular(12)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text('Wiederholungen:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.remove_circle_outline, color: Colors.orange),
+                                    onPressed: () async {
+                                      await _updateReps(u.name, aktuelleReps - 1);
+                                      modalState(() {});
+                                    },
+                                  ),
+                                  Text('$aktuelleReps', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
+                                  IconButton(
+                                    icon: const Icon(Icons.add_circle_outline, color: Colors.orange),
+                                    onPressed: () async {
+                                      await _updateReps(u.name, aktuelleReps + 1);
+                                      modalState(() {});
+                                    },
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        
+                        const SizedBox(height: 20),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(15),
+                          child: u.bildUrl.startsWith('http') 
+                            ? Image.network(u.bildUrl) 
+                            : Image.asset(u.bildUrl, errorBuilder: (c,e,s) => Image.asset('assets/${u.bildUrl.split('/').last}')),
+                        ),
+                        const SizedBox(height: 20),
+                        const Text('Ausführung:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange)),
+                        const SizedBox(height: 10),
+                        Text(u.beschreibung, style: const TextStyle(fontSize: 16, height: 1.5)),
+                      ],
+                    ),
+                    Positioned(
+                      top: 10,
+                      right: 10,
+                      child: CircleAvatar(
+                        backgroundColor: Colors.black54,
+                        child: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () {
+                          this.setState(() {});
+                          Navigator.pop(context);
+                        }),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: Card(
-                child: InkWell(
-                  onTap: () => showUebungDetailDialog(context, uebung),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text('Aktuelle Übung:', style: TextStyle(color: Colors.grey[400])),
-                        const SizedBox(height: 8),
-                        Text(
-                          uebung.name,
-                          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.amber),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 12),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.asset(
-                            uebung.imagePath,
-                            height: 140,
-                            fit: BoxFit.contain,
-                            errorBuilder: (context, error, stackTrace) =>
-                                const Icon(Icons.fitness_center, size: 80, color: Colors.grey),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'Ziel: ${uebung.reps} Wiederholungen',
-                          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 8),
-                        const Text('(Tippe auf das Feld für Erklärung)', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Mediathek & Rep-Verwaltung
-class MediathekScreen extends StatefulWidget {
-  const MediathekScreen({super.key});
-
-  @override
-  State<MediathekScreen> createState() => _MediathekScreenState();
-}
-
-class _MediathekScreenState extends State<MediathekScreen> {
-  Future<void> _saveReps(Uebung uebung) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('reps_${uebung.id}', uebung.reps);
-  }
-
-  void _bearbeiteRepsDialog(Uebung uebung) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color(0xFF2C2C2C),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-      ),
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(uebung.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.amber)),
-                  const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.remove_circle_outline, size: 36, color: Colors.amber),
-                        onPressed: () {
-                          if (uebung.reps > 1) {
-                            setModalState(() => uebung.reps--);
-                            setState(() {});
-                            _saveReps(uebung);
-                          }
-                        },
-                      ),
-                      const SizedBox(width: 24),
-                      Text('${uebung.reps} Reps', style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-                      const SizedBox(width: 24),
-                      IconButton(
-                        icon: const Icon(Icons.add_circle_outline, size: 36, color: Colors.amber),
-                        onPressed: () {
-                          setModalState(() => uebung.reps++);
-                          setState(() {});
-                          _saveReps(uebung);
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.amber,
-                      foregroundColor: Colors.black,
-                      minimumSize: const Size.fromHeight(45),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Speichern & Schließen'),
-                  ),
-                ],
-              ),
             );
-          },
+          }
         );
       },
-    );
+    ).then((_) => setState(() {}));
   }
+}
 
+class StatistikPage extends StatelessWidget {
+  const StatistikPage({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Übungs-Mediathek')),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(8),
-        itemCount: globaleUebungen.length,
-        itemBuilder: (context, index) {
-          final uebung = globaleUebungen[index];
-          return Card(
-            child: ListTile(
-              onTap: () => showUebungDetailDialog(context, uebung),
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  uebung.imagePath,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Icon(Icons.fitness_center, color: Colors.amber),
-                ),
-              ),
-              title: Text(uebung.name, style: const TextStyle(fontWeight: FontWeight.bold)),
-              subtitle: Text('Standard: ${uebung.reps} Wiederholungen'),
-              trailing: IconButton(
-                icon: const Icon(Icons.edit, color: Colors.amber),
-                onPressed: () => _bearbeiteRepsDialog(uebung),
-              ),
-            ),
-          );
-        },
+      appBar: AppBar(title: const Text('Statistik')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('$statistikGesamtMinuten', style: const TextStyle(fontSize: 80, color: Colors.orange, fontWeight: FontWeight.bold)),
+            const Text('Minuten trainiert'),
+            const SizedBox(height: 30),
+            Text('$statistikAnzahlWorkouts', style: const TextStyle(fontSize: 40, color: Colors.green)),
+            const Text('Workouts abgeschlossen'),
+          ],
+        ),
       ),
     );
   }
