@@ -67,20 +67,17 @@ class Uebung {
   ];
 }
 
-// Globale Gamification-Verwaltung (wird persistiert)
 class GamificationManager {
   static int xp = 0;
   static int gesamtMinuten = 0;
   static int gesamtWorkouts = 0;
   static int amrapHighscoreRunden = 0;
   static int streakWochen = 0;
-  
-  // Interne Variablen zur Berechnung des wöchentlichen Streaks
   static int workoutsDieseWoche = 0;
-  static int letzteWocheJahr = 0; // Format: YYYYWW (z.B. 202625)
+  static int letzteWocheJahr = 0;
 
   static const List<String> levelNamen = [
-    'Rostige Kugel 🥉', 'Kettlebell-Neuling 🪵', 'Eisen-Anfänger 🏋️', 'Kugel-Symphat異', 'Schwung-Lehrling 🌀',
+    'Rostige Kugel 🥉', 'Kettlebell-Neuling 🪵', 'Eisen-Anfänger 🏋️', 'Kugel-Sympathisant 🤝', 'Schwung-Lehrling 🌀',
     'Zirkel-Freund 🔄', 'Bronze-Athlet 🥉', 'Ausdauer-Sammler ⏱️', 'Schweiß-Krieger 💦', 'Gusseisen-Herz 🔥',
     'Kettlebell-Bandit 👑', 'Stahl-Muskel 💪', 'Silber-Ritter 🥈', 'Ganzkörper-Meister 🏆', 'Rep-Maschine 🤖',
     'Takt-Halter ⏱️', 'Power-Generator ⚡', 'Kugel-Flüsterer 🤫', 'Gold-Krieger 🥇', 'Schwerkraft-Trotzer 🚀',
@@ -104,7 +101,7 @@ class GamificationManager {
     }
     if (aktuellesLevel > 25) {
       aktuellesLevel = 25;
-      benoetigteXpFuerNaechstes = xp; // Max Level erreicht
+      benoetigteXpFuerNaechstes = xp;
     }
 
     String name = levelNamen[min(aktuellesLevel - 1, 24)];
@@ -118,7 +115,6 @@ class GamificationManager {
   }
 
   static int getKW(DateTime date) {
-    // Einfache ISO-Wochennummer-Berechnung
     final dayTarget = DateTime(date.year, date.month, date.day - (date.weekday - 1) + 3);
     final firstThursday = DateTime(dayTarget.year, 1, 4);
     final firstThursdayTarget = DateTime(firstThursday.year, firstThursday.month, firstThursday.day - (firstThursday.weekday - 1) + 3);
@@ -136,10 +132,8 @@ class GamificationManager {
     workoutsDieseWoche = prefs.getInt('g_workouts_woche') ?? 0;
     letzteWocheJahr = prefs.getInt('g_letzte_woche_jahr') ?? 0;
 
-    // Überprüfen, ob eine neue Woche angefangen hat
     int aktuelleKW = getKW(DateTime.now());
     if (aktuelleKW != letzteWocheJahr) {
-      // Wenn in der alten Woche das Soll von 2 Workouts nicht erfüllt wurde -> Streak reißt ab
       if (letzteWocheJahr != 0 && workoutsDieseWoche < 2) {
         streakWochen = 0;
       }
@@ -165,8 +159,7 @@ class GamificationManager {
 
     gesamtWorkouts++;
     gesamtMinuten += minuten;
-    
-    // XP Berechnung: 1 Minute = 10 XP. Jede AMRAP-Runde = 20 XP zusätzlich.
+
     int verdienteXp = minuten * 10;
     if (isAmrap) {
       verdienteXp += amrapRunden * 20;
@@ -176,10 +169,9 @@ class GamificationManager {
     }
     xp += verdienteXp;
 
-    // Streak-Logik (2 Workouts pro Woche nötig)
     workoutsDieseWoche++;
     if (workoutsDieseWoche == 2) {
-      streakWochen++; // Streak erhöht sich, sobald das Wochenziel erreicht ist
+      streakWochen++;
     }
 
     await saveStats();
@@ -204,13 +196,18 @@ class GamificationManager {
 
 class HauptNavigationsPage extends StatefulWidget {
   const HauptNavigationsPage({super.key});
+
   @override
-  _HauptNavigationsPageState createState() => _HauptNavigationsPageState();
+  State<HauptNavigationsPage> createState() => _HauptNavigationsPageState();
 }
 
 class _HauptNavigationsPageState extends State<HauptNavigationsPage> {
   int _aktuellerIndex = 0;
-  final List<Widget> _seiten = [const SlotMachinePage(), const MediathekPage(), const StatistikPage()];
+  final List<Widget> _seiten = const [
+    SlotMachinePage(),
+    MediathekPage(),
+    StatistikPage(),
+  ];
 
   @override
   void initState() {
@@ -242,8 +239,9 @@ class _HauptNavigationsPageState extends State<HauptNavigationsPage> {
 
 class SlotMachinePage extends StatefulWidget {
   const SlotMachinePage({super.key});
+
   @override
-  _SlotMachinePageState createState() => _SlotMachinePageState();
+  State<SlotMachinePage> createState() => _SlotMachinePageState();
 }
 
 class _SlotMachinePageState extends State<SlotMachinePage> {
@@ -260,6 +258,7 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
 
   Future<void> _loadAllReps() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     setState(() {
       for (var u in Uebung.alleUebungen) {
         _geladeneReps[u.name] = prefs.getInt('reps_${u.name}') ?? u.standardWiederholungen;
@@ -271,11 +270,11 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
     final r = Random();
     setState(() {
       _aktuellesWorkout = [
-        Uebung.alleUebungen[r.nextInt(5)],       
-        Uebung.alleUebungen[5 + r.nextInt(4)],   
-        Uebung.alleUebungen[9 + r.nextInt(4)],   
-        Uebung.alleUebungen[13 + r.nextInt(4)],  
-        Uebung.alleUebungen[17 + r.nextInt(3)],  
+        Uebung.alleUebungen[r.nextInt(5)],        
+        Uebung.alleUebungen[5 + r.nextInt(4)],    
+        Uebung.alleUebungen[9 + r.nextInt(4)],    
+        Uebung.alleUebungen[13 + r.nextInt(4)],   
+        Uebung.alleUebungen[17 + r.nextInt(3)],   
       ];
       _aktuellesWorkout.shuffle();
     });
@@ -356,6 +355,7 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
               ElevatedButton(
                 onPressed: () {
                   _loadAllReps().then((_) {
+                    if (!mounted) return;
                     if (_workoutModus == 'EMOM') {
                       Navigator.push(context, MaterialPageRoute(builder: (c) => AktiverEMOMBildschirm(aktuellesWorkout: _aktuellesWorkout.cast<Uebung>(), repsMap: _geladeneReps)));
                     } else {
@@ -377,9 +377,15 @@ class _SlotMachinePageState extends State<SlotMachinePage> {
 class AktiverEMOMBildschirm extends StatefulWidget {
   final List<Uebung> aktuellesWorkout;
   final Map<String, int> repsMap;
-  const AktiverEMOMBildschirm({super.key, required this.aktuellesWorkout, required this.repsMap});
+
+  const AktiverEMOMBildschirm({
+    super.key,
+    required this.aktuellesWorkout,
+    required this.repsMap,
+  });
+
   @override
-  _AktiverEMOMBildschirmState createState() => _AktiverEMOMBildschirmState();
+  State<AktiverEMOMBildschirm> createState() => _AktiverEMOMBildschirmState();
 }
 
 class _AktiverEMOMBildschirmState extends State<AktiverEMOMBildschirm> {
@@ -394,18 +400,20 @@ class _AktiverEMOMBildschirmState extends State<AktiverEMOMBildschirm> {
     WakelockPlus.enable();
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (_sekunden > 1) {
-        setState(() => _sekunden--);
+        if (mounted) setState(() => _sekunden--);
       } else {
-        setState(() {
-          _sekunden = 60;
-          _minutenGespielt++;
-          if (_minutenGespielt >= 30) {
-            _timer?.cancel();
-            _beendet(complete: true);
-          } else {
-            _index = (_index + 1) % 5;
-          }
-        });
+        if (mounted) {
+          setState(() {
+            _sekunden = 60;
+            _minutenGespielt++;
+            if (_minutenGespielt >= 30) {
+              _timer?.cancel();
+              _beendet(complete: true);
+            } else {
+              _index = (_index + 1) % widget.aktuellesWorkout.length;
+            }
+          });
+        }
       }
     });
   }
@@ -414,14 +422,25 @@ class _AktiverEMOMBildschirmState extends State<AktiverEMOMBildschirm> {
     if (complete && _minutenGespielt > 0) {
       await GamificationManager.addWorkoutErgebnis(minuten: _minutenGespielt, amrapRunden: 0, isAmrap: false);
     }
+    
+    if (!mounted) return;
+
     showDialog(
       context: context, 
       barrierDismissible: false,
       builder: (c) => AlertDialog(
         title: const Text('🎉 Fertig!'), 
         content: Text('$_minutenGespielt Minuten EMOM erfolgreich absolviert und XP gesichert!'), 
-        actions: [TextButton(onPressed: () { Navigator.pop(context); Navigator.pop(context); }, child: const Text('OK'))]
-      )
+        actions: [
+          TextButton(
+            onPressed: () { 
+              Navigator.pop(context); 
+              Navigator.pop(context); 
+            }, 
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -443,7 +462,23 @@ class _AktiverEMOMBildschirmState extends State<AktiverEMOMBildschirm> {
           children: [
             Expanded(
               flex: 3,
-              child: Image.asset(u.bildUrl, fit: BoxFit.contain, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 100, color: Colors.orange)),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: u.bildUrl.startsWith('http')
+                      ? Image.network(
+                          u.bildUrl,
+                          fit: BoxFit.contain,
+                          errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 100, color: Colors.orange),
+                        )
+                      : Image.asset(
+                          u.bildUrl,
+                          fit: BoxFit.contain,
+                          errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 100, color: Colors.orange),
+                        ),
+                ),
+              ),
             ),
             Expanded(
               flex: 2,
@@ -467,12 +502,16 @@ class _AktiverEMOMBildschirmState extends State<AktiverEMOMBildschirm> {
                         ElevatedButton(
                           onPressed: () {
                             _timer?.cancel();
-                            _beendet(complete: true); // Vorzeitig beenden sichert die gespielten Minuten!
+                            _beendet(complete: true);
                           }, 
                           style: ElevatedButton.styleFrom(backgroundColor: Colors.green[800]), 
-                          child: const Text('Workout Beenden')
+                          child: const Text('Workout Beenden'),
                         ),
-                        ElevatedButton(onPressed: () => Navigator.pop(context), style: ElevatedButton.styleFrom(backgroundColor: Colors.red[900]), child: const Text('Abbrechen')),
+                        ElevatedButton(
+                          onPressed: () => Navigator.pop(context), 
+                          style: ElevatedButton.styleFrom(backgroundColor: Colors.red[900]), 
+                          child: const Text('Abbrechen'),
+                        ),
                       ],
                     ),
                   ],
@@ -491,10 +530,15 @@ class AktiverAMRAPBildschirm extends StatefulWidget {
   final int gesamtMinuten;
   final Map<String, int> repsMap;
 
-  const AktiverAMRAPBildschirm({super.key, required this.aktuellesWorkout, required this.gesamtMinuten, required this.repsMap});
+  const AktiverAMRAPBildschirm({
+    super.key,
+    required this.aktuellesWorkout,
+    required this.gesamtMinuten,
+    required this.repsMap,
+  });
 
   @override
-  _AktiverAMRAPBildschirmState createState() => _AktiverAMRAPBildschirmState();
+  State<AktiverAMRAPBildschirm> createState() => _AktiverAMRAPBildschirmState();
 }
 
 class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
@@ -509,7 +553,7 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
     _gesamtSekunden = widget.gesamtMinuten * 60;
     _timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (_gesamtSekunden > 1) {
-        setState(() => _gesamtSekunden--);
+        if (mounted) setState(() => _gesamtSekunden--);
       } else {
         _timer?.cancel();
         _beendet();
@@ -519,18 +563,34 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
 
   void _beendet() async {
     int gespielteMinuten = widget.gesamtMinuten - (_gesamtSekunden ~/ 60);
-    if (gespielteMinuten == 0 && _gesamtSekunden > 0) gespielteMinuten = 1; // Mindestens 1 Min Gutschrift
+    if (gespielteMinuten == 0 && _gesamtSekunden > 0) gespielteMinuten = 1;
 
-    await GamificationManager.addWorkoutErgebnis(minuten: gespielteMinuten, amrapRunden: _rundenZaehler, isAmrap: true);
-    
+    await GamificationManager.addWorkoutErgebnis(
+      minuten: gespielteMinuten,
+      amrapRunden: _rundenZaehler,
+      isAmrap: true,
+    );
+
+    if (!mounted) return;
+
     showDialog(
-      context: context, 
+      context: context,
       barrierDismissible: false,
       builder: (c) => AlertDialog(
-        title: const Text('⏱️ Zeit um / Beendet!'), 
-        content: Text('Hervorragend! Du hast in $gespielteMinuten Minuten stolze $_rundenZaehler Runden geschafft und massive XP erhalten!'), 
-        actions: [TextButton(onPressed: () { Navigator.pop(context); Navigator.pop(context); }, child: const Text('Wahnsinn!'))]
-      )
+        title: const Text('⏱️ Zeit um / Beendet!'),
+        content: Text(
+          'Hervorragend! Du hast in $gespielteMinuten Minuten stolze $_rundenZaehler Runden geschafft und massive XP erhalten!',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pop(context);
+            },
+            child: const Text('Wahnsinn!'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -539,20 +599,45 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: Colors.grey[950],
-        title: Text(u.name, style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)),
+        title: Text(
+          u.name,
+          style: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.asset(u.bildUrl, height: 180, fit: BoxFit.contain, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 80, color: Colors.orange)),
+              child: u.bildUrl.startsWith('http')
+                  ? Image.network(
+                      u.bildUrl,
+                      height: 180,
+                      fit: BoxFit.contain,
+                      errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 80, color: Colors.orange),
+                    )
+                  : Image.asset(
+                      u.bildUrl,
+                      height: 180,
+                      fit: BoxFit.contain,
+                      errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 80, color: Colors.orange),
+                    ),
             ),
             const SizedBox(height: 15),
-            Text(u.beschreibung, textAlign: TextAlign.center, style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4)),
+            Text(
+              u.beschreibung,
+              textAlign: TextAlign.center,
+              style: const TextStyle(color: Colors.white, fontSize: 15, height: 1.4),
+            ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Zurück zum Workout ↩️', style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold)))
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text(
+              'Zurück zum Workout ↩️',
+              style: TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
+            ),
+          ),
         ],
       ),
     );
@@ -630,7 +715,7 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
                     child: ElevatedButton(
                       onPressed: () {
                         _timer?.cancel();
-                        _beendet(); // Manuelles Beenden sichert den aktuellen Fortschritt!
+                        _beendet();
                       },
                       style: ElevatedButton.styleFrom(backgroundColor: Colors.blueGrey[800], padding: const EdgeInsets.symmetric(vertical: 15)),
                       child: const Text('Beenden', style: TextStyle(color: Colors.white)),
@@ -655,7 +740,7 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -666,12 +751,12 @@ class _AktiverAMRAPBildschirmState extends State<AktiverAMRAPBildschirm> {
 class MediathekPage extends StatefulWidget {
   const MediathekPage({super.key});
   @override
-  _MediathekPageState createState() => _MediathekPageState();
+  State<MediathekPage> createState() => _MediathekPageState();
 }
 
 class _MediathekPageState extends State<MediathekPage> {
   String _filter = 'Alle';
-  Map<String, int> _customReps = {};
+  final Map<String, int> _customReps = {};
 
   @override
   void initState() {
@@ -681,6 +766,7 @@ class _MediathekPageState extends State<MediathekPage> {
 
   Future<void> _loadSavedReps() async {
     final prefs = await SharedPreferences.getInstance();
+    if (!mounted) return;
     setState(() {
       for (var u in Uebung.alleUebungen) {
         _customReps[u.name] = prefs.getInt('reps_${u.name}') ?? u.standardWiederholungen;
@@ -692,6 +778,7 @@ class _MediathekPageState extends State<MediathekPage> {
     if (neuWert < 1) return;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('reps_$name', neuWert);
+    if (!mounted) return;
     setState(() {
       _customReps[name] = neuWert;
     });
@@ -706,8 +793,12 @@ class _MediathekPageState extends State<MediathekPage> {
         children: [
           DropdownButton<String>(
             value: _filter,
-            onChanged: (v) => setState(() => _filter = v!),
-            items: ['Alle', 'Unterkoerper', 'Ruecken', 'Oberkoerper', 'Core', 'Ganzkoerper'].map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+            onChanged: (v) {
+              if (v != null) setState(() => _filter = v);
+            },
+            items: ['Alle', 'Unterkoerper', 'Ruecken', 'Oberkoerper', 'Core', 'Ganzkoerper']
+                .map((s) => DropdownMenuItem(value: s, child: Text(s)))
+                .toList(),
           ),
           Expanded(
             child: ListView.builder(
@@ -723,7 +814,7 @@ class _MediathekPageState extends State<MediathekPage> {
                 );
               },
             ),
-          )
+          ),
         ],
       ),
     );
@@ -778,14 +869,16 @@ class _MediathekPageState extends State<MediathekPage> {
                                     },
                                   ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),
                         const SizedBox(height: 20),
                         ClipRRect(
                           borderRadius: BorderRadius.circular(15),
-                          child: u.bildUrl.startsWith('http') ? Image.network(u.bildUrl) : Image.asset(u.bildUrl, errorBuilder: (c,e,s) => const Icon(Icons.fitness_center, size: 100)),
+                          child: u.bildUrl.startsWith('http')
+                              ? Image.network(u.bildUrl, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 100))
+                              : Image.asset(u.bildUrl, errorBuilder: (c, e, s) => const Icon(Icons.fitness_center, size: 100)),
                         ),
                         const SizedBox(height: 20),
                         const Text('Ausführung:', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange)),
@@ -798,24 +891,25 @@ class _MediathekPageState extends State<MediathekPage> {
                       right: 10,
                       child: CircleAvatar(
                         backgroundColor: Colors.black54,
-                        child: IconButton(icon: const Icon(Icons.close, color: Colors.white), onPressed: () {
-                          this.setState(() {});
-                          Navigator.pop(context);
-                        }),
+                        child: IconButton(
+                          icon: const Icon(Icons.close, color: Colors.white),
+                          onPressed: () => Navigator.pop(context),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
             );
-          }
+          },
         );
       },
-    ).then((_) => setState(() {}));
+    ).then((_) {
+      if (mounted) setState(() {});
+    });
   }
 }
 
-// DIE NEUE GAMIFIED STATISTIK SEITE
 class StatistikPage extends StatefulWidget {
   const StatistikPage({super.key});
 
@@ -827,7 +921,9 @@ class _StatistikPageState extends State<StatistikPage> {
   @override
   void initState() {
     super.initState();
-    GamificationManager.loadStats().then((_) => setState(() {}));
+    GamificationManager.loadStats().then((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -842,7 +938,6 @@ class _StatistikPageState extends State<StatistikPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // LEVEL SYSTEM CARD
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -884,8 +979,6 @@ class _StatistikPageState extends State<StatistikPage> {
               ),
             ),
             const SizedBox(height: 20),
-
-            // STATS & STREAK ROW
             Row(
               children: [
                 Expanded(
@@ -935,12 +1028,8 @@ class _StatistikPageState extends State<StatistikPage> {
               ],
             ),
             const SizedBox(height: 25),
-
-            // TROPHÄEN WAND ÜBERSCHRIFT
             const Text('🏆 Trophäen-Wand (Achievements)', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
             const SizedBox(height: 10),
-
-            // GRID FÜR DIE 10 ACHIEVEMENTS
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -968,7 +1057,6 @@ class _StatistikPageState extends State<StatistikPage> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Badge Icon Design mit reinem Flutter Code
                       Stack(
                         alignment: Alignment.center,
                         children: [
@@ -977,34 +1065,34 @@ class _StatistikPageState extends State<StatistikPage> {
                             height: 45,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              gradient: done 
-                                ? const LinearGradient(colors: [Colors.amber, Colors.orange])
-                                : LinearGradient(colors: [Colors.grey[800]!, Colors.grey[700]!]),
+                              gradient: done
+                                  ? const LinearGradient(colors: [Colors.amber, Colors.orange])
+                                  : LinearGradient(colors: [Colors.grey[800]!, Colors.grey[700]!]),
                             ),
                           ),
                           Icon(
-                            done ? ach['icon'] : Icons.lock, 
-                            color: done ? Colors.black : Colors.grey[500], 
-                            size: 22
+                            done ? ach['icon'] : Icons.lock,
+                            color: done ? Colors.black : Colors.grey[500],
+                            size: 22,
                           ),
                         ],
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        ach['titel'], 
+                        ach['titel'],
                         textAlign: TextAlign.center,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          fontSize: 13, 
-                          fontWeight: FontWeight.bold, 
-                          color: done ? Colors.white : Colors.grey[600]
-                        )
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          color: done ? Colors.white : Colors.grey[600],
+                        ),
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        ach['sub'], 
-                        textAlign: TextAlign.center, 
+                        ach['sub'],
+                        textAlign: TextAlign.center,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 10, color: done ? Colors.grey[400] : Colors.grey[700]),
