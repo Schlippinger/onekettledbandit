@@ -21,4 +21,25 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/
+    - assets/bulgariansplitsquad.png
+    - assets/clean.png
+    - assets/deadbug.png
+    - assets/einarmigesrudern.png
+    - assets/floorpress.png
+    - assets/gobletsquat.png
+    - assets/highpull.png
+    - assets/kettlebellsitup.png
+    - assets/kettlebellswing.png
+    - assets/overheadpress.png
+    - assets/plankpullthrough.png
+    - assets/plankrow.png
+    - assets/pushpress.png
+    - assets/quartergetup.png
+    - assets/reverselunge.png
+    - assets/romaniandeadlift.png
+    - assets/russiantwist.png
+    - assets/singlelegdeadlift.png
+    - assets/staggeredrow.png
+    - assets/suitcasecarry.png
+    - assets/sumosquat.png
+    - assets/turkishgetup.png
