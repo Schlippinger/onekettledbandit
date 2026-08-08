@@ -329,7 +329,7 @@ class _HauptmenueScreenState extends State<HauptmenueScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Card(
               child: Padding(
@@ -357,7 +357,8 @@ class _HauptmenueScreenState extends State<HauptmenueScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.amber,
                 foregroundColor: Colors.black,
-                padding: const EdgeInsets.vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
               icon: const Icon(Icons.timer),
               label: const Text('EMOM Workout starten (30 Min)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               onPressed: () {
@@ -375,7 +376,8 @@ class _HauptmenueScreenState extends State<HauptmenueScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orangeAccent,
                 foregroundColor: Colors.black,
-                padding: const EdgeInsets.vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
+              ),
               icon: const Icon(Icons.repeat),
               label: const Text('AMRAP Workout starten', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               onPressed: () {
@@ -392,7 +394,7 @@ class _HauptmenueScreenState extends State<HauptmenueScreen> {
             OutlinedButton.icon(
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.amber,
-                padding: const EdgeInsets.vertical: 16,
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 side: const BorderSide(color: Colors.amber),
               ),
               icon: const Icon(Icons.fitness_center),
@@ -456,7 +458,7 @@ class _AmrapConfigScreenState extends State<AmrapConfigScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             const Text(
               'Wähle die Dauer des Workouts:',
@@ -516,7 +518,7 @@ class _AmrapConfigScreenState extends State<AmrapConfigScreen> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orangeAccent,
                 foregroundColor: Colors.black,
-                padding: const EdgeInsets.vertical: 16,
+                padding: const EdgeInsets.symmetric(vertical: 16),
               ),
               child: const Text('AMRAP Starten', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               onPressed: () {
